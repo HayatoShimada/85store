@@ -22,9 +22,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 環境変数の確認
+    console.log('SMTP_USER:', process.env.SMTP_USER ? '設定済み' : '未設定');
+    console.log('SMTP_PASS:', process.env.SMTP_PASS ? '設定済み' : '未設定');
+    
+    // 環境変数のチェック
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.error('SMTP認証情報が設定されていません');
+      return NextResponse.json(
+        { error: 'メール送信設定が完了していません。管理者にお問い合わせください。' },
+        { status: 500 }
+      );
+    }
+    
     // メール送信設定
     // 実際の使用時は環境変数で設定してください
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false,
