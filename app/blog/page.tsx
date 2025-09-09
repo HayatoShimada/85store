@@ -70,14 +70,15 @@ export default async function BlogPage() {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {categories.map((category) => {
-              const categoryConfig = {
+            {categories.map((category: string) => {
+              const categoryConfigs: Record<string, { label: string; color: string }> = {
                 "Fashion": { label: "ファッション", color: "bg-pink-100 text-pink-800" },
                 "Life Style": { label: "ライフスタイル", color: "bg-blue-100 text-blue-800" },
                 "Shop Info": { label: "店舗情報", color: "bg-green-100 text-green-800" },
                 "Products": { label: "商品", color: "bg-purple-100 text-purple-800" },
                 "Event": { label: "イベント", color: "bg-orange-100 text-orange-800" },
-              }[category] || { label: category, color: "bg-gray-100 text-gray-800" };
+              };
+              const categoryConfig = categoryConfigs[category] || { label: category, color: "bg-gray-100 text-gray-800" };
 
               return (
                 <Link

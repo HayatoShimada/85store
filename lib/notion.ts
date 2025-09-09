@@ -1,39 +1,41 @@
 import { Client } from "@notionhq/client";
-import { BlogPost, Product, NotionPage } from "@/types/notion";
+import { BlogPost, Product } from "@/types/notion";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
 });
 
-function parseNotionBlogPost(page: any): BlogPost {
-  const properties = page.properties;
+function parseNotionBlogPost(page: unknown): BlogPost {
+  const p = page as any;
+  const properties = p.properties;
   return {
-    id: page.id,
-    title: properties.Title?.title?.[0]?.plain_text || "",
-    slug: properties.Slug?.rich_text?.[0]?.plain_text || "",
-    excerpt: properties.Excerpt?.rich_text?.[0]?.plain_text || "",
-    coverImage: page.cover?.file?.url || page.cover?.external?.url || "",
+    id: p.id,
+    title: properties.Title?.title?.[0]?.text?.content || "",
+    slug: properties.Slug?.rich_text?.[0]?.text?.content || "",
+    excerpt: properties.Excerpt?.rich_text?.[0]?.text?.content || "",
+    coverImage: p.cover?.file?.url || p.cover?.external?.url || "",
     date: properties.Date?.date?.start || "",
     author: properties.Author?.select?.name || "",
     category: properties.Category?.select?.name || "",
-    tags: properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
+    tags: properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).name) || [],
     status: properties.Status?.multi_select?.[0]?.name || "",
   };
 }
 
-function parseNotionProduct(page: any): Product {
-  const properties = page.properties;
+function parseNotionProduct(page: unknown): Product {
+  const p = page as any;
+  const properties = p.properties;
   return {
-    id: page.id,
-    name: properties.Name?.title?.[0]?.plain_text || "",
-    shopifyHandle: properties.ShopifyHandle?.rich_text?.[0]?.plain_text || "",
+    id: p.id,
+    name: properties.Name?.title?.[0]?.text?.content || "",
+    shopifyHandle: properties.ShopifyHandle?.rich_text?.[0]?.text?.content || "",
     category: properties.Category?.select?.name || "",
     price: properties.Price?.number || 0,
-    images: properties.Images?.files?.map((file: any) => file.file?.url || file.external?.url) || [],
-    description: properties.Description?.rich_text?.[0]?.plain_text || "",
+    images: properties.Images?.files?.map((file: unknown) => (file as any).file?.url || (file as any).external?.url) || [],
+    description: properties.Description?.rich_text?.[0]?.text?.content || "",
     featured: properties.Featured?.checkbox || false,
     status: properties.Status?.select?.name || "",
-    createdAt: page.created_time,
+    createdAt: p.created_time,
   };
 }
 
@@ -248,7 +250,7 @@ export async function getAllCategories() {
 
     const categoryProperty = database.properties.Category;
     if (categoryProperty?.type === "select") {
-      return categoryProperty.select.options.map((option: any) => option.name);
+      return categoryProperty.select.options.map((option: unknown) => (option as any).name);
     }
 
     return [];
@@ -271,7 +273,7 @@ export async function getAllTags() {
 
     const tagsProperty = database.properties.Tags;
     if (tagsProperty?.type === "multi_select") {
-      return tagsProperty.multi_select.options.map((option: any) => option.name);
+      return tagsProperty.multi_select.options.map((option: unknown) => (option as any).name);
     }
 
     return [];

@@ -9,7 +9,6 @@ interface HeroSectionProps {
 
 export default function HeroSection({ 
   backgroundImage = "/hero/HeroSample.jpg",
-  title = "85-Store",
   subtitle = "Long-Term & Short-Term"
 }: HeroSectionProps) {
   return (
@@ -33,7 +32,7 @@ export default function HeroSection({
 
       <div className="relative z-10 text-center text-white">
         <h1 className="text-7xl md:text-2xl font-bold mb-4 tracking-wider">
-          <span className={`font-futura ${backgroundImage ? "text-white" : "text-secondary"}`}>"今好きなもの"が"ずっと好きなもの"をつくる</span>
+          <span className={`font-futura ${backgroundImage ? "text-white" : "text-secondary"}`}>&ldquo;今好きなもの&rdquo;が&ldquo;ずっと好きなもの&rdquo;をつくる</span>
         </h1>
         <p className={`text-xl md:text-2xl mb-8 font-noto ${backgroundImage ? "text-white" : "text-charcoal"}`}>
           {subtitle}

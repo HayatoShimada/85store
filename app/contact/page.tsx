@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from "next";
 import { useState } from "react";
 
 export default function ContactPage() {
@@ -53,7 +52,7 @@ export default function ContactPage() {
         setSubmitStatus('error');
         setErrorMessage(result.error || '送信に失敗しました');
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus('error');
       setErrorMessage('送信に失敗しました。しばらく時間をおいて再度お試しください。');
     } finally {
