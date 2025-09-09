@@ -5,12 +5,10 @@ import ProductCard from "@/components/ProductCard";
 import { getBlogPosts, getFeaturedProducts, getLatestProducts } from "@/lib/notion";
 
 export default async function Home() {
-  // Notionからデータを取得
-  const [blogPosts, featuredProducts, latestProducts] = await Promise.all([
-    getBlogPosts(3),
-    getFeaturedProducts(4),
-    getLatestProducts(4),
-  ]);
+  // Notionからデータを取得（商品データは一時的に無効化）
+  const blogPosts = await getBlogPosts(3);
+  const featuredProducts: any[] = [];
+  const latestProducts: any[] = [];
 
   return (
     <>

@@ -17,7 +17,7 @@ function parseNotionBlogPost(page: any): BlogPost {
     author: properties.Author?.select?.name || "",
     category: properties.Category?.select?.name || "",
     tags: properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
-    status: properties.Status?.select?.name || "",
+    status: properties.Status?.multi_select?.[0]?.name || "",
   };
 }
 
@@ -48,8 +48,8 @@ export async function getBlogPosts(limit?: number) {
       database_id: process.env.NOTION_BLOG_DATABASE_ID,
       filter: {
         property: "Status",
-        select: {
-          equals: "Published",
+        multi_select: {
+          contains: "Published",
         },
       },
       sorts: [
@@ -100,8 +100,8 @@ export async function getBlogPost(slug: string) {
 }
 
 export async function getProducts(options?: { featured?: boolean; limit?: number }) {
-  if (!process.env.NOTION_PRODUCTS_DATABASE_ID) {
-    console.warn("NOTION_PRODUCTS_DATABASE_ID is not defined");
+  if (!process.env.NOTION_PRODUCTS_DATABASE_ID || process.env.NOTION_PRODUCTS_DATABASE_ID === 'your_notion_products_database_id_here') {
+    console.warn("NOTION_PRODUCTS_DATABASE_ID is not properly configured");
     return [];
   }
 
@@ -151,4 +151,132 @@ export async function getFeaturedProducts(limit: number = 4) {
 
 export async function getLatestProducts(limit: number = 4) {
   return getProducts({ limit });
+}
+
+export async function getBlogPostsByCategory(category: string, limit?: number) {
+  if (!process.env.NOTION_BLOG_DATABASE_ID) {
+    console.warn("NOTION_BLOG_DATABASE_ID is not defined");
+    return [];
+  }
+
+  try {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_BLOG_DATABASE_ID,
+      filter: {
+        and: [
+          {
+            property: "Status",
+            multi_select: {
+              contains: "Published",
+            },
+          },
+          {
+            property: "Category",
+            select: {
+              equals: category,
+            },
+          },
+        ],
+      },
+      sorts: [
+        {
+          property: "Date",
+          direction: "descending",
+        },
+      ],
+      page_size: limit || 100,
+    });
+
+    return response.results.map(parseNotionBlogPost);
+  } catch (error) {
+    console.error("Error fetching blog posts by category:", error);
+    return [];
+  }
+}
+
+export async function getBlogPostsByTag(tag: string, limit?: number) {
+  if (!process.env.NOTION_BLOG_DATABASE_ID) {
+    console.warn("NOTION_BLOG_DATABASE_ID is not defined");
+    return [];
+  }
+
+  try {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_BLOG_DATABASE_ID,
+      filter: {
+        and: [
+          {
+            property: "Status",
+            multi_select: {
+              contains: "Published",
+            },
+          },
+          {
+            property: "Tags",
+            multi_select: {
+              contains: tag,
+            },
+          },
+        ],
+      },
+      sorts: [
+        {
+          property: "Date",
+          direction: "descending",
+        },
+      ],
+      page_size: limit || 100,
+    });
+
+    return response.results.map(parseNotionBlogPost);
+  } catch (error) {
+    console.error("Error fetching blog posts by tag:", error);
+    return [];
+  }
+}
+
+export async function getAllCategories() {
+  if (!process.env.NOTION_BLOG_DATABASE_ID) {
+    console.warn("NOTION_BLOG_DATABASE_ID is not defined");
+    return [];
+  }
+
+  try {
+    const database = await notion.databases.retrieve({
+      database_id: process.env.NOTION_BLOG_DATABASE_ID,
+    });
+
+    const categoryProperty = database.properties.Category;
+    if (categoryProperty?.type === "select") {
+      return categoryProperty.select.options.map((option: any) => option.name);
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
+
+export async function getAllTags() {
+  if (!process.env.NOTION_BLOG_DATABASE_ID) {
+    console.warn("NOTION_BLOG_DATABASE_ID is not defined");
+    return [];
+  }
+
+  try {
+    const database = await notion.databases.retrieve({
+      database_id: process.env.NOTION_BLOG_DATABASE_ID,
+    });
+
+    const tagsProperty = database.properties.Tags;
+    if (tagsProperty?.type === "multi_select") {
+      return tagsProperty.multi_select.options.map((option: any) => option.name);
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    return [];
+  }
 }
