@@ -1,0 +1,17 @@
+{
+  "name": "85-Store - Select Shop & Blog",
+  "short_name": "85store",
+  "description": "モダンでスタイリッシュなセレクトショップ",
+  "theme_color": "#FF6B35",
+  "background_color": "#FAFBFC",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

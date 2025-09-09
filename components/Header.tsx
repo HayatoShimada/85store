@@ -1,0 +1,106 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+      <nav className="section-padding max-container">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/logo.svg"
+              alt="85-Store Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10"
+            />
+            <div className="font-bold tracking-wider">
+              85-Store
+            </div>
+          </Link>
+
+          <div className="hidden md:flex items-center space-x-8">
+            <Link href="/" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+              Home
+            </Link>
+            <Link href="/products" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+              Products
+            </Link>
+            <Link href="/blog" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+              Blog
+            </Link>
+            <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+              About
+            </Link>
+            <Link href="/contact" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+              Contact
+            </Link>
+          </div>
+
+          <button
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <svg
+              className="w-6 h-6 text-charcoal"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {isMenuOpen ? (
+                <path d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <Link
+                href="/"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                Home
+              </Link>
+              <Link
+                href="/onlineshop"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                Online Shop
+              </Link>
+              <Link
+                href="/blog"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                Blog
+              </Link>
+              <Link
+                href="/about"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+}
