@@ -18,7 +18,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
-  const tagName = params.tag.replace(/-/g, ' ');
+  const { tag } = await params;
+  const tagName = tag.replace(/-/g, ' ');
   const capitalizedTag = tagName.charAt(0).toUpperCase() + tagName.slice(1);
   
   return {
@@ -28,8 +29,17 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 }
 
 export default async function TagPage({ params }: TagPageProps) {
-  const tagName = params.tag.replace(/-/g, ' ');
+  const { tag } = await params;
+  const tagName = tag.replace(/-/g, ' ');
   const capitalizedTag = tagName.charAt(0).toUpperCase() + tagName.slice(1);
+  
+  // 有効なタグかどうかを確認
+  const allTags = await getAllTags();
+  const isValidTag = allTags.includes(capitalizedTag);
+  
+  if (!isValidTag) {
+    notFound();
+  }
   
   const blogPosts = await getBlogPostsByTag(capitalizedTag);
 

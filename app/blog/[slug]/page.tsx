@@ -2,9 +2,10 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getBlogPost, getBlogPosts } from "@/lib/notion";
+import { getBlogPost, getBlogPosts, getRelatedPosts } from "@/lib/notion";
 import { NotionRenderer } from "@/components/NotionRenderer";
 import { NotionTableOfContents } from "@/components/NotionTableOfContents";
+import { RelatedPosts } from "@/components/RelatedPosts";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
 
 interface BlogPostPageProps {
@@ -56,13 +57,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const { page, blocks } = result;
+  
+  // 関連記事を取得
+  const relatedPosts = await getRelatedPosts(page.id, 3);
 
   const properties = (page as any).properties;
   const title = properties.Title?.title?.[0]?.text?.content || "";
   const excerpt = properties.Excerpt?.rich_text?.[0]?.text?.content || "";
   const date = properties.Date?.date?.start || "";
   const author = properties.Author?.multi_select?.map((author: unknown) => (author as any).name).join(', ') || "";
-  const authorColors = properties.Author?.multi_select?.map((author: unknown) => (author as any).color) || [];
   const category = properties.Category?.multi_select?.map((category: unknown) => (category as any).name).join(', ') || "";
   const categoryColors = properties.Category?.multi_select?.map((category: unknown) => (category as any).color) || [];
   const tags = properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).name) || [];
@@ -148,23 +151,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       </section>
 
       {/* Related Posts */}
-      <section className="py-16 bg-white">
-        <div className="section-padding max-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-secondary mb-4">
-              関連記事
-            </h2>
-            <p className="text-gray-600">
-              同じカテゴリの他の記事もご覧ください
-            </p>
-          </div>
-          
-          {/* ここに関連記事の表示を追加予定 */}
-          <div className="text-center text-gray-500">
-            <p>関連記事の表示機能は今後追加予定です</p>
-          </div>
-        </div>
-      </section>
+      <RelatedPosts posts={relatedPosts} />
     </div>
   );
 }

@@ -12,14 +12,12 @@ interface NotionImageProps {
 }
 
 export function NotionImage({ src, alt, caption, width, height }: NotionImageProps) {
-  const [imageError, setImageError] = React.useState(false);
   const [imageLoading, setImageLoading] = React.useState(true);
   const [imageSrc, setImageSrc] = React.useState(src);
   const [imageDimensions, setImageDimensions] = React.useState<{width: number, height: number} | null>(null);
 
   const handleError = () => {
     console.error('Image failed to load:', imageSrc);
-    setImageError(true);
     setImageLoading(false);
     setImageSrc('/images/placeholder.svg');
   };

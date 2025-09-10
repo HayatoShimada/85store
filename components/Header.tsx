@@ -25,8 +25,8 @@ export default function Header() {
             <Link href="/" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
               Home
             </Link>
-            <Link href="/products" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
-              Products
+            <Link href="https://shop.85-store.com/" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+              Online Shop
             </Link>
             <Link href="/blog" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
               Blog

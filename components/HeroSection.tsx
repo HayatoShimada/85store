@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ 
   backgroundImage = "/hero/HeroSample.jpg",
-  subtitle = "Long-Term & Short-Term"
+  subtitle = "Short-Term & Long-Term"
 }: HeroSectionProps) {
   return (
     <section className="relative h-screen flex items-center justify-center -mt-16 overflow-hidden">

@@ -25,7 +25,7 @@ export default function BlogCard({ post }: BlogCardProps) {
     imageSrc.includes('s3.amazonaws.com')
   );
   
-  const processedImageUrl = isNotionImage && imageSrc ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}` : imageSrc;
+  const processedImageUrl = isNotionImage && imageSrc ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}` : (imageSrc || '/images/placeholder.svg');
 
   const handleImageError = () => {
     console.error('BlogCard - Image failed to load:', processedImageUrl);

@@ -13,7 +13,7 @@ function processBlocks(blocks: unknown[], level: number = 0): unknown[] {
 
     if (type === "bulleted_list_item" || type === "numbered_list_item") {
       const listGroup = [];
-      let currentType = type;
+      const currentType = type;
       
       // 同じタイプのリストアイテムをグループ化
       while (i < blocks.length) {
@@ -107,7 +107,7 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
 
   return (
     <div className="prose prose-lg max-w-none">
-      {processedBlocks.map((block, index) => {
+      {processedBlocks.map((block) => {
         const { type, id } = block as any;
         const value = (block as any)[type];
 

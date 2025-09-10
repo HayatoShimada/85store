@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
+import { CategorySection } from "@/components/CategorySection";
 import { getBlogPosts, getAllCategories } from "@/lib/notion";
 
 export const metadata: Metadata = {
@@ -23,9 +23,6 @@ export default async function BlogPage() {
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
               Blog
             </h1>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              85-Storeの最新情報、ファッション、ライフスタイルに関する記事をお届けします。
-            </p>
           </div>
         </div>
       </section>
@@ -58,41 +55,7 @@ export default async function BlogPage() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-white">
-        <div className="section-padding max-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-secondary mb-4">
-              カテゴリ
-            </h2>
-            <p className="text-gray-600">
-              興味のあるカテゴリから記事を探してみてください
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {categories.map((category: string) => {
-              const categoryConfigs: Record<string, { label: string; color: string }> = {
-                "Fashion": { label: "ファッション", color: "bg-pink-100 text-pink-800" },
-                "Life Style": { label: "ライフスタイル", color: "bg-blue-100 text-blue-800" },
-                "Shop Info": { label: "店舗情報", color: "bg-green-100 text-green-800" },
-                "Products": { label: "商品", color: "bg-purple-100 text-purple-800" },
-                "Event": { label: "イベント", color: "bg-orange-100 text-orange-800" },
-              };
-              const categoryConfig = categoryConfigs[category] || { label: category, color: "bg-gray-100 text-gray-800" };
-
-              return (
-                <Link
-                  key={category}
-                  href={`/blog/category/${category.toLowerCase().replace(' ', '-')}`}
-                  className={`p-4 rounded-lg text-center transition-colors hover:opacity-80 ${categoryConfig.color}`}
-                >
-                  <div className="font-semibold">{categoryConfig.label}</div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <CategorySection categories={categories} />
     </div>
   );
 }

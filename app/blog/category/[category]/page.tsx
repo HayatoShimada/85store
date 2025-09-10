@@ -18,7 +18,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const categoryName = params.category.replace('-', ' ');
+  const { category } = await params;
+  const categoryName = category.replace('-', ' ');
   const capitalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
   
   return {
@@ -28,8 +29,17 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const categoryName = params.category.replace('-', ' ');
+  const { category } = await params;
+  const categoryName = category.replace('-', ' ');
   const capitalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+  
+  // 有効なカテゴリかどうかを確認
+  const allCategories = await getAllCategories();
+  const isValidCategory = allCategories.includes(capitalizedCategory);
+  
+  if (!isValidCategory) {
+    notFound();
+  }
   
   const blogPosts = await getBlogPostsByCategory(capitalizedCategory);
 

@@ -249,8 +249,8 @@ export async function getBlogPostsByCategory(category: string, limit?: number) {
           },
           {
             property: "Category",
-            select: {
-              equals: category,
+            multi_select: {
+              contains: category,
             },
           },
         ],
@@ -324,10 +324,11 @@ export async function getAllCategories() {
     });
 
     const categoryProperty = database.properties.Category;
-    if (categoryProperty?.type === "select") {
-      return categoryProperty.select.options.map((option: unknown) => (option as any).name);
+    
+    if (categoryProperty?.type === "multi_select") {
+      const categories = categoryProperty.multi_select.options.map((option: unknown) => (option as any).name);
+      return categories;
     }
-
     return [];
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -354,6 +355,93 @@ export async function getAllTags() {
     return [];
   } catch (error) {
     console.error("Error fetching tags:", error);
+    return [];
+  }
+}
+
+export async function getRelatedPosts(currentPostId: string, limit: number = 3): Promise<BlogPost[]> {
+  if (!process.env.NOTION_BLOG_DATABASE_ID) {
+    console.warn("NOTION_BLOG_DATABASE_ID is not defined");
+    return [];
+  }
+
+  try {
+    // 現在の記事の情報を取得
+    const currentPost = await notion.pages.retrieve({
+      page_id: currentPostId,
+    });
+
+    const currentProperties = (currentPost as any).properties;
+    const currentCategories = currentProperties.Category?.multi_select?.map((item: any) => item.name) || [];
+    const currentTags = currentProperties.Tags?.multi_select?.map((item: any) => item.name) || [];
+
+    // カテゴリまたはタグがない場合は空の配列を返す
+    if (currentCategories.length === 0 && currentTags.length === 0) {
+      return [];
+    }
+
+    // 関連記事を取得（同じカテゴリまたはタグを持つ記事）
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_BLOG_DATABASE_ID,
+      filter: {
+        and: [
+          {
+            property: "Status",
+            multi_select: {
+              contains: "Published",
+            },
+          },
+          {
+            or: [
+              // 同じカテゴリを持つ記事
+              ...currentCategories.map((category: string) => ({
+                property: "Category",
+                multi_select: {
+                  contains: category,
+                },
+              })),
+              // 同じタグを持つ記事
+              ...currentTags.map((tag: string) => ({
+                property: "Tags",
+                multi_select: {
+                  contains: tag,
+                },
+              })),
+            ],
+          },
+        ],
+      },
+      sorts: [
+        {
+          property: "Date",
+          direction: "descending",
+        },
+      ],
+      page_size: limit + 1, // 現在の記事を除外するため1つ多く取得
+    });
+
+    // 現在の記事を除外し、各ページの詳細情報を取得
+    const relatedPosts = [];
+    for (const page of response.results) {
+      // 現在の記事を除外
+      if (page.id === currentPostId) {
+        continue;
+      }
+      
+      const pageDetails = await notion.pages.retrieve({
+        page_id: page.id,
+      });
+      relatedPosts.push(parseNotionBlogPost(pageDetails));
+      
+      // 指定された件数に達したら終了
+      if (relatedPosts.length >= limit) {
+        break;
+      }
+    }
+
+    return relatedPosts;
+  } catch (error) {
+    console.error("Error fetching related posts:", error);
     return [];
   }
 }
