@@ -30,7 +30,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-gray-300 hover:text-primary transition-colors">
+                <Link href="https://shop.85-store.com/" className="text-gray-300 hover:text-primary transition-colors">
                   Online Shop
                 </Link>
               </li>
@@ -67,7 +67,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4 text-gray-300 font-futura">Follow Us</h4>
             <div className="flex space-x-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/85store_inami/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-primary transition-colors"

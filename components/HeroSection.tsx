@@ -38,7 +38,7 @@ export default function HeroSection({
           {subtitle}
         </p>
         <div className="flex gap-4 justify-center">
-          <Link href="/products" className="btn-primary">
+          <Link href="https://shop.85-store.com/" className="btn-primary">
             Online Shop
           </Link>
           <Link href="/blog" className={backgroundImage ? "btn-outline border-white text-white hover:bg-white hover:text-charcoal" : "btn-outline"}>

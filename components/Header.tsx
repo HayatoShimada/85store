@@ -71,7 +71,7 @@ export default function Header() {
                 Home
               </Link>
               <Link
-                href="/onlineshop"
+                href="https://shop.85-store.com/"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
                 Online Shop
