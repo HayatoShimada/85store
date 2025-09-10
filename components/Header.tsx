@@ -19,9 +19,6 @@ export default function Header() {
               height={40}
               className="w-10 h-10"
             />
-            <div className="font-bold tracking-wider">
-              85-Store
-            </div>
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">

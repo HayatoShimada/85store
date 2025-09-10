@@ -15,9 +15,6 @@ export default function Footer() {
                 height={32}
                 className="w-8 h-8 brightness-0 invert"
               />
-              <h3 className="font-bold text-gray-300 font-futura">
-                85-Store
-              </h3>
             </div>
             <p className="text-gray-300 font-noto">
               Long-Term & Short-Term
@@ -94,7 +91,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-600 text-center text-gray-300">
-          <p>&copy; 2024 85-Store. All rights reserved.</p>
+          <p>&copy; 2025 85-Store. All rights reserved.</p>
         </div>
       </div>
     </footer>

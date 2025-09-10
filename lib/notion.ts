@@ -8,16 +8,52 @@ const notion = new Client({
 function parseNotionBlogPost(page: unknown): BlogPost {
   const p = page as any;
   const properties = p.properties;
+  
+  
+  // Cover Imageの取得を複数の方法で試行
+  let coverImage = "";
+  
+  // 1. ページのcoverプロパティから取得
+  if (p.cover) {
+    coverImage = p.cover.file?.url || p.cover.external?.url || "";
+    console.log('Cover from page.cover:', coverImage);
+  }
+  
+  // 2. プロパティのCover Imageフィールドから取得（スペース付きプロパティ名）
+  if (!coverImage && properties['Cover Image']) {
+    if (properties['Cover Image'].files && properties['Cover Image'].files.length > 0) {
+      const firstFile = properties['Cover Image'].files[0];
+      coverImage = firstFile.file?.url || firstFile.external?.url || "";
+    } else if (properties['Cover Image'].url) {
+      coverImage = properties['Cover Image'].url;
+    }
+  }
+  
+  // 3. プロパティのImageフィールドから取得
+  if (!coverImage && properties.Image) {
+    if (properties.Image.files && properties.Image.files.length > 0) {
+      coverImage = properties.Image.files[0].file?.url || properties.Image.files[0].external?.url || "";
+      console.log('Cover from Image property:', coverImage);
+    } else if (properties.Image.url) {
+      coverImage = properties.Image.url;
+      console.log('Cover from Image.url:', coverImage);
+    }
+  }
+  
+  
   return {
     id: p.id,
     title: properties.Title?.title?.[0]?.text?.content || "",
     slug: properties.Slug?.rich_text?.[0]?.text?.content || "",
     excerpt: properties.Excerpt?.rich_text?.[0]?.text?.content || "",
-    coverImage: p.cover?.file?.url || p.cover?.external?.url || "",
+    coverImage: coverImage,
     date: properties.Date?.date?.start || "",
-    author: properties.Author?.select?.name || "",
-    category: properties.Category?.select?.name || "",
+    author: properties.Author?.multi_select?.map((author: unknown) => (author as any).name).join(', ') || "",
+    authorColors: properties.Author?.multi_select?.map((author: unknown) => (author as any).color) || [],
+    category: properties.Category?.multi_select?.map((category: unknown) => (category as any).name).join(', ') || "",
+    categoryColors: properties.Category?.multi_select?.map((category: unknown) => (category as any).color) || [],
     tags: properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).name) || [],
+    tagColors: properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).color) || [],
     status: properties.Status?.multi_select?.[0]?.name || "",
   };
 }
@@ -63,7 +99,24 @@ export async function getBlogPosts(limit?: number) {
       page_size: limit || 100,
     });
 
-    return response.results.map(parseNotionBlogPost);
+    // 各ページの詳細情報を取得（プロパティを含む）
+    const detailedPages = await Promise.all(
+      response.results.map(async (page: any) => {
+        try {
+          const detailedPage = await notion.pages.retrieve({
+            page_id: page.id,
+          });
+          return detailedPage;
+        } catch (error) {
+          console.error('Error retrieving page details:', error);
+          return page;
+        }
+      })
+    );
+
+    const parsedPosts = detailedPages.map(parseNotionBlogPost);
+    
+    return parsedPosts;
   } catch (error) {
     console.error("Error fetching blog posts:", error);
     return [];

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getBlogPost, getBlogPosts } from "@/lib/notion";
 import { NotionRenderer } from "@/components/NotionRenderer";
 import { NotionTableOfContents } from "@/components/NotionTableOfContents";
+import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
 
 interface BlogPostPageProps {
   params: {
@@ -20,7 +21,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const result = await getBlogPost(params.slug);
+  const { slug } = await params;
+  const result = await getBlogPost(slug);
   
   if (!result || !result.page) {
     return {
@@ -46,7 +48,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const result = await getBlogPost(params.slug);
+  const { slug } = await params;
+  const result = await getBlogPost(slug);
 
   if (!result || !result.page) {
     notFound();
@@ -58,9 +61,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const title = properties.Title?.title?.[0]?.text?.content || "";
   const excerpt = properties.Excerpt?.rich_text?.[0]?.text?.content || "";
   const date = properties.Date?.date?.start || "";
-  const author = properties.Author?.select?.name || "";
-  const category = properties.Category?.select?.name || "";
+  const author = properties.Author?.multi_select?.map((author: unknown) => (author as any).name).join(', ') || "";
+  const authorColors = properties.Author?.multi_select?.map((author: unknown) => (author as any).color) || [];
+  const category = properties.Category?.multi_select?.map((category: unknown) => (category as any).name).join(', ') || "";
+  const categoryColors = properties.Category?.multi_select?.map((category: unknown) => (category as any).color) || [];
   const tags = properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).name) || [];
+  const tagColors = properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).color) || [];
   const coverImage = (page as any).cover?.file?.url || (page as any).cover?.external?.url || "";
 
   return (
@@ -78,9 +84,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Article Meta */}
           <div className="mb-8">
             <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+              {category && (
+                <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getCategoryStyleClasses(categoryColors)}`}>
+                  {category}
+                </span>
+              )}
               <span>{new Date(date).toLocaleDateString('ja-JP')}</span>
-              <span className="text-primary font-semibold">{category}</span>
-              <span>by {author}</span>
+              {author && (
+                <span>by {author}</span>
+              )}
             </div>
             
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
@@ -93,10 +105,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag: string) => (
+                {tags.map((tag: string, index: number) => (
                   <span
                     key={tag}
-                    className="text-sm bg-gray-100 text-gray-600 px-3 py-1 rounded-full"
+                    className={`text-sm px-3 py-1 rounded-full ${getTagStyleClasses([tagColors[index] || 'default'])}`}
                   >
                     #{tag}
                   </span>

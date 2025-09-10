@@ -6,8 +6,11 @@ export interface BlogPost {
   coverImage?: string;
   date: string;
   author: string;
+  authorColors: string[];
   category: string;
+  categoryColors: string[];
   tags: string[];
+  tagColors: string[];
   status: string;
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { NotionTextRenderer } from "./NotionTextRenderer";
+import { NotionImage } from "./NotionImage";
 
 interface NotionRendererProps {
   blocks: unknown[];
@@ -136,21 +136,12 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
             const caption = value.caption?.[0]?.text?.content || "";
             
             return (
-              <div key={id} className="my-8">
-                <div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden">
-                  <Image
-                    src={imageUrl}
-                    alt={caption}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                {caption && (
-                  <p className="text-sm text-gray-500 text-center mt-2">
-                    {caption}
-                  </p>
-                )}
-              </div>
+              <NotionImage
+                key={id}
+                src={imageUrl}
+                alt={caption}
+                caption={caption}
+              />
             );
 
           case "callout":
