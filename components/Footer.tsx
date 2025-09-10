@@ -17,7 +17,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-gray-300 font-noto">
-              Long-Term & Short-Term
+              Short-Term & Long-Term
             </p>
           </div>
 

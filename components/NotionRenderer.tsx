@@ -2,6 +2,59 @@ import React from "react";
 import { NotionTextRenderer } from "./NotionTextRenderer";
 import { NotionImage } from "./NotionImage";
 
+// ブロックを階層構造を考慮して処理する関数
+function processBlocks(blocks: unknown[], level: number = 0): unknown[] {
+  const processed: unknown[] = [];
+  let i = 0;
+
+  while (i < blocks.length) {
+    const block = blocks[i] as any;
+    const { type } = block;
+
+    if (type === "bulleted_list_item" || type === "numbered_list_item") {
+      const listGroup = [];
+      let currentType = type;
+      
+      // 同じタイプのリストアイテムをグループ化
+      while (i < blocks.length) {
+        const currentBlock = blocks[i] as any;
+        if (currentBlock.type === currentType) {
+          // 子要素がある場合は再帰的に処理
+          const processedBlock = { ...currentBlock };
+          if (currentBlock.children) {
+            processedBlock.children = processBlocks(currentBlock.children, level + 1);
+          }
+          listGroup.push(processedBlock);
+          i++;
+        } else {
+          break;
+        }
+      }
+      
+      // リストグループを処理
+      processed.push({
+        type: currentType === "bulleted_list_item" ? "bulleted_list_group" : "numbered_list_group",
+        id: `list-group-${processed.length}`,
+        items: listGroup,
+        level: level
+      });
+    } else if (type === "toggle") {
+      // トグルブロック内の子ブロックも処理
+      const toggleBlock = { ...block };
+      if (block.children) {
+        toggleBlock.children = processBlocks(block.children, level);
+      }
+      processed.push(toggleBlock);
+      i++;
+    } else {
+      processed.push(block);
+      i++;
+    }
+  }
+
+  return processed;
+}
+
 interface NotionRendererProps {
   blocks: unknown[];
 }
@@ -32,9 +85,29 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
     );
   }
 
+  // デバッグ用: ブロック構造をログ出力
+  console.log('NotionRenderer - Original blocks:', blocks.map((block: any) => ({
+    type: block.type,
+    id: block.id,
+    hasChildren: !!block.children,
+    children: block.children?.map((child: any) => ({
+      type: child.type,
+      id: child.id
+    })) || []
+  })));
+
+  // ブロックをグループ化してリストを適切に処理
+  const processedBlocks = processBlocks(blocks);
+  
+  console.log('NotionRenderer - Processed blocks:', processedBlocks.map((block: any) => ({
+    type: block.type,
+    id: block.id,
+    itemsCount: block.items?.length || 0
+  })));
+
   return (
     <div className="prose prose-lg max-w-none">
-      {blocks.map((block) => {
+      {processedBlocks.map((block, index) => {
         const { type, id } = block as any;
         const value = (block as any)[type];
 
@@ -67,21 +140,43 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
               </h3>
             );
 
-          case "bulleted_list_item":
+          case "bulleted_list_group":
             return (
-              <ul key={id} className="list-disc list-inside mb-2">
-                <li>
-                  <NotionTextRenderer richText={value.rich_text} />
-                </li>
+              <ul 
+                key={id} 
+                className="list-disc list-inside mb-4 space-y-1"
+                style={{ marginLeft: `${(block as any).level * 20}px` }}
+              >
+                {(block as any).items.map((item: any) => (
+                  <li key={item.id} className="leading-relaxed">
+                    <NotionTextRenderer richText={item.bulleted_list_item.rich_text} />
+                    {item.children && item.children.length > 0 && (
+                      <div className="mt-2">
+                        <NotionRenderer blocks={item.children} />
+                      </div>
+                    )}
+                  </li>
+                ))}
               </ul>
             );
 
-          case "numbered_list_item":
+          case "numbered_list_group":
             return (
-              <ol key={id} className="list-decimal list-inside mb-2">
-                <li>
-                  <NotionTextRenderer richText={value.rich_text} />
-                </li>
+              <ol 
+                key={id} 
+                className="list-decimal list-inside mb-4 space-y-1"
+                style={{ marginLeft: `${(block as any).level * 20}px` }}
+              >
+                {(block as any).items.map((item: any) => (
+                  <li key={item.id} className="leading-relaxed">
+                    <NotionTextRenderer richText={item.numbered_list_item.rich_text} />
+                    {item.children && item.children.length > 0 && (
+                      <div className="mt-2">
+                        <NotionRenderer blocks={item.children} />
+                      </div>
+                    )}
+                  </li>
+                ))}
               </ol>
             );
 
@@ -107,7 +202,9 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
                   <NotionTextRenderer richText={value.rich_text} />
                 </summary>
                 <div className="mt-2 pl-4">
-                  {/* ネストされたブロックは別途処理が必要 */}
+                  {(block as any).children && (
+                    <NotionRenderer blocks={(block as any).children} />
+                  )}
                 </div>
               </details>
             );

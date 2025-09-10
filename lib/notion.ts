@@ -144,13 +144,35 @@ export async function getBlogPost(slug: string) {
 
   const page = response.results[0];
   const pageId = page.id;
-  const blocks = await notion.blocks.children.list({
-    block_id: pageId,
-  });
+  
+  // ブロックを再帰的に取得して階層構造を保持する関数
+  async function getBlocksWithChildren(blockId: string): Promise<any[]> {
+    const blocks = await notion.blocks.children.list({
+      block_id: blockId,
+      page_size: 100,
+    });
+
+    const blocksWithChildren = [];
+    
+    for (const block of blocks.results) {
+      const blockWithChildren = { ...block } as any;
+      
+      // 子ブロックがある場合は再帰的に取得
+      if ((block as any).has_children) {
+        blockWithChildren.children = await getBlocksWithChildren(block.id);
+      }
+      
+      blocksWithChildren.push(blockWithChildren);
+    }
+    
+    return blocksWithChildren;
+  }
+
+  const blocksWithChildren = await getBlocksWithChildren(pageId);
 
   return {
     page,
-    blocks: blocks.results,
+    blocks: blocksWithChildren,
   };
 }
 

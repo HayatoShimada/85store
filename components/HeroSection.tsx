@@ -31,7 +31,7 @@ export default function HeroSection({
       )}
 
       <div className="relative z-10 text-center text-white">
-        <h1 className="text-7xl md:text-2xl font-bold mb-4 tracking-wider">
+        <h1 className="md:text-2xl font-bold mb-4 tracking-wider">
           <span className={`font-futura ${backgroundImage ? "text-white" : "text-secondary"}`}>&ldquo;今好きなもの&rdquo;が&ldquo;ずっと好きなもの&rdquo;をつくる</span>
         </h1>
         <p className={`text-xl md:text-2xl mb-8 font-noto ${backgroundImage ? "text-white" : "text-charcoal"}`}>
