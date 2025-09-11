@@ -31,12 +31,19 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
     setImageLoading(false);
   };
 
-  // Notionの画像URLをプロキシ経由で処理
-  const isNotionImage = imageSrc.includes('prod-files-secure.s3.us-west-2.amazonaws.com') || 
-                       imageSrc.includes('s3.us-west-2.amazonaws.com') ||
-                       imageSrc.includes('s3.amazonaws.com');
+  // ローカル画像が存在する場合はそのまま使用、そうでなければプロキシ経由
+  const isLocalImage = imageSrc.startsWith('/notion-images/');
+  const isNotionImage = !isLocalImage && (
+    imageSrc.includes('prod-files-secure.s3.us-west-2.amazonaws.com') || 
+    imageSrc.includes('s3.us-west-2.amazonaws.com') ||
+    imageSrc.includes('s3.amazonaws.com')
+  );
   
-  const processedImageUrl = isNotionImage ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}` : imageSrc;
+  const processedImageUrl = isLocalImage 
+    ? imageSrc 
+    : isNotionImage 
+      ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}` 
+      : imageSrc;
 
   // アスペクト比を計算（画像の実際のサイズまたは指定されたサイズから）
   const aspectRatio = imageDimensions 

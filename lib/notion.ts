@@ -1,5 +1,6 @@
 import { Client } from "@notionhq/client";
 import { BlogPost, Product } from "@/types/notion";
+import { getLocalImageUrl, processImageUrls } from "./notion-images";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -8,7 +9,7 @@ const notion = new Client({
 function parseNotionBlogPost(page: unknown): BlogPost {
   const p = page as any;
   const properties = p.properties;
-  
+  const slug = properties.Slug?.rich_text?.[0]?.text?.content || "";
   
   // Cover Imageの取得を複数の方法で試行
   let coverImage = "";
@@ -40,11 +41,15 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     }
   }
   
+  // ローカル画像URLに変換
+  if (coverImage) {
+    coverImage = getLocalImageUrl(coverImage, slug);
+  }
   
   return {
     id: p.id,
     title: properties.Title?.title?.[0]?.text?.content || "",
-    slug: properties.Slug?.rich_text?.[0]?.text?.content || "",
+    slug: slug,
     excerpt: properties.Excerpt?.rich_text?.[0]?.text?.content || "",
     coverImage: coverImage,
     date: properties.Date?.date?.start || "",
@@ -169,10 +174,13 @@ export async function getBlogPost(slug: string) {
   }
 
   const blocksWithChildren = await getBlocksWithChildren(pageId);
+  
+  // ブロック内の画像URLをローカルURLに変換
+  const processedBlocks = processImageUrls(blocksWithChildren, slug);
 
   return {
     page,
-    blocks: blocksWithChildren,
+    blocks: processedBlocks,
   };
 }
 

@@ -10,7 +10,8 @@
       "Bash(npm uninstall:*)",
       "Bash(npx tailwindcss init:*)",
       "Bash(npm run dev:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm run download-images:*)"
     ],
     "deny": []
   }

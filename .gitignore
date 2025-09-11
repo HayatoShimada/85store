@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Notion images
+/public/notion-images/
+/lib/notion-image-mapping.json
