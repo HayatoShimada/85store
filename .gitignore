@@ -32,6 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+.env.development
+.env.production
+.env.test
 
 # vercel
 .vercel
@@ -45,3 +52,5 @@ next-env.d.ts
 # Notion images
 /public/notion-images/
 /lib/notion-image-mapping.json
+scripts/download-notion-images.ts
+.gitignore

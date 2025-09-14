@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import sharp from 'sharp';
+import { Transform } from 'stream';
+import ExifTransformer from 'exif-be-gone';
 import { getBlogPosts, getBlogPost } from '../lib/notion';
 
 const IMAGES_DIR = path.join(process.cwd(), 'public', 'notion-images');
@@ -18,11 +21,56 @@ async function downloadImage(url: string, filename: string): Promise<string | nu
       return null;
     }
 
-    const buffer = await response.arrayBuffer();
     const filePath = path.join(IMAGES_DIR, filename);
+    const isJpeg = filename.toLowerCase().endsWith('.jpg') || filename.toLowerCase().endsWith('.jpeg');
     
-    fs.writeFileSync(filePath, Buffer.from(buffer));
-    console.log(`Downloaded: ${filename}`);
+    // Stream the response body through EXIF removal
+    const chunks: Buffer[] = [];
+    const exifTransformer = new ExifTransformer();
+    
+    // Get the response body as a readable stream
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('No response body');
+    }
+
+    // Process the stream
+    const processStream = async () => {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = Buffer.from(value);
+        exifTransformer.write(chunk);
+      }
+      exifTransformer.end();
+    };
+
+    // Collect transformed data
+    exifTransformer.on('data', (chunk: Buffer) => {
+      chunks.push(chunk);
+    });
+
+    await new Promise<void>((resolve, reject) => {
+      exifTransformer.on('end', resolve);
+      exifTransformer.on('error', reject);
+      processStream().catch(reject);
+    });
+
+    let buffer = Buffer.concat(chunks);
+
+    // For JPEG images, ensure proper rotation using sharp
+    if (isJpeg) {
+      try {
+        buffer = Buffer.from(await sharp(buffer).rotate().toBuffer());
+      } catch (sharpError) {
+        console.warn(`Warning: Could not rotate image ${filename}:`, sharpError);
+        // Continue with original buffer if rotation fails
+      }
+    }
+    
+    fs.writeFileSync(filePath, buffer);
+    console.log(`Downloaded: ${filename} (EXIF removed${isJpeg ? ', rotated' : ''})`);
     
     return `/notion-images/${filename}`;
   } catch (error) {
