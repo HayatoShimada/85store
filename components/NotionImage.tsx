@@ -62,9 +62,9 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
   };
 
   return (
-    <div className="my-8">
-      <div className="relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`relative w-full ${getAspectClass()} rounded-lg overflow-hidden shadow-lg bg-gray-50`}>
+    <div className="my-4 sm:my-6 md:my-8">
+      <div className="relative w-full max-w-4xl mx-auto">
+        <div className={`relative w-full ${getAspectClass()} md:rounded-lg overflow-hidden md:shadow-lg bg-gray-50`}>
           {/* ローディングスピナー */}
           {imageLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
@@ -84,7 +84,7 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
           />
         </div>
         {caption && (
-          <p className="text-sm text-gray-500 text-center mt-3 px-2">
+          <p className="text-xs sm:text-sm text-gray-500 text-center mt-2 sm:mt-3 px-2">
             {caption}
           </p>
         )}

@@ -106,7 +106,7 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
   })));
 
   return (
-    <div className="prose prose-lg max-w-none">
+    <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-img:mx-auto prose-headings:scroll-mt-20">
       {processedBlocks.map((block) => {
         const { type, id } = block as any;
         const value = (block as any)[type];
