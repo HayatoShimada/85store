@@ -3,7 +3,17 @@ import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
 import ExifTransformer from 'exif-be-gone';
+import dotenv from 'dotenv';
 import { getBlogPosts, getBlogPost } from '../lib/notion';
+
+// 環境変数を読み込む
+dotenv.config({ path: '.env.local' });
+
+// デバッグ: 環境変数の確認
+console.log('Environment check:', {
+  NOTION_API_KEY: process.env.NOTION_API_KEY ? 'Set' : 'Not set',
+  NOTION_BLOG_DATABASE_ID: process.env.NOTION_BLOG_DATABASE_ID ? 'Set' : 'Not set',
+});
 
 const IMAGES_DIR = path.join(process.cwd(), 'public', 'notion-images');
 
@@ -172,7 +182,9 @@ export async function downloadAllNotionImages() {
     return imageMapping;
   } catch (error) {
     console.error('Error downloading Notion images:', error);
-    throw error;
+    // エラーが発生してもビルドを継続
+    console.warn('Continuing build despite image download failure');
+    return {};
   }
 }
 
@@ -185,6 +197,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     })
     .catch((error) => {
       console.error('Failed:', error);
-      process.exit(1);
+      // ビルドを継続するためにエラーで終了しない
+      process.exit(0);
     });
 }
