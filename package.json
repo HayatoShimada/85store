@@ -13,6 +13,8 @@
     "@notionhq/client": "^4.0.2",
     "@shopify/storefront-api-client": "^1.0.9",
     "@types/nodemailer": "^7.0.1",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "exif-be-gone": "^1.5.1",
     "next": "15.5.0",
     "nodemailer": "^7.0.6",

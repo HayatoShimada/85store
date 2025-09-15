@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
-import { Transform } from 'stream';
 import ExifTransformer from 'exif-be-gone';
 import { getBlogPosts, getBlogPost } from '../lib/notion';
 
