@@ -2,6 +2,7 @@ import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import BlogCard from "@/components/BlogCard";
 import { getBlogPosts } from "@/lib/notion";
+import { BlogPost } from "@/types/notion";
 
 export default async function Home() {
   // Notionからデータを取得（商品データは一時的に無効化）
@@ -23,7 +24,7 @@ export default async function Home() {
           
           {blogPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post) => (
+              {blogPosts.map((post: BlogPost) => (
                 <BlogCard key={post.id} post={post} />
               ))}
             </div>
