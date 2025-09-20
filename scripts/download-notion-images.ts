@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
-import ExifTransformer from 'exif-be-gone';
+import * as exifBeGone from 'exif-be-gone';
 import dotenv from 'dotenv';
 import { getBlogPosts, getBlogPost } from '../lib/notion';
 
@@ -35,6 +35,7 @@ async function downloadImage(url: string, filename: string): Promise<string | nu
     
     // Stream the response body through EXIF removal
     const chunks: Buffer[] = [];
+    const ExifTransformer = (exifBeGone as any).default || exifBeGone;
     const exifTransformer = new ExifTransformer();
     
     // Get the response body as a readable stream
