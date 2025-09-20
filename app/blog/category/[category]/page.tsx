@@ -5,9 +5,9 @@ import BlogCard from "@/components/BlogCard";
 import { getBlogPostsByCategory, getAllCategories } from "@/lib/notion";
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {

@@ -5,9 +5,9 @@ import BlogCard from "@/components/BlogCard";
 import { getBlogPostsByTag, getAllTags } from "@/lib/notion";
 
 interface TagPageProps {
-  params: {
+  params: Promise<{
     tag: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
