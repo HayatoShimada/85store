@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import sharp from 'sharp';
-import * as exifBeGone from 'exif-be-gone';
 import dotenv from 'dotenv';
 import { getBlogPosts, getBlogPost } from '../lib/notion';
 
@@ -32,56 +31,33 @@ async function downloadImage(url: string, filename: string): Promise<string | nu
 
     const filePath = path.join(IMAGES_DIR, filename);
     const isJpeg = filename.toLowerCase().endsWith('.jpg') || filename.toLowerCase().endsWith('.jpeg');
-    
-    // Stream the response body through EXIF removal
-    const chunks: Buffer[] = [];
-    const ExifTransformer = (exifBeGone as any).default || exifBeGone;
-    const exifTransformer = new ExifTransformer();
-    
-    // Get the response body as a readable stream
-    const reader = response.body?.getReader();
-    if (!reader) {
-      throw new Error('No response body');
-    }
 
-    // Process the stream
-    const processStream = async () => {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        const chunk = Buffer.from(value);
-        exifTransformer.write(chunk);
-      }
-      exifTransformer.end();
-    };
+    // 画像データを取得
+    const buffer = Buffer.from(await response.arrayBuffer());
 
-    // Collect transformed data
-    exifTransformer.on('data', (chunk: Buffer) => {
-      chunks.push(chunk);
-    });
-
-    await new Promise<void>((resolve, reject) => {
-      exifTransformer.on('end', resolve);
-      exifTransformer.on('error', reject);
-      processStream().catch(reject);
-    });
-
-    let buffer = Buffer.concat(chunks);
-
-    // For JPEG images, ensure proper rotation using sharp
+    // For JPEG images, use sharp to remove EXIF and ensure proper rotation
+    let processedBuffer = buffer;
     if (isJpeg) {
       try {
-        buffer = Buffer.from(await sharp(buffer).rotate().toBuffer());
+        processedBuffer = await sharp(buffer)
+          .rotate() // Auto-rotate based on EXIF orientation
+          .withMetadata({
+            // Remove EXIF data but keep basic metadata
+            exif: {},
+            orientation: undefined
+          })
+          .toBuffer();
+        console.log(`Downloaded: ${filename} (EXIF removed, rotated)`);
       } catch (sharpError) {
-        console.warn(`Warning: Could not rotate image ${filename}:`, sharpError);
-        // Continue with original buffer if rotation fails
+        console.warn(`Warning: Could not process image ${filename}:`, sharpError);
+        // Use original buffer if processing fails
+        console.log(`Downloaded: ${filename} (original)`);
       }
+    } else {
+      console.log(`Downloaded: ${filename}`);
     }
-    
-    fs.writeFileSync(filePath, buffer);
-    console.log(`Downloaded: ${filename} (EXIF removed${isJpeg ? ', rotated' : ''})`);
-    
+
+    fs.writeFileSync(filePath, processedBuffer);
     return `/notion-images/${filename}`;
   } catch (error) {
     console.error(`Error downloading image ${url}:`, error);

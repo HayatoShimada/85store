@@ -11,7 +11,8 @@
       "Bash(npx tailwindcss init:*)",
       "Bash(npm run dev:*)",
       "Bash(ls:*)",
-      "Bash(npm run download-images:*)"
+      "Bash(npm run download-images:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
