@@ -2,6 +2,7 @@
 
 ## 概要
 このプロジェクトは、GitHubにプッシュした際に自動でVercelにデプロイされるように設定されています。
+Vercelの自動デプロイ機能を使用して、GitHub Actionsの複雑な設定なしで簡単にデプロイできます。
 
 ## 設定方法
 
@@ -32,40 +33,23 @@ SMTP_PASS=your_smtp_password
 EMAIL_FROM=your_email@example.com
 ```
 
-### 3. GitHub Secretsの設定（GitHub Actions使用時）
-GitHubリポジトリの「Settings」→「Secrets and variables」→「Actions」で以下を設定：
-
-```
-VERCEL_TOKEN=your_vercel_token
-VERCEL_ORG_ID=your_vercel_org_id
-VERCEL_PROJECT_ID=your_vercel_project_id
-NOTION_API_KEY=your_notion_api_key
-NOTION_DATABASE_ID=your_notion_database_id
-SHOPIFY_STORE_DOMAIN=your_shopify_store_domain
-SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_shopify_access_token
-SMTP_HOST=your_smtp_host
-SMTP_PORT=587
-SMTP_USER=your_smtp_user
-SMTP_PASS=your_smtp_password
-EMAIL_FROM=your_email@example.com
-```
-
-### 4. Vercelトークンの取得方法
-1. Vercelダッシュボードで「Settings」→「Tokens」
-2. 「Create Token」をクリック
-3. トークン名を入力して「Create」
-4. 生成されたトークンをコピー
-
-### 5. VercelプロジェクトIDの取得方法
+### 3. 環境変数の設定手順
 1. Vercelダッシュボードでプロジェクトを選択
-2. 「Settings」→「General」
-3. 「Project ID」をコピー
+2. 「Settings」タブをクリック
+3. 左サイドバーの「Environment Variables」をクリック
+4. 各環境変数を追加：
+   - Name: `NOTION_API_KEY`
+   - Value: `your_actual_notion_api_key`
+   - Environment: `Production`, `Preview`, `Development`（すべて選択）
+5. 「Save」をクリック
+6. 他の環境変数も同様に追加
 
 ## デプロイの流れ
 
 ### 自動デプロイ（推奨）
 - `main`ブランチにプッシュすると自動でVercelにデプロイされます
 - プルリクエストを作成するとプレビューデプロイが作成されます
+- Vercelが自動的にGitHubリポジトリを監視してデプロイを実行
 
 ### 手動デプロイ
 ```bash
@@ -85,13 +69,18 @@ vercel --prod
 1. Notion APIキーが正しく設定されているか確認
 2. `npm run download-images`が実行されているか確認
 
+### 自動デプロイが動作しない場合
+1. VercelプロジェクトでGitHubリポジトリが正しく連携されているか確認
+2. リポジトリの権限設定を確認
+3. Vercelダッシュボードの「Deployments」タブでデプロイ履歴を確認
+
 ## 設定ファイルの説明
 
-- `vercel.json`: Vercelの設定ファイル
-- `.github/workflows/deploy.yml`: GitHub Actionsの設定ファイル
+- `vercel.json`: Vercelの設定ファイル（ビルド設定、環境変数参照）
 - `scripts/download-notion-images.ts`: Notion画像のダウンロードスクリプト
 
 ## 注意事項
 - 本番環境では必ず環境変数を設定してください
 - APIキーなどの機密情報はGitHubにコミットしないでください
 - デプロイ前にローカルでテストすることを推奨します
+- Vercelの自動デプロイはGitHubのプッシュイベントに基づいて動作します
