@@ -10,21 +10,29 @@ const notion = process.env.NOTION_API_KEY ? new Client({
   auth: process.env.NOTION_API_KEY,
 }) : null;
 
+console.log('Notion API client initialized:', notion ? 'Yes' : 'No');
+
 // URLからブロックIDを抽出
 function extractBlockIdFromUrl(url: string): string | null {
   // Notion S3 URLパターンから抽出
-  const patterns = [
-    /\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\//, // UUID形式
-    /secure\.notion-static\.com\/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/, // notion-static
-  ];
-  
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match) {
-      return match[1];
-    }
+  // URLは通常以下のような形式:
+  // https://prod-files-secure.s3.us-west-2.amazonaws.com/{workspace-id}/{block-id}/{filename}
+  // ブロックIDは2番目のUUIDを使う
+
+  const uuidPattern = /([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/g;
+  const matches = url.match(uuidPattern);
+
+  if (matches && matches.length >= 2) {
+    // 2番目のUUID（ブロックID）を返す
+    console.log('Found block ID from URL:', matches[1]);
+    return matches[1];
+  } else if (matches && matches.length === 1) {
+    // 1つしかない場合は、それを使用
+    console.log('Found single UUID, using as block ID:', matches[0]);
+    return matches[0];
   }
-  
+
+  console.log('No UUID found in URL:', url);
   return null;
 }
 
@@ -39,42 +47,54 @@ function getCacheKey(url: string): string {
 async function refreshNotionImageUrl(originalUrl: string): Promise<string | null> {
   try {
     if (!notion) {
-      console.log('Notion API client not initialized');
+      console.log('Notion API client not initialized - check NOTION_API_KEY env variable');
       return null;
     }
-    
+
     const blockId = extractBlockIdFromUrl(originalUrl);
     if (!blockId) {
       console.log('Could not extract block ID from URL:', originalUrl);
       return null;
     }
 
+    console.log('Attempting to refresh URL for block:', blockId);
+
     // ブロック情報を取得
     const block = await notion.blocks.retrieve({ block_id: blockId });
-    
+    console.log('Retrieved block type:', (block as any).type);
+
     // 画像ブロックの場合
     if ('type' in block && block.type === 'image' && 'image' in block) {
       const imageBlock = block.image;
       if (imageBlock.type === 'file' && imageBlock.file?.url) {
+        console.log('Found new image URL from block');
         return imageBlock.file.url;
       } else if (imageBlock.type === 'external' && imageBlock.external?.url) {
+        console.log('Found external image URL from block');
         return imageBlock.external.url;
       }
     }
-    
+
     // ファイルブロックの場合
     if ('type' in block && block.type === 'file' && 'file' in block) {
       const fileBlock = block.file;
       if (fileBlock.type === 'file' && fileBlock.file?.url) {
+        console.log('Found new file URL from block');
         return fileBlock.file.url;
       } else if (fileBlock.type === 'external' && fileBlock.external?.url) {
+        console.log('Found external file URL from block');
         return fileBlock.external.url;
       }
     }
-    
+
+    console.log('Block type not supported for refresh:', (block as any).type);
     return null;
-  } catch (error) {
-    console.error('Error refreshing Notion image URL:', error);
+  } catch (error: any) {
+    console.error('Error refreshing Notion image URL:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+    });
     return null;
   }
 }
@@ -87,9 +107,25 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Missing image URL', { status: 400 });
   }
 
+  // URLが二重エンコードされている場合があるため、デコード
+  let decodedUrl = imageUrl;
   try {
-    let targetUrl = imageUrl;
-    const cacheKey = getCacheKey(imageUrl);
+    // 二重エンコードのケースを処理
+    decodedUrl = decodeURIComponent(imageUrl);
+    // もし最初のデコードで%が含まれていたら、もう一度デコード
+    if (decodedUrl.includes('%25')) {
+      decodedUrl = decodeURIComponent(decodedUrl);
+    }
+  } catch (e) {
+    console.warn('Failed to decode URL, using as-is:', e);
+    decodedUrl = imageUrl;
+  }
+
+  console.log('Image proxy request for:', decodedUrl);
+
+  try {
+    let targetUrl = decodedUrl;
+    const cacheKey = getCacheKey(decodedUrl);
     const now = Date.now();
     
     // キャッシュから有効なURLを取得
@@ -99,17 +135,20 @@ export async function GET(request: NextRequest) {
     }
     
     // 画像を取得
+    console.log('Fetching image from:', targetUrl);
     let response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },
     });
 
+    console.log('Response status:', response.status);
+
     // URLが期限切れの場合、新しいURLを取得してリトライ
     if (!response.ok && (response.status === 403 || response.status === 404)) {
       console.log(`Image URL expired (${response.status}), attempting to refresh...`);
       
-      const newUrl = await refreshNotionImageUrl(imageUrl);
+      const newUrl = await refreshNotionImageUrl(decodedUrl);
       if (newUrl && newUrl !== targetUrl) {
         // 新しいURLをキャッシュ（50分間有効）
         urlRefreshCache.set(cacheKey, {
@@ -141,6 +180,13 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error proxying image:', error);
-    return new NextResponse('Failed to fetch image', { status: 500 });
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      url: decodedUrl,
+    });
+    return new NextResponse(
+      error instanceof Error ? error.message : 'Failed to fetch image',
+      { status: 500 }
+    );
   }
 }

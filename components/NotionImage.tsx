@@ -39,11 +39,16 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
     imageSrc.includes('s3.amazonaws.com')
   );
   
-  const processedImageUrl = isLocalImage 
-    ? imageSrc 
-    : isNotionImage 
-      ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}` 
+  // デバッグ: URLの処理前後をログ出力
+  console.log('NotionImage - Original URL:', imageSrc);
+
+  const processedImageUrl = isLocalImage
+    ? imageSrc
+    : isNotionImage
+      ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}`
       : imageSrc;
+
+  console.log('NotionImage - Processed URL:', processedImageUrl);
 
   // アスペクト比を計算（画像の実際のサイズまたは指定されたサイズから）
   const aspectRatio = imageDimensions 
