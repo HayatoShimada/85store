@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { isNotionS3Url } from '@/utils/imageHelper';
 
 interface NotionImageProps {
   src: string;

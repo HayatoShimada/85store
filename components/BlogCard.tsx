@@ -5,7 +5,6 @@ import Image from "next/image";
 import { BlogPost } from "@/types/notion";
 import { useState, useMemo } from "react";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
-import { isNotionS3Url } from "@/utils/imageHelper";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -34,7 +33,10 @@ export default function BlogCard({ post }: BlogCardProps) {
   }, [imageSrc]);
 
   const handleImageError = () => {
-    console.error('BlogCard - Image failed to load:', processedImageUrl);
+    // プレースホルダー画像でもエラーが発生した場合はログを出さない
+    if (processedImageUrl !== '/images/placeholder.svg') {
+      console.error('BlogCard - Image failed to load:', processedImageUrl);
+    }
     setImageError(true);
     setImageLoading(false);
   };

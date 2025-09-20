@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run download-images && next build --turbopack",
+    "build": "npm run download-images && next build",
     "start": "next start",
     "lint": "eslint",
     "download-images": "tsx scripts/download-notion-images.ts"
