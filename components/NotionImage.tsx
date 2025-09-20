@@ -37,6 +37,7 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
     console.error('Image failed to load:', imageSrc);
     setImageLoading(false);
     setImageSrc('/images/placeholder.svg');
+    setProcessedImageUrl('/images/placeholder.svg');
   };
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {

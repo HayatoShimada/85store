@@ -21,27 +21,13 @@ export default function BlogCard({ post }: BlogCardProps) {
   const imageSrc = hasCoverImage && !imageError ? post.coverImage : '/images/placeholder.svg';
 
   useEffect(() => {
-    if (imageSrc && imageSrc !== '/images/placeholder.svg' && isNotionS3Url(imageSrc)) {
-      // First try local image
-      const localImagePath = getLocalImagePath(imageSrc, post.slug, 0);
-
-      // Check if local image exists
-      fetch(localImagePath, { method: 'HEAD' })
-        .then(response => {
-          if (response.ok) {
-            // Use local image if it exists
-            setProcessedImageUrl(localImagePath);
-          } else {
-            // Fall back to proxy
-            setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(imageSrc)}`);
-          }
-        })
-        .catch(() => {
-          // Fall back to proxy on error
-          setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(imageSrc)}`);
-        });
-    } else if (imageSrc) {
-      // Not a Notion S3 URL, use as is
+    if (!imageSrc || imageSrc === '/images/placeholder.svg') {
+      setProcessedImageUrl('/images/placeholder.svg');
+    } else if (isNotionS3Url(imageSrc)) {
+      // For Notion S3 URLs, use proxy
+      setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(imageSrc)}`);
+    } else {
+      // For other URLs, use as is
       setProcessedImageUrl(imageSrc);
     }
   }, [imageSrc, post.slug]);
