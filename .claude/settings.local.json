@@ -15,7 +15,10 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(curl:*)",
+      "Bash(npx tsx:*)",
+      "Bash(pkill:*)"
     ],
     "deny": []
   }

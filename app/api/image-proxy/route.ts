@@ -104,6 +104,7 @@ export async function GET(request: NextRequest) {
   const imageUrl = searchParams.get('url');
 
   if (!imageUrl) {
+    console.error('Missing image URL parameter');
     return new NextResponse('Missing image URL', { status: 400 });
   }
 
@@ -121,7 +122,10 @@ export async function GET(request: NextRequest) {
     decodedUrl = imageUrl;
   }
 
-  console.log('Image proxy request for:', decodedUrl);
+  console.log('========== Image Proxy Request ==========');
+  console.log('Original URL (encoded):', imageUrl.substring(0, 100) + '...');
+  console.log('Decoded URL:', decodedUrl.substring(0, 100) + '...');
+  console.log('Notion API available:', notion ? 'Yes' : 'No');
 
   try {
     let targetUrl = decodedUrl;
@@ -145,8 +149,9 @@ export async function GET(request: NextRequest) {
     console.log('Response status:', response.status);
 
     // URLが期限切れの場合、新しいURLを取得してリトライ
-    if (!response.ok && (response.status === 403 || response.status === 404)) {
-      console.log(`Image URL expired (${response.status}), attempting to refresh...`);
+    // 400: Bad Request (invalid signature), 403: Forbidden, 404: Not Found
+    if (!response.ok && (response.status === 400 || response.status === 403 || response.status === 404)) {
+      console.log(`Image URL expired or invalid (${response.status}), attempting to refresh...`);
       
       const newUrl = await refreshNotionImageUrl(decodedUrl);
       if (newUrl && newUrl !== targetUrl) {

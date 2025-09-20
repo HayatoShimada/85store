@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { isNotionS3Url } from '@/utils/imageHelper';
 
 interface NotionImageProps {
   src: string;
@@ -14,7 +15,23 @@ interface NotionImageProps {
 export function NotionImage({ src, alt, caption, width, height }: NotionImageProps) {
   const [imageLoading, setImageLoading] = React.useState(true);
   const [imageSrc, setImageSrc] = React.useState(src);
+  const [processedImageUrl, setProcessedImageUrl] = React.useState(src);
   const [imageDimensions, setImageDimensions] = React.useState<{width: number, height: number} | null>(null);
+
+  React.useEffect(() => {
+    // Check if it's a local image first
+    if (src.startsWith('/notion-images/')) {
+      setProcessedImageUrl(src);
+      return;
+    }
+
+    // If it's a Notion S3 URL, use proxy
+    if (isNotionS3Url(src)) {
+      setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(src)}`);
+    } else {
+      setProcessedImageUrl(src);
+    }
+  }, [src]);
 
   const handleError = () => {
     console.error('Image failed to load:', imageSrc);
@@ -31,23 +48,8 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
     setImageLoading(false);
   };
 
-  // ローカル画像が存在する場合はそのまま使用、そうでなければプロキシ経由
-  const isLocalImage = imageSrc.startsWith('/notion-images/');
-  const isNotionImage = !isLocalImage && (
-    imageSrc.includes('prod-files-secure.s3.us-west-2.amazonaws.com') || 
-    imageSrc.includes('s3.us-west-2.amazonaws.com') ||
-    imageSrc.includes('s3.amazonaws.com')
-  );
-  
   // デバッグ: URLの処理前後をログ出力
   console.log('NotionImage - Original URL:', imageSrc);
-
-  const processedImageUrl = isLocalImage
-    ? imageSrc
-    : isNotionImage
-      ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}`
-      : imageSrc;
-
   console.log('NotionImage - Processed URL:', processedImageUrl);
 
   // アスペクト比を計算（画像の実際のサイズまたは指定されたサイズから）

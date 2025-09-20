@@ -3,8 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BlogPost } from "@/types/notion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
+import { getLocalImagePath, isNotionS3Url } from "@/utils/imageHelper";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -13,19 +14,37 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
-  
+  const [processedImageUrl, setProcessedImageUrl] = useState('/images/placeholder.svg');
+
   // Cover Imageがない場合やエラーの場合はプレースホルダーを使用
   const hasCoverImage = post.coverImage && post.coverImage.trim() !== '';
   const imageSrc = hasCoverImage && !imageError ? post.coverImage : '/images/placeholder.svg';
-  
-  // Notionの画像URLをプロキシ経由で処理
-  const isNotionImage = imageSrc && (
-    imageSrc.includes('prod-files-secure.s3.us-west-2.amazonaws.com') || 
-    imageSrc.includes('s3.us-west-2.amazonaws.com') ||
-    imageSrc.includes('s3.amazonaws.com')
-  );
-  
-  const processedImageUrl = isNotionImage && imageSrc ? `/api/image-proxy?url=${encodeURIComponent(imageSrc)}` : (imageSrc || '/images/placeholder.svg');
+
+  useEffect(() => {
+    if (imageSrc && imageSrc !== '/images/placeholder.svg' && isNotionS3Url(imageSrc)) {
+      // First try local image
+      const localImagePath = getLocalImagePath(imageSrc, post.slug, 0);
+
+      // Check if local image exists
+      fetch(localImagePath, { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            // Use local image if it exists
+            setProcessedImageUrl(localImagePath);
+          } else {
+            // Fall back to proxy
+            setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(imageSrc)}`);
+          }
+        })
+        .catch(() => {
+          // Fall back to proxy on error
+          setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(imageSrc)}`);
+        });
+    } else if (imageSrc) {
+      // Not a Notion S3 URL, use as is
+      setProcessedImageUrl(imageSrc);
+    }
+  }, [imageSrc, post.slug]);
 
   const handleImageError = () => {
     console.error('BlogCard - Image failed to load:', processedImageUrl);
