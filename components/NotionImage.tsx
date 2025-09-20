@@ -15,29 +15,26 @@ interface NotionImageProps {
 export function NotionImage({ src, alt, caption, width, height }: NotionImageProps) {
   const [imageLoading, setImageLoading] = React.useState(true);
   const [imageSrc, setImageSrc] = React.useState(src);
-  const [processedImageUrl, setProcessedImageUrl] = React.useState(src);
   const [imageDimensions, setImageDimensions] = React.useState<{width: number, height: number} | null>(null);
 
-  React.useEffect(() => {
-    // Check if it's a local image first
+  // Process the image URL consistently
+  const processedImageUrl = React.useMemo(() => {
+    if (!src || src === '/images/placeholder.svg') {
+      return '/images/placeholder.svg';
+    }
     if (src.startsWith('/notion-images/')) {
-      setProcessedImageUrl(src);
-      return;
+      return src;
     }
-
-    // If it's a Notion S3 URL, use proxy
     if (isNotionS3Url(src)) {
-      setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(src)}`);
-    } else {
-      setProcessedImageUrl(src);
+      return `/api/image-proxy?url=${encodeURIComponent(src)}`;
     }
+    return src;
   }, [src]);
 
   const handleError = () => {
     console.error('Image failed to load:', imageSrc);
     setImageLoading(false);
     setImageSrc('/images/placeholder.svg');
-    setProcessedImageUrl('/images/placeholder.svg');
   };
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -49,9 +46,6 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
     setImageLoading(false);
   };
 
-  // デバッグ: URLの処理前後をログ出力
-  console.log('NotionImage - Original URL:', imageSrc);
-  console.log('NotionImage - Processed URL:', processedImageUrl);
 
   // アスペクト比を計算（画像の実際のサイズまたは指定されたサイズから）
   const aspectRatio = imageDimensions 

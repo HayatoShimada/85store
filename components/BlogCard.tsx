@@ -3,9 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BlogPost } from "@/types/notion";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
-import { getLocalImagePath, isNotionS3Url } from "@/utils/imageHelper";
+import { isNotionS3Url } from "@/utils/imageHelper";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -14,23 +14,21 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
-  const [processedImageUrl, setProcessedImageUrl] = useState('/images/placeholder.svg');
 
   // Cover Imageがない場合やエラーの場合はプレースホルダーを使用
   const hasCoverImage = post.coverImage && post.coverImage.trim() !== '';
   const imageSrc = hasCoverImage && !imageError ? post.coverImage : '/images/placeholder.svg';
 
-  useEffect(() => {
+  // Process the image URL consistently
+  const processedImageUrl = useMemo(() => {
     if (!imageSrc || imageSrc === '/images/placeholder.svg') {
-      setProcessedImageUrl('/images/placeholder.svg');
-    } else if (isNotionS3Url(imageSrc)) {
-      // For Notion S3 URLs, use proxy
-      setProcessedImageUrl(`/api/image-proxy?url=${encodeURIComponent(imageSrc)}`);
-    } else {
-      // For other URLs, use as is
-      setProcessedImageUrl(imageSrc);
+      return '/images/placeholder.svg';
     }
-  }, [imageSrc, post.slug]);
+    if (isNotionS3Url(imageSrc)) {
+      return `/api/image-proxy?url=${encodeURIComponent(imageSrc)}`;
+    }
+    return imageSrc;
+  }, [imageSrc]);
 
   const handleImageError = () => {
     console.error('BlogCard - Image failed to load:', processedImageUrl);
