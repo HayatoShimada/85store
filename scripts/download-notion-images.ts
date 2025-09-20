@@ -36,17 +36,17 @@ async function downloadImage(url: string, filename: string): Promise<string | nu
     const buffer = Buffer.from(await response.arrayBuffer());
 
     // For JPEG images, use sharp to remove EXIF and ensure proper rotation
-    let processedBuffer = buffer;
+    let processedBuffer: Buffer = buffer;
     if (isJpeg) {
       try {
-        processedBuffer = await sharp(buffer)
+        processedBuffer = Buffer.from(await sharp(buffer)
           .rotate() // Auto-rotate based on EXIF orientation
           .withMetadata({
             // Remove EXIF data but keep basic metadata
             exif: {},
             orientation: undefined
           })
-          .toBuffer();
+          .toBuffer());
         console.log(`Downloaded: ${filename} (EXIF removed, rotated)`);
       } catch (sharpError) {
         console.warn(`Warning: Could not process image ${filename}:`, sharpError);

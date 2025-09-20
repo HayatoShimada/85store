@@ -12,7 +12,10 @@
       "Bash(npm run dev:*)",
       "Bash(ls:*)",
       "Bash(npm run download-images:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }
