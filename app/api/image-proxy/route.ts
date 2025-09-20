@@ -177,7 +177,7 @@ export async function GET(request: NextRequest) {
       console.log(`Image fetch failed with status ${response.status}, returning placeholder`);
       const placeholderPath = path.join(process.cwd(), 'public', 'images', 'placeholder.svg');
       const placeholderBuffer = await fs.promises.readFile(placeholderPath);
-      return new NextResponse(placeholderBuffer, {
+      return new NextResponse(Buffer.from(placeholderBuffer), {
         headers: {
           'Content-Type': 'image/svg+xml',
           'Cache-Control': 'public, max-age=3600',
