@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Client } from '@notionhq/client';
 import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 
 // キャッシュマップ（URLのリフレッシュを管理）
 const urlRefreshCache = new Map<string, { url: string; expiry: number }>();
@@ -171,7 +173,16 @@ export async function GET(request: NextRequest) {
     }
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.status}`);
+      // 画像が取得できない場合はプレースホルダー画像を返す
+      console.log(`Image fetch failed with status ${response.status}, returning placeholder`);
+      const placeholderPath = path.join(process.cwd(), 'public', 'images', 'placeholder.svg');
+      const placeholderBuffer = await fs.promises.readFile(placeholderPath);
+      return new NextResponse(placeholderBuffer, {
+        headers: {
+          'Content-Type': 'image/svg+xml',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      });
     }
 
     const imageBuffer = await response.arrayBuffer();
