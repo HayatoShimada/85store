@@ -11,18 +11,5 @@
   },
   "env": {
     "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NOTION_API_KEY": "@notion_api_key",
-      "NOTION_DATABASE_ID": "@notion_database_id",
-      "SHOPIFY_STORE_DOMAIN": "@shopify_store_domain",
-      "SHOPIFY_STOREFRONT_ACCESS_TOKEN": "@shopify_storefront_access_token",
-      "SMTP_HOST": "@smtp_host",
-      "SMTP_PORT": "@smtp_port",
-      "SMTP_USER": "@smtp_user",
-      "SMTP_PASS": "@smtp_pass",
-      "EMAIL_FROM": "@email_from"
-    }
   }
 }
