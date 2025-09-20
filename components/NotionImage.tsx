@@ -14,27 +14,29 @@ interface NotionImageProps {
 
 export function NotionImage({ src, alt, caption, width, height }: NotionImageProps) {
   const [imageLoading, setImageLoading] = React.useState(true);
-  const [imageSrc, setImageSrc] = React.useState(src);
+  const [imageError, setImageError] = React.useState(false);
   const [imageDimensions, setImageDimensions] = React.useState<{width: number, height: number} | null>(null);
 
   // Process the image URL consistently
   const processedImageUrl = React.useMemo(() => {
-    if (!src || src === '/images/placeholder.svg') {
+    if (!src || src === '/images/placeholder.svg' || imageError) {
       return '/images/placeholder.svg';
     }
     if (src.startsWith('/notion-images/')) {
       return src;
     }
-    if (isNotionS3Url(src)) {
-      return `/api/image-proxy?url=${encodeURIComponent(src)}`;
-    }
+    // NotionのS3 URLは直接使用する（Next.jsのremotePatternsで許可済み）
+    // APIプロキシは使わない
     return src;
-  }, [src]);
+  }, [src, imageError]);
 
   const handleError = () => {
-    console.error('Image failed to load:', imageSrc);
+    // 既にプレースホルダー画像の場合はログを出さない
+    if (!imageError && processedImageUrl !== '/images/placeholder.svg') {
+      console.error('Image failed to load:', processedImageUrl);
+      setImageError(true);
+    }
     setImageLoading(false);
-    setImageSrc('/images/placeholder.svg');
   };
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {

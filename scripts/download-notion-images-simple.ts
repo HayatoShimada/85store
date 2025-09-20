@@ -1,7 +1,10 @@
-import fs from 'fs';
+import fs, { createWriteStream } from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { pipeline } from 'node:stream/promises';
+import axios from 'axios';
 import sharp from 'sharp';
+import ExifTransformer from 'exif-be-gone';
 import dotenv from 'dotenv';
 import { getBlogPosts } from '../lib/notion';
 
@@ -11,51 +14,57 @@ dotenv.config({ path: '.env.local' });
 const IMAGES_DIR = path.join(process.cwd(), 'public', 'notion-images');
 
 async function downloadImage(url: string, filename: string): Promise<string | null> {
+  let res;
   try {
     console.log(`Downloading: ${filename}`);
-
-    const response = await fetch(url, {
+    
+    // astro-notion-blogと同様のaxios実装
+    res = await axios({
+      method: 'get',
+      url: url,
+      timeout: 30000, // 30秒タイムアウト
+      responseType: 'stream',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       },
     });
+  } catch (err) {
+    console.error(`Failed to fetch image: ${url}`, err);
+    return null;
+  }
 
-    if (!response.ok) {
-      console.error(`Failed to download image: ${url}, status: ${response.status}`);
-      return null;
+  if (!res || res.status !== 200) {
+    console.error(`Failed to download image: ${url}, status: ${res?.status}`);
+    return null;
+  }
+
+  const filePath = path.join(IMAGES_DIR, filename);
+  const isJpeg = filename.toLowerCase().endsWith('.jpg') || filename.toLowerCase().endsWith('.jpeg');
+
+  const writeStream = createWriteStream(filePath);
+  const rotate = sharp().rotate();
+
+  let stream = res.data;
+  // JPEG画像の場合は、EXIFメタデータを削除しながら自動回転
+  if (isJpeg) {
+    try {
+      stream = stream.pipe(new ExifTransformer()).pipe(rotate);
+      console.log(`✓ Downloaded: ${filename} (EXIF removed, auto-rotated)`);
+    } catch (exifErr) {
+      console.warn(`Warning: Could not process EXIF for ${filename}:`, exifErr);
+      stream = res.data.pipe(rotate);
+      console.log(`✓ Downloaded: ${filename} (rotated only)`);
     }
+  } else {
+    console.log(`✓ Downloaded: ${filename}`);
+  }
 
-    const filePath = path.join(IMAGES_DIR, filename);
-    const isJpeg = filename.toLowerCase().endsWith('.jpg') || filename.toLowerCase().endsWith('.jpeg');
-
-    // Get image data
-    const buffer = Buffer.from(await response.arrayBuffer());
-
-    // For JPEG images, use sharp to remove EXIF and ensure proper rotation
-    let processedBuffer: Buffer = buffer;
-    if (isJpeg) {
-      try {
-        processedBuffer = await sharp(buffer)
-          .rotate() // Auto-rotate based on EXIF orientation
-          .withMetadata({
-            // Remove EXIF data but keep basic metadata
-            exif: {},
-            orientation: undefined
-          })
-          .toBuffer();
-        console.log(`✓ Downloaded: ${filename} (EXIF removed, rotated)`);
-      } catch (sharpError) {
-        console.warn(`Warning: Could not process image ${filename}:`, sharpError);
-        console.log(`✓ Downloaded: ${filename} (original)`);
-      }
-    } else {
-      console.log(`✓ Downloaded: ${filename}`);
-    }
-
-    fs.writeFileSync(filePath, processedBuffer);
+  // ストリームをファイルに書き込み
+  try {
+    await pipeline(stream, writeStream);
     return `/notion-images/${filename}`;
-  } catch (error) {
-    console.error(`Error downloading image ${url}:`, error);
+  } catch (pipeErr) {
+    console.error(`Error writing image ${filename}:`, pipeErr);
     return null;
   }
 }
@@ -120,14 +129,14 @@ export async function downloadAllNotionImages() {
 }
 
 // Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  downloadAllNotionImages()
-    .then(() => {
-      console.log('Done!');
-      process.exit(0);
-    })
-    .catch((error) => {
-      console.error('Failed:', error);
-      process.exit(0);
-    });
-}
+// TypeScriptの場合はprocess.argv[1]を使った比較が確実
+console.log('Starting Notion image download (simplified version)...');
+downloadAllNotionImages()
+  .then(() => {
+    console.log('Done!');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('Failed:', error);
+    process.exit(0);
+  });

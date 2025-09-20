@@ -176,13 +176,20 @@ export async function GET(request: NextRequest) {
       // 画像が取得できない場合はプレースホルダー画像を返す
       console.log(`Image fetch failed with status ${response.status}, returning placeholder`);
       const placeholderPath = path.join(process.cwd(), 'public', 'images', 'placeholder.svg');
-      const placeholderBuffer = await fs.promises.readFile(placeholderPath);
-      return new NextResponse(Buffer.from(placeholderBuffer), {
-        headers: {
-          'Content-Type': 'image/svg+xml',
-          'Cache-Control': 'public, max-age=3600',
-        },
-      });
+      
+      try {
+        const placeholderBuffer = await fs.promises.readFile(placeholderPath);
+        return new NextResponse(Buffer.from(placeholderBuffer), {
+          headers: {
+            'Content-Type': 'image/svg+xml',
+            'Cache-Control': 'public, max-age=3600',
+          },
+        });
+      } catch (fileErr) {
+        console.error('Failed to load placeholder image:', fileErr);
+        // プレースホルダーも読めない場合は404を返す
+        return new NextResponse('Image not found', { status: 404 });
+      }
     }
 
     const imageBuffer = await response.arrayBuffer();

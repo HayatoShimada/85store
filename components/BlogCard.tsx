@@ -24,9 +24,12 @@ export default function BlogCard({ post }: BlogCardProps) {
     if (!imageSrc || imageSrc === '/images/placeholder.svg') {
       return '/images/placeholder.svg';
     }
-    if (isNotionS3Url(imageSrc)) {
-      return `/api/image-proxy?url=${encodeURIComponent(imageSrc)}`;
+    // ローカル画像パスの場合はそのまま使用
+    if (imageSrc.startsWith('/notion-images/')) {
+      return imageSrc;
     }
+    // NotionのS3 URLは直接使用する（Next.jsのremotePatternsで許可済み）
+    // APIプロキシは使わない
     return imageSrc;
   }, [imageSrc]);
 
