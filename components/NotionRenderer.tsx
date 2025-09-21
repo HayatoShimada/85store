@@ -1,6 +1,7 @@
 import React from "react";
 import { NotionTextRenderer } from "./NotionTextRenderer";
 import { NotionImage } from "./NotionImage";
+import { NotionBookmark } from "./NotionBookmark";
 
 // ブロックを階層構造を考慮して処理する関数
 function processBlocks(blocks: unknown[], level: number = 0): unknown[] {
@@ -468,6 +469,17 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
                   </a>
                 </div>
               </div>
+            );
+
+          case "bookmark":
+            const bookmarkUrl = (value as any).url;
+            const bookmarkCaption = (value as any).caption?.[0]?.text?.content;
+            return (
+              <NotionBookmark
+                key={id}
+                url={bookmarkUrl}
+                caption={bookmarkCaption}
+              />
             );
 
           default:
