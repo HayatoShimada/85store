@@ -20,7 +20,7 @@ export default function BlogCard({ post }: BlogCardProps) {
 
   // Process the image URL consistently
   const processedImageUrl = useMemo(() => {
-    if (!imageSrc || imageSrc === '/images/placeholder.svg') {
+    if (!imageSrc || imageSrc === '/images/placeholder.svg' || imageError) {
       return '/images/placeholder.svg';
     }
     // ローカル画像パスの場合はそのまま使用
@@ -30,14 +30,14 @@ export default function BlogCard({ post }: BlogCardProps) {
     // NotionのS3 URLは直接使用する（Next.jsのremotePatternsで許可済み）
     // APIプロキシは使わない
     return imageSrc;
-  }, [imageSrc]);
+  }, [imageSrc, imageError]);
 
   const handleImageError = () => {
     // プレースホルダー画像でもエラーが発生した場合はログを出さない
     if (processedImageUrl !== '/images/placeholder.svg') {
       console.error('BlogCard - Image failed to load:', processedImageUrl);
+      setImageError(true);
     }
-    setImageError(true);
     setImageLoading(false);
   };
 
