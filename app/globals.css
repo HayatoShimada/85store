@@ -83,15 +83,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-white px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary-dark hover:shadow-lg uppercase tracking-wider font-futura;
+    @apply bg-primary text-white px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary-dark hover:shadow-lg uppercase tracking-wider font-futura flex items-center justify-center;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-white px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-secondary-dark hover:shadow-lg uppercase tracking-wider font-futura;
+    @apply bg-secondary text-white px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-secondary-dark hover:shadow-lg uppercase tracking-wider font-futura flex items-center justify-center;
   }
 
   .btn-outline {
-    @apply border-2 border-primary text-primary px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary hover:text-white uppercase tracking-wider font-futura;
+    @apply border-2 border-primary text-primary px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary hover:text-white uppercase tracking-wider font-futura flex items-center justify-center;
   }
 
   .section-padding {
