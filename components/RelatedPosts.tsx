@@ -47,12 +47,12 @@ function RelatedPostCard({ post }: { post: BlogPost }) {
   const imageSrc = hasCoverImage ? post.coverImage : '/images/placeholder.svg';
 
   // SWRを使用して画像の期限切れ判定と再取得を行う
-  const { 
-    imageUrl, 
-    isLoading: imageLoading, 
+  const {
+    imageUrl,
+    isLoading: imageLoading,
     isRefreshing,
-    handleImageLoad: swrHandleImageLoad, 
-    handleImageError: swrHandleImageError 
+    handleImageLoad: swrHandleImageLoad,
+    handleImageError: swrHandleImageError
   } = useNotionImage({
     url: imageSrc || '/images/placeholder.svg',
     expiryTime: post.coverImageExpiryTime,
@@ -61,10 +61,19 @@ function RelatedPostCard({ post }: { post: BlogPost }) {
     enabled: !!hasCoverImage, // カバー画像がない場合はSWRを無効化
   });
 
+  // カバー画像がない場合はローディングを表示しない
+  const showLoading = hasCoverImage && (imageLoading || isRefreshing);
+
   const handleImageError = () => {
     // プレースホルダー画像でもエラーが発生した場合はログを出さない
     if (imageUrl !== '/images/placeholder.svg') {
       console.error('RelatedPosts - Image failed to load:', imageUrl);
+      console.log('RelatedPosts - Post details:', {
+        title: post.title,
+        coverImage: post.coverImage,
+        coverImageExpiryTime: post.coverImageExpiryTime,
+        coverImageBlockId: post.coverImageBlockId
+      });
     }
     swrHandleImageError();
   };
@@ -78,15 +87,10 @@ function RelatedPostCard({ post }: { post: BlogPost }) {
       <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
           {/* ローディングスピナー */}
-          {(imageLoading || isRefreshing) && (
+          {showLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
-          )}
-          
-          {/* 期限切れで再取得中の場合は薄いオーバーレイを表示 */}
-          {isRefreshing && (
-            <div className="absolute inset-0 bg-gray-50 bg-opacity-75 z-5"></div>
           )}
           
           <Image

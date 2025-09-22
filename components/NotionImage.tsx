@@ -16,25 +16,29 @@ interface NotionImageProps {
 
 export function NotionImage({ src, alt, caption, width, height, expiryTime, blockId }: NotionImageProps) {
   const [imageDimensions, setImageDimensions] = React.useState<{width: number, height: number} | null>(null);
+  const [localImageLoading, setLocalImageLoading] = React.useState(true);
 
   // SWRを使用して画像の期限切れ判定と再取得を行う
-  const { 
-    imageUrl, 
-    isLoading: imageLoading, 
+  const {
+    imageUrl,
+    isLoading: imageLoading,
     isRefreshing,
-    handleImageLoad: swrHandleImageLoad, 
-    handleImageError: swrHandleImageError 
+    handleImageLoad: swrHandleImageLoad,
+    handleImageError: swrHandleImageError
   } = useNotionImage({
     url: src,
     expiryTime,
     blockId,
   });
 
-  const handleError = () => {
+  const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     // 既にプレースホルダー画像の場合はログを出さない
     if (imageUrl !== '/images/placeholder.svg') {
       console.error('Image failed to load:', imageUrl);
+      console.log('Image details:', { src, expiryTime, blockId });
+      console.log('Error event:', e);
     }
+    setLocalImageLoading(false);
     swrHandleImageError();
   };
 
@@ -44,6 +48,7 @@ export function NotionImage({ src, alt, caption, width, height, expiryTime, bloc
       width: img.naturalWidth,
       height: img.naturalHeight
     });
+    setLocalImageLoading(false);
     swrHandleImageLoad();
   };
 
@@ -69,22 +74,17 @@ export function NotionImage({ src, alt, caption, width, height, expiryTime, bloc
       <div className="relative w-full max-w-4xl mx-auto">
         <div className={`relative w-full ${getAspectClass()} md:rounded-lg overflow-hidden md:shadow-lg bg-gray-50`}>
           {/* ローディングスピナー */}
-          {(imageLoading || isRefreshing) && (
+          {(localImageLoading || isRefreshing) && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
           )}
-          
-          {/* 期限切れで再取得中の場合は薄いオーバーレイを表示 */}
-          {isRefreshing && (
-            <div className="absolute inset-0 bg-gray-50 bg-opacity-75 z-5"></div>
-          )}
-          
+
           <Image
             src={imageUrl}
             alt={alt}
             fill
-            className={`object-contain transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+            className={`object-contain transition-opacity duration-300 ${localImageLoading ? 'opacity-0' : 'opacity-100'}`}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
             onError={handleError}
             onLoad={handleLoad}

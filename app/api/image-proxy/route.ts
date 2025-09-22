@@ -113,19 +113,8 @@ export async function GET(request: NextRequest) {
     return new NextResponse('Missing image URL', { status: 400 });
   }
 
-  // URLが二重エンコードされている場合があるため、デコード
-  let decodedUrl = imageUrl;
-  try {
-    // 二重エンコードのケースを処理
-    decodedUrl = decodeURIComponent(imageUrl);
-    // もし最初のデコードで%が含まれていたら、もう一度デコード
-    if (decodedUrl.includes('%25')) {
-      decodedUrl = decodeURIComponent(decodedUrl);
-    }
-  } catch (e) {
-    console.warn('Failed to decode URL, using as-is:', e);
-    decodedUrl = imageUrl;
-  }
+  // URLはすでにsearchParams.get()によってデコードされているので、そのまま使用
+  const decodedUrl = imageUrl;
 
   console.log('========== Image Proxy Request ==========');
   console.log('Original URL (encoded):', imageUrl.substring(0, 100) + '...');
