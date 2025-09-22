@@ -21,7 +21,6 @@ export function NotionImage({ src, alt, caption, width, height, expiryTime, bloc
   // SWRを使用して画像の期限切れ判定と再取得を行う
   const {
     imageUrl,
-    isLoading: imageLoading,
     isRefreshing,
     handleImageLoad: swrHandleImageLoad,
     handleImageError: swrHandleImageError

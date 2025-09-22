@@ -7,9 +7,9 @@ const notion = new Client({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const blockId = params.id;
+  const { id: blockId } = await params;
 
   if (!blockId) {
     return NextResponse.json({ error: 'Block ID is required' }, { status: 400 });

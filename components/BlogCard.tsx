@@ -13,7 +13,7 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   // Cover Imageがない場合はプレースホルダーを使用
   const hasCoverImage = post.coverImage && post.coverImage.trim() !== '';
-  const imageSrc = hasCoverImage ? post.coverImage : '/images/placeholder.svg';
+  const imageSrc: string = hasCoverImage && post.coverImage ? post.coverImage : '/images/placeholder.svg';
 
   // SWRを使用して画像の期限切れ判定と再取得を行う
   const {
