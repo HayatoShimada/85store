@@ -3,56 +3,25 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import useSWR from "swr";
 import { BlogPost } from "@/types/notion";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
-
-// 期限切れ判定とブロック取得
-const isExpired = (expiryTime?: string) => {
-  if (!expiryTime) return false;
-  return Date.parse(expiryTime) < Date.now();
-};
-
-const fetchBlock = async (blockId: string) => {
-  try {
-    const response = await fetch(`/api/blocks/${blockId}`);
-    if (!response.ok) return null;
-    const block = await response.json();
-    return block.Image?.File?.Url || block.Image?.External?.Url || null;
-  } catch {
-    return null;
-  }
-};
+import { useNotionImage2 } from "@/hooks/useNotionImage2";
 
 interface BlogCardProps {
   post: BlogPost;
 }
 
-export default function BlogCard({ post }: BlogCardProps) {
+export default function BlogCardSimple({ post }: BlogCardProps) {
   const [imageError, setImageError] = useState(false);
 
-  // シンプルな期限切れチェックとSWR
-  const shouldRefresh = isExpired(post.coverImageExpiryTime) && post.coverImageBlockId;
-  const { data: newUrl } = useSWR(
-    shouldRefresh ? post.coverImageBlockId : null,
-    fetchBlock,
-    { revalidateOnFocus: false }
-  );
+  // シンプルな画像URL取得
+  const imageUrl = useNotionImage2({
+    url: post.coverImage || '/images/placeholder.svg',
+    expiryTime: post.coverImageExpiryTime,
+    blockId: post.coverImageBlockId,
+  });
 
-  // 画像URLの決定
-  let imageUrl = post.coverImage || '/images/placeholder.svg';
-
-  // 新しいURLがあれば使用
-  if (newUrl) {
-    imageUrl = newUrl;
-  }
-
-  // S3 URLはプロキシ経由
-  if (imageUrl.includes('amazonaws.com')) {
-    imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
-  }
-
-  // エラー時はプレースホルダー
+  // エラー時はプレースホルダーを使用
   const displayUrl = imageError ? '/images/placeholder.svg' : imageUrl;
 
   return (

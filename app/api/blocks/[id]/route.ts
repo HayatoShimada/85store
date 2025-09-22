@@ -15,15 +15,25 @@ export async function GET(
     return NextResponse.json({ error: 'Block ID is required' }, { status: 400 });
   }
 
+  // Notion API キーが設定されているか確認
+  if (!process.env.NOTION_API_KEY) {
+    console.error('NOTION_API_KEY is not set');
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+  }
+
   try {
-    console.log('Fetching block:', blockId);
+    console.log('Fetching block with ID:', blockId);
+
+    // ハイフンを除去した形式も試す
+    const normalizedBlockId = blockId.replace(/-/g, '');
+    console.log('Normalized block ID:', normalizedBlockId);
 
     // Notion APIからブロック情報を取得
     const block = await notion.blocks.retrieve({
-      block_id: blockId,
+      block_id: blockId, // まず元のIDで試す
     });
 
-    console.log('Retrieved block:', JSON.stringify(block, null, 2));
+    console.log('Retrieved block type:', (block as any).type);
 
     // ブロックが画像タイプかチェック
     if ('type' in block && block.type === 'image' && 'image' in block) {

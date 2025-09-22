@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import useSWR from 'swr';
 import { BlogPost } from '@/types/notion';
 import { getCategoryStyleClasses } from '@/utils/notionColors';
+import { useNotionImage } from '@/hooks/useNotionImage';
 
 interface RelatedPostsProps {
   posts: BlogPost[];
@@ -40,62 +40,66 @@ export function RelatedPosts({ posts, title = "Related Posts" }: RelatedPostsPro
   );
 }
 
-// 期限切れ判定とブロック取得
-const isExpired = (expiryTime?: string) => {
-  if (!expiryTime) return false;
-  return Date.parse(expiryTime) < Date.now();
-};
-
-const fetchBlock = async (blockId: string) => {
-  try {
-    const response = await fetch(`/api/blocks/${blockId}`);
-    if (!response.ok) return null;
-    const block = await response.json();
-    return block.Image?.File?.Url || block.Image?.External?.Url || null;
-  } catch {
-    return null;
-  }
-};
-
 // 個別の投稿カードコンポーネント
 function RelatedPostCard({ post }: { post: BlogPost }) {
-  const [imageError, setImageError] = useState(false);
+  // Cover Imageがない場合はプレースホルダーを使用
+  const hasCoverImage = post.coverImage && post.coverImage.trim() !== '';
+  const imageSrc: string = hasCoverImage && post.coverImage ? post.coverImage : '/images/placeholder.svg';
 
-  // シンプルな期限切れチェックとSWR
-  const shouldRefresh = isExpired(post.coverImageExpiryTime) && post.coverImageBlockId;
-  const { data: newUrl } = useSWR(
-    shouldRefresh ? post.coverImageBlockId : null,
-    fetchBlock,
-    { revalidateOnFocus: false }
-  );
+  // SWRを使用して画像の期限切れ判定と再取得を行う
+  const {
+    imageUrl,
+    isLoading: imageLoading,
+    isRefreshing,
+    handleImageLoad: swrHandleImageLoad,
+    handleImageError: swrHandleImageError
+  } = useNotionImage({
+    url: imageSrc,
+    expiryTime: post.coverImageExpiryTime,
+    blockId: post.coverImageBlockId,
+  }, {
+    enabled: !!hasCoverImage, // カバー画像がない場合はSWRを無効化
+  });
 
-  // 画像URLの決定
-  let imageUrl = post.coverImage || '/images/placeholder.svg';
+  // カバー画像がない場合はローディングを表示しない
+  const showLoading = hasCoverImage && (imageLoading || isRefreshing);
 
-  // 新しいURLがあれば使用
-  if (newUrl) {
-    imageUrl = newUrl;
-  }
+  const handleImageError = () => {
+    // プレースホルダー画像でもエラーが発生した場合はログを出さない
+    if (imageUrl !== '/images/placeholder.svg') {
+      console.error('RelatedPosts - Image failed to load:', imageUrl);
+      console.log('RelatedPosts - Post details:', {
+        title: post.title,
+        coverImage: post.coverImage,
+        coverImageExpiryTime: post.coverImageExpiryTime,
+        coverImageBlockId: post.coverImageBlockId
+      });
+    }
+    swrHandleImageError();
+  };
 
-  // S3 URLはプロキシ経由
-  if (imageUrl.includes('amazonaws.com')) {
-    imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
-  }
-
-  // エラー時はプレースホルダー
-  const displayUrl = imageError ? '/images/placeholder.svg' : imageUrl;
-
+  const handleImageLoad = () => {
+    swrHandleImageLoad();
+  };
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
+          {/* ローディングスピナー */}
+          {showLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
+          
           <Image
-            src={displayUrl}
+            src={imageUrl}
             alt={post.title}
             fill
-            className="object-cover transition-transform duration-200"
-            onError={() => setImageError(true)}
+            className={`object-cover transition-transform duration-200 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+            onError={handleImageError}
+            onLoad={handleImageLoad}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>

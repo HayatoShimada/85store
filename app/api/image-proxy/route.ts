@@ -116,11 +116,13 @@ export async function GET(request: NextRequest) {
   // URLはすでにsearchParams.get()によってデコードされているので、そのまま使用
   const decodedUrl = imageUrl;
 
-  console.log('========== Image Proxy Request ==========');
-  console.log('Original URL (encoded):', imageUrl.substring(0, 100) + '...');
-  console.log('Decoded URL:', decodedUrl.substring(0, 100) + '...');
-  console.log('Notion API available:', notion ? 'Yes' : 'No');
-  console.log('Refresh only mode:', refreshOnly);
+  if (process.env.NODE_ENV === 'development') {
+    console.log('========== Image Proxy Request ==========');
+    console.log('Original URL (encoded):', imageUrl.substring(0, 100) + '...');
+    console.log('Decoded URL:', decodedUrl.substring(0, 100) + '...');
+    console.log('Notion API available:', notion ? 'Yes' : 'No');
+    console.log('Refresh only mode:', refreshOnly);
+  }
 
   try {
     let targetUrl = decodedUrl;
@@ -143,31 +145,30 @@ export async function GET(request: NextRequest) {
 
     console.log('Response status:', response.status);
 
-    // URLが期限切れの場合、新しいURLを取得してリトライ
-    // 400: Bad Request (invalid signature), 403: Forbidden, 404: Not Found
-    if (!response.ok && (response.status === 400 || response.status === 403 || response.status === 404)) {
-      console.log(`Image URL expired or invalid (${response.status}), attempting to refresh...`);
-      
-      const newUrl = await refreshNotionImageUrl(decodedUrl);
-      console.log('Refresh result:', newUrl ? 'Success - got new URL' : 'Failed - no new URL');
-      
-      if (newUrl && newUrl !== targetUrl) {
-        console.log('Using refreshed URL for retry');
-        // 新しいURLをキャッシュ（50分間有効）
-        urlRefreshCache.set(cacheKey, {
-          url: newUrl,
-          expiry: now + 50 * 60 * 1000, // 50分
-        });
-        
-        // 新しいURLで再試行
-        response = await fetch(newUrl, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          },
-        });
-        console.log('Retry response status:', response.status);
-      } else {
-        console.log('No new URL available, will return placeholder');
+    // URLが期限切れの場合、直接元のURLをそのまま返す（ブラウザにリトライさせる）
+    // Notionの期限切れURLは403を返すが、実際にはまだアクセス可能な場合がある
+    if (!response.ok) {
+      console.log(`Image fetch failed with status ${response.status}`);
+
+      // 明らかにエラーの場合のみ、リフレッシュを試みる
+      if (response.status === 403 || response.status === 404) {
+        const newUrl = await refreshNotionImageUrl(decodedUrl);
+
+        if (newUrl && newUrl !== targetUrl) {
+          console.log('Got new URL, retrying...');
+          // 新しいURLをキャッシュ（50分間有効）
+          urlRefreshCache.set(cacheKey, {
+            url: newUrl,
+            expiry: now + 50 * 60 * 1000, // 50分
+          });
+
+          // 新しいURLで再試行
+          response = await fetch(newUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            },
+          });
+        }
       }
     }
 
