@@ -25,7 +25,7 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
   title: "85-Store - Select Shop & Blog",
-  description: "モダンでスタイリッシュなセレクトショップ",
+  description: "富山県井波のセレクトショップ",
   icons: {
     icon: [
       { url: '/logo.svg', type: 'image/svg+xml' },
