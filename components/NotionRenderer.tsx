@@ -2,6 +2,7 @@ import React from "react";
 import { NotionTextRenderer } from "./NotionTextRenderer";
 import { NotionImage } from "./NotionImage";
 import { NotionBookmark } from "./NotionBookmark";
+import { NotionLinkPreview } from "./NotionLinkPreview";
 
 // ブロックを階層構造を考慮して処理する関数
 function processBlocks(blocks: unknown[], level: number = 0): unknown[] {
@@ -487,6 +488,15 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
                 key={id}
                 url={bookmarkUrl}
                 caption={bookmarkCaption}
+              />
+            );
+
+          case "link_preview":
+            const linkPreviewUrl = (value as any).url;
+            return (
+              <NotionLinkPreview
+                key={id}
+                url={linkPreviewUrl}
               />
             );
 
