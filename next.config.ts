@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
       {
         pathname: '/notion-images/**',
       },
+      {
+        pathname: '/hero/**',
+      },
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
