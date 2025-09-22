@@ -21,7 +21,6 @@ export function NotionImage({ src, alt, caption, width, height, expiryTime, bloc
   const { 
     imageUrl, 
     isLoading: imageLoading, 
-    hasError: imageError, 
     isRefreshing,
     handleImageLoad: swrHandleImageLoad, 
     handleImageError: swrHandleImageError 

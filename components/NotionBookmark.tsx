@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 interface NotionBookmarkProps {
   url: string;
@@ -46,9 +47,11 @@ export function NotionBookmark({ url, caption }: NotionBookmarkProps) {
           <div className="flex items-start space-x-3">
             {/* ファビコン */}
             <div className="flex-shrink-0">
-              <img
+              <Image
                 src={getFaviconUrl(url)}
                 alt=""
+                width={24}
+                height={24}
                 className="w-6 h-6 rounded"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;

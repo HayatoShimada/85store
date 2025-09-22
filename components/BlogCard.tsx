@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BlogPost } from "@/types/notion";
-import { useState, useMemo } from "react";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
 import { useNotionImage } from "@/hooks/useNotionImage";
 
@@ -20,7 +19,6 @@ export default function BlogCard({ post }: BlogCardProps) {
   const { 
     imageUrl, 
     isLoading: imageLoading, 
-    hasError: imageError, 
     isRefreshing,
     handleImageLoad: swrHandleImageLoad, 
     handleImageError: swrHandleImageError 
