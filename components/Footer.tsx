@@ -78,7 +78,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://github.com/KANAMORI-SYSTEM-Inc/85store"
+                href="https://github.com/HayatoShimada/85store"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-300 hover:text-primary transition-colors"
