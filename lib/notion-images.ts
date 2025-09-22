@@ -35,7 +35,7 @@ export function getLocalImageUrl(originalUrl: string, postSlug?: string): string
     if (localUrl) return localUrl;
   }
   
-  // マッピングが見つからない場合は元のURLを返す
+  // マッピングが見つからない場合は元のURLを返す（期限情報は保持）
   return originalUrl;
 }
 

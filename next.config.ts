@@ -24,9 +24,37 @@ const nextConfig: NextConfig = {
         hostname: 's3.amazonaws.com',
       },
     ],
+    localPatterns: [
+      {
+        pathname: '/api/image-proxy**',
+      },
+      {
+        pathname: '/logo.svg',
+      },
+      {
+        pathname: '/images/**',
+      },
+      {
+        pathname: '/notion-images/**',
+      },
+    ],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  // OG画像APIのキャッシュ設定
+  async headers() {
+    return [
+      {
+        source: '/api/og-image/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=86400, max-age=86400, stale-while-revalidate=86400',
+          },
+        ],
+      },
+    ];
   },
 };
 

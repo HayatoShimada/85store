@@ -20,7 +20,6 @@ function parseNotionBlogPost(page: unknown): BlogPost {
   if (p.cover) {
     coverImage = p.cover.file?.url || p.cover.external?.url || "";
     coverImageExpiryTime = p.cover.file?.expiry_time;
-    console.log('Cover from page.cover:', coverImage);
   }
   
   // 2. プロパティのCover Imageフィールドから取得（スペース付きプロパティ名）
@@ -39,10 +38,8 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     if (properties.Image.files && properties.Image.files.length > 0) {
       coverImage = properties.Image.files[0].file?.url || properties.Image.files[0].external?.url || "";
       coverImageExpiryTime = properties.Image.files[0].file?.expiry_time;
-      console.log('Cover from Image property:', coverImage);
     } else if (properties.Image.url) {
       coverImage = properties.Image.url;
-      console.log('Cover from Image.url:', coverImage);
     }
   }
   

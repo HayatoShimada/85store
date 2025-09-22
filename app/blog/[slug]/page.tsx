@@ -35,7 +35,36 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const properties = (page as any).properties;
   const title = properties.Title?.title?.[0]?.text?.content || "";
   const excerpt = properties.Excerpt?.rich_text?.[0]?.text?.content || "";
-  const coverImage = (page as any).cover?.file?.url || (page as any).cover?.external?.url || "";
+  
+  // カバー画像のURLを取得
+  let coverImageUrl = '';
+  
+  // 1. ページのcoverプロパティから取得
+  if ((page as any).cover) {
+    coverImageUrl = (page as any).cover.file?.url || (page as any).cover.external?.url || '';
+  }
+  
+  // 2. プロパティのCover Imageフィールドから取得
+  if (!coverImageUrl && properties['Cover Image']) {
+    if (properties['Cover Image'].files && properties['Cover Image'].files.length > 0) {
+      const firstFile = properties['Cover Image'].files[0];
+      coverImageUrl = firstFile.file?.url || firstFile.external?.url || '';
+    } else if (properties['Cover Image'].url) {
+      coverImageUrl = properties['Cover Image'].url;
+    }
+  }
+  
+  // 3. プロパティのImageフィールドから取得
+  if (!coverImageUrl && properties.Image) {
+    if (properties.Image.files && properties.Image.files.length > 0) {
+      coverImageUrl = properties.Image.files[0].file?.url || properties.Image.files[0].external?.url || '';
+    } else if (properties.Image.url) {
+      coverImageUrl = properties.Image.url;
+    }
+  }
+
+  // 固定URLのOG画像APIを使用
+  const ogImageUrl = coverImageUrl ? `/api/og-image/${slug}` : '';
 
   return {
     title: `${title} - 85-Store Blog`,
@@ -43,7 +72,14 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     openGraph: {
       title,
       description: excerpt,
-      images: coverImage ? [coverImage] : [],
+      images: ogImageUrl ? [ogImageUrl] : [],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: excerpt,
+      images: ogImageUrl ? [ogImageUrl] : [],
     },
   };
 }
