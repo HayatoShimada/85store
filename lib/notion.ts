@@ -64,6 +64,7 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     tags: properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).name) || [],
     tagColors: properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).color) || [],
     status: properties.Status?.multi_select?.[0]?.name || "",
+    views: properties.Views?.number || 0,
   };
 }
 

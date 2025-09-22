@@ -6,6 +6,7 @@ import { getBlogPost, getBlogPosts, getRelatedPosts } from "@/lib/notion";
 import { NotionRenderer } from "@/components/NotionRenderer";
 import { NotionTableOfContents } from "@/components/NotionTableOfContents";
 import { RelatedPosts } from "@/components/RelatedPosts";
+import { ViewTracker } from "@/components/ViewTracker";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
 
 interface BlogPostPageProps {
@@ -107,6 +108,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const tags = properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).name) || [];
   const tagColors = properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).color) || [];
   const coverImage = (page as any).cover?.file?.url || (page as any).cover?.external?.url || "";
+  const views = properties.Views?.number || 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -132,6 +134,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {author && (
                 <span>by {author}</span>
               )}
+              <ViewTracker slug={slug} initialViews={views} showCount={true} />
             </div>
             
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-4 md:mb-6">

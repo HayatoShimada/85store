@@ -14,6 +14,7 @@ export interface BlogPost {
   tags: string[];
   tagColors: string[];
   status: string;
+  views?: number;
 }
 
 export interface Product {
