@@ -56,8 +56,8 @@ export default function BlogCard({ post }: BlogCardProps) {
   const displayUrl = imageError ? '/images/placeholder.svg' : imageUrl;
 
   return (
-    <Link href={`/blog/${post.slug}`} className="group">
-      <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1">
+    <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
+      <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
           <Image
             src={displayUrl}
@@ -68,7 +68,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
-        <div className="p-6">
+        <div className="p-6 pb-2">
           <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
             {post.category && (
               <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getCategoryStyleClasses(post.categoryColors)}`}>
@@ -93,20 +93,22 @@ export default function BlogCard({ post }: BlogCardProps) {
             {post.title}
           </h3>
           <p className="text-gray-600 line-clamp-2">{post.excerpt}</p>
-          {post.tags.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {post.tags.map((tag, index) => (
-                <span
-                  key={tag}
-                  className={`text-xs px-2 py-1 rounded ${getTagStyleClasses([post.tagColors[index] || 'default'])}`}
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
-      </article>
-    </Link>
+      </Link>
+      {post.tags.length > 0 && (
+        <div className="px-6 pb-4 flex flex-wrap gap-2">
+          {post.tags.map((tag, index) => (
+            <Link
+              key={tag}
+              href={`/blog/tag/${encodeURIComponent(tag)}`}
+              className={`text-xs px-2 py-1 rounded ${getTagStyleClasses([post.tagColors[index] || 'default'])} hover:opacity-80 transition-opacity`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              #{tag}
+            </Link>
+          ))}
+        </div>
+      )}
+    </article>
   );
 }

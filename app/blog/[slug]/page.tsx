@@ -148,12 +148,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 md:gap-2">
                 {tags.map((tag: string, index: number) => (
-                  <span
+                  <Link
                     key={tag}
-                    className={`text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1 rounded-full ${getTagStyleClasses([tagColors[index] || 'default'])}`}
+                    href={`/blog/tag/${encodeURIComponent(tag)}`}
+                    className={`text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1 rounded-full ${getTagStyleClasses([tagColors[index] || 'default'])} hover:opacity-80 transition-opacity inline-block`}
                   >
                     #{tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
             )}
