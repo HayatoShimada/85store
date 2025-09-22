@@ -13,6 +13,7 @@ const notion = process.env.NOTION_API_KEY ? new Client({
 }) : null;
 
 console.log('Notion API client initialized:', notion ? 'Yes' : 'No');
+console.log('NOTION_API_KEY available:', process.env.NOTION_API_KEY ? 'Yes' : 'No');
 
 // URLからブロックIDを抽出
 function extractBlockIdFromUrl(url: string): string | null {
@@ -64,6 +65,7 @@ async function refreshNotionImageUrl(originalUrl: string): Promise<string | null
     // ブロック情報を取得
     const block = await notion.blocks.retrieve({ block_id: blockId });
     console.log('Retrieved block type:', (block as any).type);
+    console.log('Block data:', JSON.stringify(block, null, 2));
 
     // 画像ブロックの場合
     if ('type' in block && block.type === 'image' && 'image' in block) {
@@ -104,6 +106,7 @@ async function refreshNotionImageUrl(originalUrl: string): Promise<string | null
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const imageUrl = searchParams.get('url');
+  const refreshOnly = searchParams.get('refresh') === 'true';
 
   if (!imageUrl) {
     console.error('Missing image URL parameter');
@@ -128,6 +131,7 @@ export async function GET(request: NextRequest) {
   console.log('Original URL (encoded):', imageUrl.substring(0, 100) + '...');
   console.log('Decoded URL:', decodedUrl.substring(0, 100) + '...');
   console.log('Notion API available:', notion ? 'Yes' : 'No');
+  console.log('Refresh only mode:', refreshOnly);
 
   try {
     let targetUrl = decodedUrl;
@@ -156,7 +160,10 @@ export async function GET(request: NextRequest) {
       console.log(`Image URL expired or invalid (${response.status}), attempting to refresh...`);
       
       const newUrl = await refreshNotionImageUrl(decodedUrl);
+      console.log('Refresh result:', newUrl ? 'Success - got new URL' : 'Failed - no new URL');
+      
       if (newUrl && newUrl !== targetUrl) {
+        console.log('Using refreshed URL for retry');
         // 新しいURLをキャッシュ（50分間有効）
         urlRefreshCache.set(cacheKey, {
           url: newUrl,
@@ -169,10 +176,26 @@ export async function GET(request: NextRequest) {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
           },
         });
+        console.log('Retry response status:', response.status);
+      } else {
+        console.log('No new URL available, will return placeholder');
       }
     }
 
     if (!response.ok) {
+      // refreshOnlyモードの場合は、期限情報のみを返す
+      if (refreshOnly) {
+        return new NextResponse(JSON.stringify({ 
+          error: 'Image not accessible',
+          status: response.status 
+        }), {
+          status: response.status,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+      
       // 画像が取得できない場合はプレースホルダー画像を返す
       console.log(`Image fetch failed with status ${response.status}, returning placeholder`);
       const placeholderPath = path.join(process.cwd(), 'public', 'images', 'placeholder.svg');
@@ -195,11 +218,31 @@ export async function GET(request: NextRequest) {
     const imageBuffer = await response.arrayBuffer();
     const contentType = response.headers.get('content-type') || 'image/jpeg';
 
+    const responseHeaders: Record<string, string> = {
+      'Content-Type': contentType,
+      'Cache-Control': 'public, max-age=2592000, stale-while-revalidate=86400', // 30日キャッシュ、1日はstale-while-revalidate
+    };
+
+    // 新しいURLが取得された場合は、期限情報とブロックIDをヘッダーに追加
+    if (targetUrl !== decodedUrl) {
+      responseHeaders['x-refreshed-url'] = targetUrl;
+      const blockId = extractBlockIdFromUrl(decodedUrl);
+      if (blockId) {
+        responseHeaders['x-block-id'] = blockId;
+      }
+      
+      // URLから期限情報を抽出（X-Amz-Expiresパラメータから）
+      const urlParams = new URLSearchParams(targetUrl.split('?')[1]);
+      const expires = urlParams.get('X-Amz-Expires');
+      const date = urlParams.get('X-Amz-Date');
+      if (expires && date) {
+        const expiryTime = new Date(Date.parse(date) + parseInt(expires) * 1000).toISOString();
+        responseHeaders['x-expiry-time'] = expiryTime;
+      }
+    }
+
     return new NextResponse(imageBuffer, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=2592000, stale-while-revalidate=86400', // 30日キャッシュ、1日はstale-while-revalidate
-      },
+      headers: responseHeaders,
     });
   } catch (error) {
     console.error('Error proxying image:', error);

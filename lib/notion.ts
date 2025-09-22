@@ -13,10 +13,13 @@ function parseNotionBlogPost(page: unknown): BlogPost {
   
   // Cover Imageの取得を複数の方法で試行
   let coverImage = "";
+  let coverImageExpiryTime: string | undefined;
+  let coverImageBlockId: string | undefined;
   
   // 1. ページのcoverプロパティから取得
   if (p.cover) {
     coverImage = p.cover.file?.url || p.cover.external?.url || "";
+    coverImageExpiryTime = p.cover.file?.expiry_time;
     console.log('Cover from page.cover:', coverImage);
   }
   
@@ -25,6 +28,7 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     if (properties['Cover Image'].files && properties['Cover Image'].files.length > 0) {
       const firstFile = properties['Cover Image'].files[0];
       coverImage = firstFile.file?.url || firstFile.external?.url || "";
+      coverImageExpiryTime = firstFile.file?.expiry_time;
     } else if (properties['Cover Image'].url) {
       coverImage = properties['Cover Image'].url;
     }
@@ -34,6 +38,7 @@ function parseNotionBlogPost(page: unknown): BlogPost {
   if (!coverImage && properties.Image) {
     if (properties.Image.files && properties.Image.files.length > 0) {
       coverImage = properties.Image.files[0].file?.url || properties.Image.files[0].external?.url || "";
+      coverImageExpiryTime = properties.Image.files[0].file?.expiry_time;
       console.log('Cover from Image property:', coverImage);
     } else if (properties.Image.url) {
       coverImage = properties.Image.url;
@@ -41,7 +46,7 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     }
   }
   
-  // ローカル画像URLに変換
+  // ローカル画像URLに変換（期限情報は保持）
   if (coverImage) {
     coverImage = getLocalImageUrl(coverImage, slug);
   }
@@ -52,6 +57,8 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     slug: slug,
     excerpt: properties.Excerpt?.rich_text?.[0]?.text?.content || "",
     coverImage: coverImage,
+    coverImageExpiryTime: coverImageExpiryTime,
+    coverImageBlockId: coverImageBlockId,
     date: properties.Date?.date?.start || "",
     author: properties.Author?.multi_select?.map((author: unknown) => (author as any).name).join(', ') || "",
     authorColors: properties.Author?.multi_select?.map((author: unknown) => (author as any).color) || [],

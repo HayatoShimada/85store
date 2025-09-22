@@ -5,44 +5,43 @@ import Image from "next/image";
 import { BlogPost } from "@/types/notion";
 import { useState, useMemo } from "react";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
+import { useNotionImage } from "@/hooks/useNotionImage";
 
 interface BlogCardProps {
   post: BlogPost;
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
-
-  // Cover Imageがない場合やエラーの場合はプレースホルダーを使用
+  // Cover Imageがない場合はプレースホルダーを使用
   const hasCoverImage = post.coverImage && post.coverImage.trim() !== '';
-  const imageSrc = hasCoverImage && !imageError ? post.coverImage : '/images/placeholder.svg';
+  const imageSrc = hasCoverImage ? post.coverImage : '/images/placeholder.svg';
 
-  // Process the image URL consistently
-  const processedImageUrl = useMemo(() => {
-    if (!imageSrc || imageSrc === '/images/placeholder.svg' || imageError) {
-      return '/images/placeholder.svg';
-    }
-    // ローカル画像パスの場合はそのまま使用
-    if (imageSrc.startsWith('/notion-images/')) {
-      return imageSrc;
-    }
-    // NotionのS3 URLは直接使用する（Next.jsのremotePatternsで許可済み）
-    // APIプロキシは使わない
-    return imageSrc;
-  }, [imageSrc, imageError]);
+  // SWRを使用して画像の期限切れ判定と再取得を行う
+  const { 
+    imageUrl, 
+    isLoading: imageLoading, 
+    hasError: imageError, 
+    isRefreshing,
+    handleImageLoad: swrHandleImageLoad, 
+    handleImageError: swrHandleImageError 
+  } = useNotionImage({
+    url: imageSrc || '/images/placeholder.svg',
+    expiryTime: post.coverImageExpiryTime,
+    blockId: post.coverImageBlockId,
+  }, {
+    enabled: !!hasCoverImage, // カバー画像がない場合はSWRを無効化
+  });
 
   const handleImageError = () => {
     // プレースホルダー画像でもエラーが発生した場合はログを出さない
-    if (processedImageUrl !== '/images/placeholder.svg') {
-      console.error('BlogCard - Image failed to load:', processedImageUrl);
-      setImageError(true);
+    if (imageUrl !== '/images/placeholder.svg') {
+      console.error('BlogCard - Image failed to load:', imageUrl);
     }
-    setImageLoading(false);
+    swrHandleImageError();
   };
 
   const handleImageLoad = () => {
-    setImageLoading(false);
+    swrHandleImageLoad();
   };
 
   return (
@@ -50,14 +49,19 @@ export default function BlogCard({ post }: BlogCardProps) {
       <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1">
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
           {/* ローディングスピナー */}
-          {imageLoading && (
+          {(imageLoading || isRefreshing) && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           )}
           
+          {/* 期限切れで再取得中の場合は薄いオーバーレイを表示 */}
+          {isRefreshing && (
+            <div className="absolute inset-0 bg-gray-50 bg-opacity-75 z-5"></div>
+          )}
+          
           <Image
-            src={processedImageUrl}
+            src={imageUrl}
             alt={post.title}
             fill
             className={`object-cover group-hover:scale-105 transition-transform duration-200 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}

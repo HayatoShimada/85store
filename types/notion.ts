@@ -4,6 +4,8 @@ export interface BlogPost {
   slug: string;
   excerpt: string;
   coverImage?: string;
+  coverImageExpiryTime?: string;
+  coverImageBlockId?: string;
   date: string;
   author: string;
   authorColors: string[];

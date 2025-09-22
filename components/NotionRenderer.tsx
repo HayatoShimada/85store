@@ -233,12 +233,20 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
             const imageUrl = value.type === "external" ? value.external.url : value.file.url;
             const caption = value.caption?.[0]?.text?.content || "";
             
+            // 期限情報を抽出（fileタイプの場合のみ）
+            let expiryTime: string | undefined;
+            if (value.type === "file" && value.file?.expiry_time) {
+              expiryTime = value.file.expiry_time;
+            }
+            
             return (
               <NotionImage
                 key={id}
                 src={imageUrl}
                 alt={caption}
                 caption={caption}
+                expiryTime={expiryTime}
+                blockId={id}
               />
             );
 

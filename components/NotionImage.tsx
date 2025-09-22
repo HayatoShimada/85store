@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useNotionImage } from '@/hooks/useNotionImage';
 
 interface NotionImageProps {
   src: string;
@@ -9,33 +10,33 @@ interface NotionImageProps {
   caption?: string;
   width?: number;
   height?: number;
+  expiryTime?: string;
+  blockId?: string;
 }
 
-export function NotionImage({ src, alt, caption, width, height }: NotionImageProps) {
-  const [imageLoading, setImageLoading] = React.useState(true);
-  const [imageError, setImageError] = React.useState(false);
+export function NotionImage({ src, alt, caption, width, height, expiryTime, blockId }: NotionImageProps) {
   const [imageDimensions, setImageDimensions] = React.useState<{width: number, height: number} | null>(null);
 
-  // Process the image URL consistently
-  const processedImageUrl = React.useMemo(() => {
-    if (!src || src === '/images/placeholder.svg' || imageError) {
-      return '/images/placeholder.svg';
-    }
-    if (src.startsWith('/notion-images/')) {
-      return src;
-    }
-    // NotionのS3 URLは直接使用する（Next.jsのremotePatternsで許可済み）
-    // APIプロキシは使わない
-    return src;
-  }, [src, imageError]);
+  // SWRを使用して画像の期限切れ判定と再取得を行う
+  const { 
+    imageUrl, 
+    isLoading: imageLoading, 
+    hasError: imageError, 
+    isRefreshing,
+    handleImageLoad: swrHandleImageLoad, 
+    handleImageError: swrHandleImageError 
+  } = useNotionImage({
+    url: src,
+    expiryTime,
+    blockId,
+  });
 
   const handleError = () => {
     // 既にプレースホルダー画像の場合はログを出さない
-    if (!imageError && processedImageUrl !== '/images/placeholder.svg') {
-      console.error('Image failed to load:', processedImageUrl);
-      setImageError(true);
+    if (imageUrl !== '/images/placeholder.svg') {
+      console.error('Image failed to load:', imageUrl);
     }
-    setImageLoading(false);
+    swrHandleImageError();
   };
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -44,7 +45,7 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
       width: img.naturalWidth,
       height: img.naturalHeight
     });
-    setImageLoading(false);
+    swrHandleImageLoad();
   };
 
 
@@ -69,14 +70,19 @@ export function NotionImage({ src, alt, caption, width, height }: NotionImagePro
       <div className="relative w-full max-w-4xl mx-auto">
         <div className={`relative w-full ${getAspectClass()} md:rounded-lg overflow-hidden md:shadow-lg bg-gray-50`}>
           {/* ローディングスピナー */}
-          {imageLoading && (
+          {(imageLoading || isRefreshing) && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
           )}
           
+          {/* 期限切れで再取得中の場合は薄いオーバーレイを表示 */}
+          {isRefreshing && (
+            <div className="absolute inset-0 bg-gray-50 bg-opacity-75 z-5"></div>
+          )}
+          
           <Image
-            src={processedImageUrl}
+            src={imageUrl}
             alt={alt}
             fill
             className={`object-contain transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
