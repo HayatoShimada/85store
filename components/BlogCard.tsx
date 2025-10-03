@@ -30,10 +30,12 @@ interface BlogCardProps {
 
 export default function BlogCard({ post }: BlogCardProps) {
   const [imageError, setImageError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 3;
 
   // シンプルな期限切れチェックとSWR
   const shouldRefresh = isExpired(post.coverImageExpiryTime) && post.coverImageBlockId;
-  const { data: newUrl } = useSWR(
+  const { data: newUrl, mutate } = useSWR(
     shouldRefresh ? post.coverImageBlockId : null,
     fetchBlock,
     { revalidateOnFocus: false }
@@ -45,6 +47,11 @@ export default function BlogCard({ post }: BlogCardProps) {
   // 新しいURLがあれば使用
   if (newUrl) {
     imageUrl = newUrl;
+    // 新しいURLが取得されたらリトライカウントをリセット
+    if (retryCount > 0) {
+      setRetryCount(0);
+      setImageError(false);
+    }
   }
 
   // S3 URLはプロキシ経由
@@ -52,7 +59,19 @@ export default function BlogCard({ post }: BlogCardProps) {
     imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
   }
 
-  // エラー時はプレースホルダー
+  // エラー時の処理：新しいURLを取得を試行
+  const handleImageError = () => {
+    if (retryCount < maxRetries && post.coverImageBlockId) {
+      console.log(`Image load failed, retrying... (${retryCount + 1}/${maxRetries})`);
+      setRetryCount(prev => prev + 1);
+      // 新しいURLを取得
+      mutate();
+    } else {
+      setImageError(true);
+    }
+  };
+
+  // エラー時はプレースホルダー（リトライ上限に達した場合のみ）
   const displayUrl = imageError ? '/images/placeholder.svg' : imageUrl;
 
   return (
@@ -64,7 +83,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             alt={post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-200"
-            onError={() => setImageError(true)}
+            onError={handleImageError}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
