@@ -35,14 +35,15 @@ export default function BlogCard({ post }: BlogCardProps) {
 
   // シンプルな期限切れチェックとSWR
   const shouldRefresh = isExpired(post.coverImageExpiryTime) && post.coverImageBlockId;
+  const shouldFetch = shouldRefresh || (!post.coverImage && post.coverImageBlockId);
   const { data: newUrl, mutate } = useSWR(
-    shouldRefresh ? post.coverImageBlockId : null,
+    shouldFetch ? post.coverImageBlockId : null,
     fetchBlock,
     { revalidateOnFocus: false }
   );
 
   // 画像URLの決定
-  let imageUrl = post.coverImage || '/images/placeholder.svg';
+  let imageUrl = post.coverImage;
 
   // 新しいURLがあれば使用
   if (newUrl) {
@@ -54,8 +55,9 @@ export default function BlogCard({ post }: BlogCardProps) {
     }
   }
 
+
   // S3 URLはプロキシ経由
-  if (imageUrl.includes('amazonaws.com')) {
+  if (imageUrl && imageUrl.includes('amazonaws.com')) {
     imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
   }
 
@@ -72,7 +74,7 @@ export default function BlogCard({ post }: BlogCardProps) {
   };
 
   // エラー時はプレースホルダー（リトライ上限に達した場合のみ）
-  const displayUrl = imageError ? '/images/placeholder.svg' : imageUrl;
+  const displayUrl = imageError || !imageUrl ? '/images/placeholder.svg' : imageUrl;
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
