@@ -14,6 +14,9 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   const [localImageLoading, setLocalImageLoading] = useState(true);
 
+  // 画像が存在しない場合はuseNotionImageフックを使用しない
+  const hasImage = Boolean(post.coverImage && post.coverImage.trim() !== '');
+  
   // useNotionImageフックを使用して画像の期限切れ判定と再取得を行う
   const {
     imageUrl,
@@ -24,6 +27,8 @@ export default function BlogCard({ post }: BlogCardProps) {
     url: post.coverImage || '',
     expiryTime: post.coverImageExpiryTime,
     blockId: post.coverImageBlockId,
+  }, {
+    enabled: hasImage
   });
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -42,22 +47,25 @@ export default function BlogCard({ post }: BlogCardProps) {
     swrHandleImageLoad();
   };
 
+  // 画像URLが空または無効な場合はプレースホルダーを使用
+  const displayImageUrl = (hasImage && imageUrl && imageUrl.trim() !== '') ? imageUrl : '/images/placeholder.svg';
+
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
       <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
-          {/* ローディングスピナー */}
-          {(localImageLoading || isRefreshing) && (
+          {/* ローディングスピナー - 画像が存在する場合のみ表示 */}
+          {hasImage && (localImageLoading || isRefreshing) && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>
           )}
           
           <Image
-            src={imageUrl}
+            src={displayImageUrl}
             alt={post.title}
             fill
-            className={`object-cover group-hover:scale-105 transition-transform duration-200 ${localImageLoading ? 'opacity-0' : 'opacity-100'}`}
+            className={`object-cover group-hover:scale-105 transition-transform duration-200 ${hasImage && localImageLoading ? 'opacity-0' : 'opacity-100'}`}
             onError={handleError}
             onLoad={handleLoad}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
