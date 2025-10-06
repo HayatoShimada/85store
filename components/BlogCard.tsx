@@ -3,90 +3,65 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import useSWR from "swr";
 import { BlogPost } from "@/types/notion";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
-
-// 期限切れ判定とブロック取得
-const isExpired = (expiryTime?: string) => {
-  if (!expiryTime) return false;
-  return Date.parse(expiryTime) < Date.now();
-};
-
-const fetchBlock = async (blockId: string) => {
-  try {
-    const response = await fetch(`/api/blocks/${blockId}`);
-    if (!response.ok) return null;
-    const block = await response.json();
-    return block.Image?.File?.Url || block.Image?.External?.Url || null;
-  } catch {
-    return null;
-  }
-};
+import { useNotionImage } from "@/hooks/useNotionImage";
 
 interface BlogCardProps {
   post: BlogPost;
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
-  const [imageError, setImageError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 3;
+  const [localImageLoading, setLocalImageLoading] = useState(true);
 
-  // シンプルな期限切れチェックとSWR
-  const shouldRefresh = isExpired(post.coverImageExpiryTime) && post.coverImageBlockId;
-  const shouldFetch = shouldRefresh || (!post.coverImage && post.coverImageBlockId);
-  const { data: newUrl, mutate } = useSWR(
-    shouldFetch ? post.coverImageBlockId : null,
-    fetchBlock,
-    { revalidateOnFocus: false }
-  );
+  // useNotionImageフックを使用して画像の期限切れ判定と再取得を行う
+  const {
+    imageUrl,
+    isRefreshing,
+    handleImageLoad: swrHandleImageLoad,
+    handleImageError: swrHandleImageError
+  } = useNotionImage({
+    url: post.coverImage || '',
+    expiryTime: post.coverImageExpiryTime,
+    blockId: post.coverImageBlockId,
+  });
 
-  // 画像URLの決定
-  let imageUrl = post.coverImage;
-
-  // 新しいURLがあれば使用
-  if (newUrl) {
-    imageUrl = newUrl;
-    // 新しいURLが取得されたらリトライカウントをリセット
-    if (retryCount > 0) {
-      setRetryCount(0);
-      setImageError(false);
+  const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    // 既にプレースホルダー画像の場合はログを出さない
+    if (imageUrl !== '/images/placeholder.svg') {
+      console.error('Image failed to load:', imageUrl);
+      console.log('Image details:', { src: post.coverImage, expiryTime: post.coverImageExpiryTime, blockId: post.coverImageBlockId });
+      console.log('Error event:', e);
     }
-  }
-
-
-  // S3 URLはプロキシ経由
-  if (imageUrl && imageUrl.includes('amazonaws.com')) {
-    imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
-  }
-
-  // エラー時の処理：新しいURLを取得を試行
-  const handleImageError = () => {
-    if (retryCount < maxRetries && post.coverImageBlockId) {
-      console.log(`Image load failed, retrying... (${retryCount + 1}/${maxRetries})`);
-      setRetryCount(prev => prev + 1);
-      // 新しいURLを取得
-      mutate();
-    } else {
-      setImageError(true);
-    }
+    setLocalImageLoading(false);
+    swrHandleImageError();
   };
 
-  // エラー時はプレースホルダー（リトライ上限に達した場合のみ）
-  const displayUrl = imageError || !imageUrl ? '/images/placeholder.svg' : imageUrl;
+  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    setLocalImageLoading(false);
+    swrHandleImageLoad();
+  };
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
       <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
+          {/* ローディングスピナー */}
+          {(localImageLoading || isRefreshing) && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
+          
           <Image
-            src={displayUrl}
+            src={imageUrl}
             alt={post.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-200"
-            onError={handleImageError}
+            className={`object-cover group-hover:scale-105 transition-transform duration-200 ${localImageLoading ? 'opacity-0' : 'opacity-100'}`}
+            onError={handleError}
+            onLoad={handleLoad}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority={false}
           />
         </div>
         <div className="p-6 pb-2">
