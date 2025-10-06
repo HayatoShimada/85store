@@ -133,7 +133,9 @@ export function useNotionImage(
 
   // SWRで画像URLを再取得
   // 注意: ブロックIDがない場合やAPIアクセス権限がない場合は無効化
-  const shouldRefresh = isImageExpired && initialImageData.url && initialImageData.blockId;
+  const shouldRefresh = isImageExpired && 
+                       initialImageData.url && 
+                       initialImageData.blockId;
 
   const { data: refreshedImageData, error: refreshError } = useSWR(
     shouldRefresh ? `refresh-image-${initialImageData.blockId}` : null,
@@ -142,23 +144,25 @@ export function useNotionImage(
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       dedupingInterval: 60000, // 1分間は重複リクエストを避ける
-      errorRetryCount: 1, // リトライ回数を減らす
-      errorRetryInterval: 1000,
+      errorRetryCount: 1, // 最大1回までリトライ
+      errorRetryInterval: 2000, // リトライ間隔を2秒に設定
+      onError: (error) => {
+        console.warn('Image refresh failed:', error);
+      }
     }
   );
 
   // 最終的な画像URLを決定
   const finalImageUrl = useMemo(() => {
-    // エラーが発生した場合のみフォールバックを使用
-    if (imageError) {
+    // エラーが発生した場合、またはリフレッシュが失敗した場合はフォールバックを使用
+    if (imageError || (isImageExpired && refreshError && !refreshedImageData)) {
       if (process.env.NODE_ENV === 'development') {
-        console.log('Image error detected, using fallback:', fallbackUrl);
+        console.log('Using fallback due to error or refresh failure:', fallbackUrl);
       }
       return fallbackUrl;
     }
 
     // 期限切れで新しいURLが取得できた場合はそれを使用
-    // ただし、リフレッシュに失敗した場合は元のURLをプロキシ経由で使用
     if (isImageExpired && refreshedImageData?.url) {
       if (process.env.NODE_ENV === 'development') {
         console.log('Using refreshed image URL:', refreshedImageData.url);
@@ -209,7 +213,7 @@ export function useNotionImage(
       console.log('Using external URL directly:', originalUrl);
     }
     return originalUrl;
-  }, [initialImageData.url, isImageExpired, refreshedImageData, imageError, fallbackUrl]);
+  }, [initialImageData.url, isImageExpired, refreshedImageData, imageError, fallbackUrl, refreshError]);
 
   // 画像の読み込み状態
   const handleImageLoad = () => {
@@ -226,11 +230,16 @@ export function useNotionImage(
     setImageLoading(false);
   };
 
+  // リフレッシュ状態を更新：期限切れでリフレッシュ中の場合のみ
+  const isRefreshing = isImageExpired && 
+                      !refreshedImageData && 
+                      !refreshError;
+
   return {
     imageUrl: finalImageUrl,
     isLoading: imageLoading,
     hasError: imageError,
-    isRefreshing: isImageExpired && !refreshedImageData && !refreshError,
+    isRefreshing,
     handleImageLoad,
     handleImageError,
   };
