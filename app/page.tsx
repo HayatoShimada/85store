@@ -6,7 +6,10 @@ import { BlogPost } from "@/types/notion";
 
 export default async function Home() {
   // Notionからデータを取得（商品データは一時的に無効化）
-  const blogPosts = await getBlogPosts(3);
+
+  const [blogPosts]= await Promise.all([
+    getBlogPosts(3)
+  ]);
   
 
   return (
