@@ -30,7 +30,7 @@ export default function BlogCard({ post }: BlogCardProps) {
     enabled: hasImage
   });
 
-  const handleError = (_e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleError = () => {
     // 既にプレースホルダー画像の場合はログを出さない
     if (imageUrl !== '/images/placeholder.svg') {
       console.error('Image failed to load:', imageUrl);
@@ -40,7 +40,7 @@ export default function BlogCard({ post }: BlogCardProps) {
     swrHandleImageError();
   };
 
-  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleLoad = () => {
     setLocalImageLoading(false);
     swrHandleImageLoad();
   };
