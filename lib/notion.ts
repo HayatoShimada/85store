@@ -20,6 +20,8 @@ function parseNotionBlogPost(page: unknown): BlogPost {
   if (p.cover) {
     coverImage = p.cover.file?.url || p.cover.external?.url || "";
     coverImageExpiryTime = p.cover.file?.expiry_time;
+    // coverImageのブロックIDとしてページIDを使用
+    coverImageBlockId = p.id;
   }
   
   // 2. プロパティのCover Imageフィールドから取得（スペース付きプロパティ名）
@@ -28,8 +30,11 @@ function parseNotionBlogPost(page: unknown): BlogPost {
       const firstFile = properties['Cover Image'].files[0];
       coverImage = firstFile.file?.url || firstFile.external?.url || "";
       coverImageExpiryTime = firstFile.file?.expiry_time;
+      // Cover ImageプロパティのファイルにはブロックIDがないため、ページIDを使用
+      coverImageBlockId = p.id;
     } else if (properties['Cover Image'].url) {
       coverImage = properties['Cover Image'].url;
+      coverImageBlockId = p.id;
     }
   }
   

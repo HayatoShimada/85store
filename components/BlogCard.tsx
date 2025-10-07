@@ -54,8 +54,8 @@ export default function BlogCard({ post }: BlogCardProps) {
     <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
       <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
-          {/* ローディングスピナー - 画像が存在する場合のみ表示 */}
-          {hasImage && (localImageLoading || isRefreshing) && (
+          {/* ローディングスピナー - 画像が存在し、かつローディング中またはリフレッシュ中の場合のみ表示 */}
+          {hasImage && localImageLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             </div>

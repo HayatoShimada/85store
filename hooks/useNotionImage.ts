@@ -67,16 +67,22 @@ const fetchRefreshedImageUrl = async (url: string, blockId?: string): Promise<No
       return null;
     }
 
-    // Notion APIから新しいURLを取得するため、ブロックIDを使用
-    const response = await fetch(`/api/blocks/${finalBlockId}`);
+    // Notion APIから新しいURLを取得
+    // まずブロックAPIを試し、失敗したらページのCover Image APIを試す
+    let response = await fetch(`/api/blocks/${finalBlockId}`);
 
     if (!response.ok) {
-      console.warn('Failed to refresh image URL from API:', response.status);
+      console.log('Block API failed, trying page Cover Image API:', response.status);
+      response = await fetch(`/api/pages/${finalBlockId}/cover-image`);
+    }
+
+    if (!response.ok) {
+      console.warn('Failed to refresh image URL from both APIs:', response.status);
       return null;
     }
 
     const block = await response.json();
-    console.log('Refreshed block data:', block);
+    console.log('Refreshed image data:', block);
 
     if (block.Type === 'image' && block.Image) {
       const newUrl = block.Image.External
