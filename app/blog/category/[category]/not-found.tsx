@@ -10,7 +10,7 @@ export default function CategoryNotFound() {
         
         <Link 
           href="/blog"
-          className="inline-block bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
+          className="inline-block bg-primary text-white px-6 py-3font-semibold hover:bg-primary-dark transition-colors"
         >
           Back to Blog
         </Link>
