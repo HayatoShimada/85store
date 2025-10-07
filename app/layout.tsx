@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
+import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
@@ -42,6 +43,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${montserrat.variable} ${notoSansJP.variable}`}>
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6P0Q6TXEF6"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6P0Q6TXEF6');
+          `}
+        </Script>
+      </head>
       <body className="antialiased font-japanese">
         <Header />
         <main className="min-h-screen pt-16">
