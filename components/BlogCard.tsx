@@ -20,7 +20,6 @@ export default function BlogCard({ post }: BlogCardProps) {
   // useNotionImageフックを使用して画像の期限切れ判定と再取得を行う
   const {
     imageUrl,
-    isRefreshing,
     handleImageLoad: swrHandleImageLoad,
     handleImageError: swrHandleImageError
   } = useNotionImage({
@@ -31,12 +30,11 @@ export default function BlogCard({ post }: BlogCardProps) {
     enabled: hasImage
   });
 
-  const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleError = (_e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     // 既にプレースホルダー画像の場合はログを出さない
     if (imageUrl !== '/images/placeholder.svg') {
       console.error('Image failed to load:', imageUrl);
       console.log('Image details:', { src: post.coverImage, expiryTime: post.coverImageExpiryTime, blockId: post.coverImageBlockId });
-      console.log('Error event:', e);
     }
     setLocalImageLoading(false);
     swrHandleImageError();

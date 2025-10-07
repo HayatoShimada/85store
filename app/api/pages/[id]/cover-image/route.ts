@@ -73,9 +73,10 @@ export async function GET(
         imageUrl = cover.file.url;
 
         // URLから期限情報を抽出
-        const urlParams = new URLSearchParams(imageUrl.split('?')[1]);
-        const expires = urlParams.get('X-Amz-Expires');
-        const date = urlParams.get('X-Amz-Date');
+        if (imageUrl) {
+          const urlParams = new URLSearchParams(imageUrl.split('?')[1]);
+          const expires = urlParams.get('X-Amz-Expires');
+          const date = urlParams.get('X-Amz-Date');
 
         if (expires && date) {
           const year = date.substring(0, 4);
@@ -88,6 +89,7 @@ export async function GET(
           const startDate = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}Z`);
           const expiryDate = new Date(startDate.getTime() + parseInt(expires) * 1000);
           expiryTime = expiryDate.toISOString();
+          }
         }
       } else if (cover.type === 'external' && cover.external) {
         imageUrl = cover.external.url;
