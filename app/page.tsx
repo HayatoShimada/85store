@@ -1,14 +1,15 @@
 import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import BlogCard from "@/components/BlogCard";
-import { getBlogPosts } from "@/lib/notion";
+import FeaturedProducts from "@/components/FeaturedProducts";
+import { getBlogPosts, getFeaturedProducts } from "@/lib/notion";
 import { BlogPost } from "@/types/notion";
 
 export default async function Home() {
-  // Notionからデータを取得（商品データは一時的に無効化）
-
-  const [blogPosts]= await Promise.all([
-    getBlogPosts(3)
+  // Notionからデータを取得
+  const [blogPosts, featuredProducts] = await Promise.all([
+    getBlogPosts(3),
+    getFeaturedProducts(6)
   ]);
   
 
@@ -44,17 +45,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Products section temporarily disabled */}
-      <section className="py-16 bg-gray-50">
-        <div className="section-padding max-container">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
-              Products
-            </h2>
-            <p className="text-gray-600">商品機能は今後追加予定です</p>
-          </div>
-        </div>
-      </section>
+      {/* おすすめ商品セクション */}
+      <FeaturedProducts products={featuredProducts} />
     </>
   );
 }
