@@ -3,6 +3,7 @@ import { NotionTextRenderer } from "./NotionTextRenderer";
 import { NotionImage } from "./NotionImage";
 import { NotionBookmark } from "./NotionBookmark";
 import { NotionLinkPreview } from "./NotionLinkPreview";
+import ShopifyProductEmbed from "./ShopifyProductEmbed";
 
 // ブロックを階層構造を考慮して処理する関数
 function processBlocks(blocks: unknown[], level: number = 0): unknown[] {
@@ -252,16 +253,31 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
             );
 
           case "callout":
+            // Shopify商品埋め込み用のcalloutブロック（🛍️アイコン）
+            const icon = value.icon?.emoji || "💡";
+            if (icon === "🛍️" || icon === "🛒") {
+              // テキストからShopify product handleを抽出
+              const productHandle = value.rich_text
+                ?.map((text: any) => text.plain_text)
+                .join("")
+                .trim();
+
+              if (productHandle) {
+                return <ShopifyProductEmbed key={id} productHandle={productHandle} />;
+              }
+            }
+
+            // 通常のcalloutブロック
             return (
-              <div key={id} className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded-r-lg">
+              <div key={id} className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 p-4 mb-4 rounded-r-lg">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <span className="text-blue-400 text-xl">
-                      {value.icon?.emoji || "💡"}
+                      {icon}
                     </span>
                   </div>
                   <div className="ml-3">
-                    <p className="text-blue-800">
+                    <p className="text-blue-800 dark:text-blue-200">
                       <NotionTextRenderer richText={value.rich_text} />
                     </p>
                   </div>
