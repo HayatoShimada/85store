@@ -63,7 +63,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
     return (
       <div className="my-8 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
         <p className="text-red-600 dark:text-red-400 text-center">
-          商品情報を読み込めませんでした
+          Error:商品情報を読み込めませんでした
         </p>
       </div>
     );
@@ -98,7 +98,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
             {!product.availableForSale && (
               <div className="absolute inset-0 bg-black bg-opacity-60 rounded-lg flex items-center justify-center">
                 <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full">
-                  在庫なし
+                  Out of Stock (sold out)
                 </span>
               </div>
             )}
@@ -137,7 +137,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              {product.availableForSale ? 'オンラインストアで見る' : '在庫なし'}
+              {product.availableForSale ? 'View on Online Store' : 'Out of Stock (sold out)'}
             </Link>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            この商品は 85-Store オンラインショップで購入できます
+            This product is available on 85-Store Online Store
           </p>
         </div>
       </div>

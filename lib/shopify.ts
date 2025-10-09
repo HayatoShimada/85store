@@ -137,8 +137,7 @@ export async function createCheckout(variantId: string, quantity: number = 1) {
 export function getProductUrl(handle: string): string {
   const storeDomain = process.env.SHOPIFY_STORE_DOMAIN || "";
   // myshopify.comドメインをオンラインストアドメイン（shop.85-store.com）に変換
-  const onlineStoreDomain = "shop.85-store.com";
-  return `https://${onlineStoreDomain}/products/${handle}`;
+  return `https://${storeDomain}/products/${handle}`;
 }
 
 // 商品の在庫状況を取得

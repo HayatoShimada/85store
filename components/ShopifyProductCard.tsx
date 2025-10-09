@@ -50,7 +50,7 @@ export default function ShopifyProductCard({
           {/* Featured バッジ */}
           {product.featured && (
             <span className="absolute top-2 left-2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-              おすすめ
+              Featured
             </span>
           )}
 
@@ -58,7 +58,7 @@ export default function ShopifyProductCard({
           {!availableForSale && (
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <span className="bg-gray-800 text-white text-sm font-bold px-4 py-2 rounded-lg">
-                在庫なし
+                Out of Stock (sold out)
               </span>
             </div>
           )}
@@ -81,7 +81,7 @@ export default function ShopifyProductCard({
               {formatPrice(product.price)}
             </p>
             <span className="text-sm text-primary group-hover:underline flex items-center gap-1">
-              詳細を見る
+              View Details
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
