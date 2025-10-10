@@ -3,16 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/types/notion";
-import { getProductUrl } from "@/lib/shopify";
 
 interface ShopifyProductCardProps {
   product: Product;
   availableForSale?: boolean;
+  productUrl: string;
 }
 
 export default function ShopifyProductCard({
   product,
-  availableForSale = true
+  availableForSale = true,
+  productUrl
 }: ShopifyProductCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ja-JP', {
@@ -21,17 +22,10 @@ export default function ShopifyProductCard({
     }).format(price);
   };
 
-  const productUrl = getProductUrl(product.shopifyHandle);
-
   return (
-    <Link
-      href={productUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block"
-    >
-      <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
-        <div className="relative h-64 w-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+    <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
+      <Link href={productUrl} target="_blank" rel="noopener noreferrer">
+        <div className="relative h-64 w-full overflow-hidden bg-gray-50">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
@@ -64,31 +58,25 @@ export default function ShopifyProductCard({
           )}
         </div>
 
-        <div className="p-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-            {product.category}
-          </p>
-          <h3 className="text-lg font-semibold text-secondary dark:text-white mb-2 group-hover:text-primary transition-colors line-clamp-2">
+        <div className="p-6">
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
+            {product.category && (
+              <span className="px-2 py-1 rounded-full text-xs font-medium border border-gray-300 text-gray-700">
+                {product.category}
+              </span>
+            )}
+            <span className="text-xl font-bold text-primary">
+              {formatPrice(product.price)}
+            </span>
+          </div>
+          <h3 className="text-xl font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
           {product.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
-              {product.description}
-            </p>
+            <p className="text-gray-600 line-clamp-2">{product.description}</p>
           )}
-          <div className="flex items-center justify-between">
-            <p className="text-xl font-bold text-primary">
-              {formatPrice(product.price)}
-            </p>
-            <span className="text-sm text-primary group-hover:underline flex items-center gap-1">
-              View Details
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </span>
-          </div>
         </div>
-      </article>
-    </Link>
+      </Link>
+    </article>
   );
 }

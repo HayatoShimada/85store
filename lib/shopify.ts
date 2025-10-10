@@ -1,10 +1,16 @@
 import { createStorefrontApiClient } from "@shopify/storefront-api-client";
 
-const client = createStorefrontApiClient({
-  storeDomain: process.env.SHOPIFY_STORE_DOMAIN || "",
-  apiVersion: "2025-10",
-  publicAccessToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN || "",
-});
+function getClient() {
+  if (!process.env.SHOPIFY_STORE_DOMAIN || !process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
+    throw new Error("Shopify configuration is missing. Please set SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_ACCESS_TOKEN environment variables.");
+  }
+
+  return createStorefrontApiClient({
+    storeDomain: process.env.SHOPIFY_STORE_DOMAIN,
+    apiVersion: "2025-10",
+    publicAccessToken: process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN,
+  });
+}
 
 export async function getProducts(first: number = 10) {
   const query = `
@@ -36,6 +42,7 @@ export async function getProducts(first: number = 10) {
     }
   `;
 
+  const client = getClient();
   const { data, errors } = await client.request(query, {
     variables: { first },
   });
@@ -86,6 +93,7 @@ export async function getProduct(handle: string) {
     }
   `;
 
+  const client = getClient();
   const { data, errors } = await client.request(query, {
     variables: { handle },
   });
@@ -118,6 +126,7 @@ export async function createCheckout(variantId: string, quantity: number = 1) {
     }
   `;
 
+  const client = getClient();
   const { data, errors } = await client.request(mutation, {
     variables: { variantId, quantity },
   });
@@ -162,6 +171,7 @@ export async function getProductAvailability(handle: string): Promise<{
     }
   `;
 
+  const client = getClient();
   const { data, errors } = await client.request(query, {
     variables: { handle },
   });

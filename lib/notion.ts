@@ -80,12 +80,12 @@ function parseNotionProduct(page: unknown): Product {
     id: p.id,
     name: properties.Name?.title?.[0]?.text?.content || "",
     shopifyHandle: properties.ShopifyHandle?.rich_text?.[0]?.text?.content || "",
-    category: properties.Category?.select?.name || "",
+    category: properties.Category?.multi_select?.[0]?.name || "",
     price: properties.Price?.number || 0,
     images: properties.Images?.files?.map((file: unknown) => (file as any).file?.url || (file as any).external?.url) || [],
     description: properties.Description?.rich_text?.[0]?.text?.content || "",
     featured: properties.Featured?.checkbox || false,
-    status: properties.Status?.select?.name || "",
+    status: properties.Status?.multi_select?.[0]?.name || "",
     createdAt: p.created_time,
   };
 }
@@ -205,8 +205,8 @@ export async function getProducts(options?: { featured?: boolean; limit?: number
       and: [
         {
           property: "Status",
-          select: {
-            equals: "Active",
+          multi_select: {
+            contains: "Active",
           },
         },
       ],
@@ -226,7 +226,7 @@ export async function getProducts(options?: { featured?: boolean; limit?: number
       filter: filters,
       sorts: [
         {
-          property: "CreatedTime",
+          timestamp: "created_time",
           direction: "descending",
         },
       ],
