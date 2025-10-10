@@ -11,7 +11,7 @@ export default function Header() {
     <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
       <nav className="section-padding max-container">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.svg"
               alt="85-Store Logo"
@@ -19,7 +19,13 @@ export default function Header() {
               height={40}
               className="w-10 h-10"
             />
-            
+            <Image
+              src="/headersnoo.png"
+              alt="85-Store"
+              width={120}
+              height={40}
+              className="h-10 w-auto"
+            />
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">

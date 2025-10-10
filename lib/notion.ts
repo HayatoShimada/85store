@@ -76,13 +76,33 @@ function parseNotionBlogPost(page: unknown): BlogPost {
 function parseNotionProduct(page: unknown): Product {
   const p = page as any;
   const properties = p.properties;
+  const shopifyHandle = properties.ShopifyHandle?.rich_text?.[0]?.text?.content || "";
+
+  // 画像URLと期限情報を取得
+  const imageFiles = properties.Images?.files || [];
+  const images = imageFiles.map((file: any) => {
+    const url = file.file?.url || file.external?.url || "";
+    return getLocalImageUrl(url, shopifyHandle);
+  });
+
+  // 最初の画像の期限情報を保存
+  let imageExpiryTime: string | undefined;
+  let imageBlockId: string | undefined;
+
+  if (imageFiles.length > 0) {
+    imageExpiryTime = imageFiles[0].file?.expiry_time;
+    imageBlockId = p.id; // 画像のブロックIDとしてページIDを使用
+  }
+
   return {
     id: p.id,
     name: properties.Name?.title?.[0]?.text?.content || "",
-    shopifyHandle: properties.ShopifyHandle?.rich_text?.[0]?.text?.content || "",
+    shopifyHandle: shopifyHandle,
     category: properties.Category?.multi_select?.[0]?.name || "",
     price: properties.Price?.number || 0,
-    images: properties.Images?.files?.map((file: unknown) => (file as any).file?.url || (file as any).external?.url) || [],
+    images: images,
+    imageExpiryTime: imageExpiryTime,
+    imageBlockId: imageBlockId,
     description: properties.Description?.rich_text?.[0]?.text?.content || "",
     featured: properties.Featured?.checkbox || false,
     status: properties.Status?.multi_select?.[0]?.name || "",

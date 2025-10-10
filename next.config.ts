@@ -36,6 +36,9 @@ const nextConfig: NextConfig = {
         pathname: '/logo.svg',
       },
       {
+        pathname: '/headersnoo.png',
+      },
+      {
         pathname: '/images/**',
       },
       {

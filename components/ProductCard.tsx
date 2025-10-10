@@ -1,12 +1,18 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { Product } from "@/types/notion";
+import { useNotionImage } from "@/hooks/useNotionImage";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const [localImageLoading, setLocalImageLoading] = useState(true);
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('ja-JP', {
       style: 'currency',
@@ -14,16 +20,61 @@ export default function ProductCard({ product }: ProductCardProps) {
     }).format(price);
   };
 
+  // 画像が存在しない場合はuseNotionImageフックを使用しない
+  const hasImage = Boolean(product.images[0] && product.images[0].trim() !== '');
+
+  // useNotionImageフックを使用して画像の期限切れ判定と再取得を行う
+  const {
+    imageUrl,
+    handleImageLoad: swrHandleImageLoad,
+    handleImageError: swrHandleImageError
+  } = useNotionImage({
+    url: product.images[0] || '',
+    expiryTime: product.imageExpiryTime,
+    blockId: product.imageBlockId,
+  }, {
+    enabled: hasImage
+  });
+
+  const handleError = () => {
+    // 既にプレースホルダー画像の場合はログを出さない
+    if (imageUrl !== '/images/placeholder.svg') {
+      console.error('Image failed to load:', imageUrl);
+      console.log('Image details:', { src: product.images[0], expiryTime: product.imageExpiryTime, blockId: product.imageBlockId });
+    }
+    setLocalImageLoading(false);
+    swrHandleImageError();
+  };
+
+  const handleLoad = () => {
+    setLocalImageLoading(false);
+    swrHandleImageLoad();
+  };
+
+  // 画像URLが空または無効な場合はプレースホルダーを使用
+  const displayImageUrl = (hasImage && imageUrl && imageUrl.trim() !== '') ? imageUrl : '/images/placeholder.svg';
+
   return (
     <Link href={`/products/${product.shopifyHandle}`} className="group">
       <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1">
         <div className="relative h-64 w-full overflow-hidden bg-gray-100">
-          {product.images[0] ? (
+          {/* ローディングスピナー - 画像が存在し、かつローディング中またはリフレッシュ中の場合のみ表示 */}
+          {hasImage && localImageLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 z-10">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
+
+          {hasImage ? (
             <Image
-              src={product.images[0]}
+              src={displayImageUrl}
               alt={product.name}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-200"
+              className={`object-cover group-hover:scale-105 transition-transform duration-200 ${localImageLoading ? 'opacity-0' : 'opacity-100'}`}
+              onError={handleError}
+              onLoad={handleLoad}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              priority={false}
             />
           ) : (
             <div className="flex items-center justify-center h-full text-gray-400">
