@@ -24,6 +24,8 @@ export interface Product {
   category: string;
   price: number;
   images: string[];
+  imageExpiryTime?: string;
+  imageBlockId?: string;
   description: string;
   featured: boolean;
   status: string;
