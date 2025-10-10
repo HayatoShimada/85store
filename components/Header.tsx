@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAlternateImage, setIsAlternateImage] = useState(false);
 
   return (
     <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
@@ -20,11 +21,15 @@ export default function Header() {
               className="w-10 h-10"
             />
             <Image
-              src="/headersnoo.png"
+              src={isAlternateImage ? "/headersnoo2.png" : "/headersnoo.png"}
               alt="85-Store"
               width={120}
               height={40}
-              className="h-10 w-auto"
+              className="h-10 w-auto cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsAlternateImage(!isAlternateImage);
+              }}
             />
           </Link>
 
