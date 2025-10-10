@@ -39,6 +39,9 @@ const nextConfig: NextConfig = {
         pathname: '/headersnoo.png',
       },
       {
+        pathname: '/headersnoo2.png',
+      },
+      {
         pathname: '/images/**',
       },
       {
