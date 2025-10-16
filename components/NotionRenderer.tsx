@@ -88,25 +88,8 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
     );
   }
 
-  // デバッグ用: ブロック構造をログ出力
-  console.log('NotionRenderer - Original blocks:', blocks.map((block: any) => ({
-    type: block.type,
-    id: block.id,
-    hasChildren: !!block.children,
-    children: block.children?.map((child: any) => ({
-      type: child.type,
-      id: child.id
-    })) || []
-  })));
-
   // ブロックをグループ化してリストを適切に処理
   const processedBlocks = processBlocks(blocks);
-  
-  console.log('NotionRenderer - Processed blocks:', processedBlocks.map((block: any) => ({
-    type: block.type,
-    id: block.id,
-    itemsCount: block.items?.length || 0
-  })));
 
   return (
     <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-img:mx-auto prose-headings:scroll-mt-20">
@@ -253,14 +236,32 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
             );
 
           case "callout":
-            // Shopify商品埋め込み用のcalloutブロック（🛍️アイコン）
             const icon = value.icon?.emoji || "💡";
-            if (icon === "🛍️" || icon === "🛒") {
-              // テキストからShopify product handleを抽出
-              const productHandle = value.rich_text
-                ?.map((text: any) => text.plain_text)
-                .join("")
-                .trim();
+            // テキストからShopify product handleを抽出
+            const calloutText = value.rich_text
+              ?.map((text: any) => text.plain_text)
+              .join("")
+              .trim();
+
+            // {{shopify-product:ハンドル}} の形式をチェック
+            const shopifyProductMatch = calloutText?.match(/\{\{shopify-product:(.+?)\}\}/);
+
+            // ShopifyストアのURL形式をチェック（例: https://shop.85-store.com/products/ハンドル）
+            const shopifyUrlMatch = calloutText?.match(/\/products\/([^\/\s?]+)/);
+
+            // パターンマッチまたは🛍️/🛒アイコンでShopify商品を表示
+            if (shopifyProductMatch || shopifyUrlMatch || icon === "🛍️" || icon === "🛒") {
+              // 優先順位: {{shopify-product:}} > URL > テキスト全体
+              let productHandle = "";
+
+              if (shopifyProductMatch) {
+                productHandle = shopifyProductMatch[1].trim();
+              } else if (shopifyUrlMatch) {
+                // URLからハンドルを抽出（URLデコード）
+                productHandle = decodeURIComponent(shopifyUrlMatch[1].trim());
+              } else {
+                productHandle = calloutText;
+              }
 
               if (productHandle) {
                 return <ShopifyProductEmbed key={id} productHandle={productHandle} />;
@@ -517,7 +518,6 @@ export function NotionRenderer({ blocks }: NotionRendererProps) {
             );
 
           default:
-            console.log(`Unsupported block type: ${type}`);
             return (
               <div key={id} className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
                 <p className="text-yellow-800 text-sm">

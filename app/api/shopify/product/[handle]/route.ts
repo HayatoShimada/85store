@@ -26,6 +26,7 @@ export async function GET(
 
     // 必要な情報だけを抽出
     const productData = {
+      handle: product.handle, // ハンドルを追加（URLリンク用）
       title: product.title,
       description: product.description || "",
       price: new Intl.NumberFormat('ja-JP', {
@@ -44,7 +45,6 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Error fetching product:", error);
     return NextResponse.json(
       { error: "Failed to fetch product" },
       { status: 500 }
