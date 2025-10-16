@@ -10,6 +10,7 @@ interface ShopifyProductEmbedProps {
 }
 
 interface ProductData {
+  handle: string; // 商品ハンドル（URL生成用）
   title: string;
   description: string;
   price: string;
@@ -33,7 +34,6 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
         const data = await response.json();
         setProduct(data);
       } catch (err) {
-        console.error('Error fetching product:', err);
         setError(true);
       } finally {
         setLoading(false);
@@ -45,14 +45,14 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
 
   if (loading) {
     return (
-      <div className="my-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg animate-pulse">
+      <div className="my-8 p-6 bg-white rounded-lg animate-pulse border border-gray-200">
         <div className="flex flex-col md:flex-row gap-6">
-          <div className="w-full md:w-48 h-48 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+          <div className="w-full md:w-48 h-48 bg-gray-200 rounded-lg" />
           <div className="flex-1 space-y-3">
-            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+            <div className="h-6 bg-gray-200 rounded w-3/4" />
+            <div className="h-4 bg-gray-200 rounded w-1/4" />
+            <div className="h-4 bg-gray-200 rounded w-full" />
+            <div className="h-4 bg-gray-200 rounded w-full" />
           </div>
         </div>
       </div>
@@ -61,19 +61,20 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
 
   if (error || !product) {
     return (
-      <div className="my-8 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-        <p className="text-red-600 dark:text-red-400 text-center">
+      <div className="my-8 p-6 bg-white rounded-lg border border-red-200">
+        <p className="text-red-600 text-center">
           Error:商品情報を読み込めませんでした
         </p>
       </div>
     );
   }
 
-  const productUrl = getProductUrl(productHandle);
+  // APIから返された実際のハンドルを使用（数値IDではなく）
+  const productUrl = getProductUrl(product.handle);
 
   return (
     <div className="my-8 not-prose">
-      <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+      <div className="bg-white rounded-xl overflow-hidden border border-gray-200">
         <div className="flex flex-col md:flex-row gap-6 p-6">
           {/* 商品画像 */}
           <div className="relative w-full md:w-48 h-48 flex-shrink-0">
@@ -86,7 +87,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
                   className="object-cover rounded-lg hover:scale-105 transition-transform duration-300"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
                   <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
@@ -108,7 +109,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
           <div className="flex-1 flex flex-col justify-between">
             <div>
               <div className="flex items-start justify-between gap-4 mb-3">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2">
+                <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
                   {product.title}
                 </h3>
                 <span className="text-2xl font-bold text-primary whitespace-nowrap">
@@ -117,7 +118,7 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
               </div>
 
               {product.description && (
-                <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4">
                   {product.description}
                 </p>
               )}
@@ -130,8 +131,8 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
               rel="noopener noreferrer"
               className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
                 product.availableForSale
-                  ? 'bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg'
-                  : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                  ? 'bg-primary hover:bg-primary/90 text-white'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,8 +144,8 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
         </div>
 
         {/* ストアバッジ */}
-        <div className="bg-gray-100 dark:bg-gray-800/50 px-6 py-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+        <div className="bg-gray-100 px-6 py-3 border-t border-gray-200">
+          <p className="text-xs text-gray-500 flex items-center gap-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
