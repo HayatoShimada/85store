@@ -268,6 +268,56 @@ export async function getLatestProducts(limit: number = 4) {
   return getProducts({ limit });
 }
 
+// Featured商品のメタデータを取得（ShopifyHandle、カテゴリー、Featured状態）
+export async function getFeaturedProductMeta(limit: number = 6) {
+  if (!process.env.NOTION_PRODUCTS_DATABASE_ID || process.env.NOTION_PRODUCTS_DATABASE_ID === 'your_notion_products_database_id_here') {
+    console.warn("NOTION_PRODUCTS_DATABASE_ID is not properly configured");
+    return [];
+  }
+
+  try {
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_PRODUCTS_DATABASE_ID,
+      filter: {
+        and: [
+          {
+            property: "Status",
+            multi_select: {
+              contains: "Active",
+            },
+          },
+          {
+            property: "Featured",
+            checkbox: {
+              equals: true,
+            },
+          },
+        ],
+      },
+      sorts: [
+        {
+          timestamp: "created_time",
+          direction: "descending",
+        },
+      ],
+      page_size: limit,
+    });
+
+    return response.results.map((page: any) => {
+      const properties = page.properties;
+      return {
+        id: page.id,
+        shopifyHandle: properties.ShopifyHandle?.rich_text?.[0]?.text?.content || "",
+        category: properties.Category?.multi_select?.[0]?.name || "",
+        featured: properties.Featured?.checkbox || false,
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching featured product meta:", error);
+    return [];
+  }
+}
+
 export async function getBlogPostsByCategory(category: string, limit?: number) {
   if (!process.env.NOTION_BLOG_DATABASE_ID) {
     console.warn("NOTION_BLOG_DATABASE_ID is not defined");

@@ -18,7 +18,14 @@
       "Bash(npm run build:*)",
       "Bash(curl:*)",
       "Bash(npx tsx:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(test:*)",
+      "Bash(/dev/null)",
+      "Bash(node test-shopify-handle.js)",
+      "Bash(DOTENV_CONFIG_PATH=.env.local node:*)",
+      "Read(//tmp/**)",
+      "Bash(node test-all-products.js)",
+      "Bash(node:*)"
     ],
     "deny": []
   }
