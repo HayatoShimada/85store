@@ -48,9 +48,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen section-bg-gradient">
       {/* Hero Section */}
-      <section className="bg-white py-20">
+      <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
             {/* Breadcrumb */}
@@ -95,7 +95,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
 
       {/* Other Categories */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="section-padding max-container">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-secondary mb-4">
@@ -108,20 +108,20 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
-              { name: "Fashion", label: "ファッション", color: "bg-pink-100 text-pink-800" },
-              { name: "Life Style", label: "ライフスタイル", color: "bg-blue-100 text-blue-800" },
-              { name: "Shop Info", label: "店舗情報", color: "bg-green-100 text-green-800" },
-              { name: "Products", label: "商品", color: "bg-purple-100 text-purple-800" },
-              { name: "Event", label: "イベント", color: "bg-orange-100 text-orange-800" },
+              { name: "Fashion", label: "ファッション", color: "text-pink-700" },
+              { name: "Life Style", label: "ライフスタイル", color: "text-blue-700" },
+              { name: "Shop Info", label: "店舗情報", color: "text-green-700" },
+              { name: "Products", label: "商品", color: "text-purple-700" },
+              { name: "Event", label: "イベント", color: "text-orange-700" },
             ]
             .filter(cat => cat.name !== capitalizedCategory)
             .map((category) => (
               <Link
                 key={category.name}
                 href={`/blog/category/${category.name.toLowerCase().replace(' ', '-')}`}
-                className={`p-4 rounded-lg text-center transition-colors hover:opacity-80 ${category.color}`}
+                className={`category-card ${category.color}`}
               >
-                <div className="font-semibold">{category.label}</div>
+                <div className="font-semibold relative z-10">{category.label}</div>
               </Link>
             ))}
           </div>

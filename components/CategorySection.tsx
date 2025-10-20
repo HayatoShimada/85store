@@ -6,11 +6,11 @@ interface CategorySectionProps {
 
 export function CategorySection({ categories }: CategorySectionProps) {
   const categoryConfigs: Record<string, { label: string; color: string }> = {
-    "Fashion": { label: "ファッション", color: "bg-pink-100 text-pink-800" },
-    "Life Style": { label: "ライフスタイル", color: "bg-blue-100 text-blue-800" },
-    "Shop Info": { label: "店舗情報", color: "bg-green-100 text-green-800" },
-    "Products": { label: "商品", color: "bg-purple-100 text-purple-800" },
-    "Event": { label: "イベント", color: "bg-orange-100 text-orange-800" },
+    "Fashion": { label: "ファッション", color: "text-pink-700" },
+    "Life Style": { label: "ライフスタイル", color: "text-blue-700" },
+    "Shop Info": { label: "店舗情報", color: "text-green-700" },
+    "Products": { label: "商品", color: "text-purple-700" },
+    "Event": { label: "イベント", color: "text-orange-700" },
   };
 
   // カテゴリが空の場合は何も表示しない
@@ -19,7 +19,7 @@ export function CategorySection({ categories }: CategorySectionProps) {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16">
       <div className="section-padding max-container">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-secondary mb-4">
@@ -29,18 +29,18 @@ export function CategorySection({ categories }: CategorySectionProps) {
         
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {categories.map((category: string) => {
-            const categoryConfig = categoryConfigs[category] || { 
-              label: category, 
-              color: "bg-gray-100 text-gray-800" 
+            const categoryConfig = categoryConfigs[category] || {
+              label: category,
+              color: "text-gray-700"
             };
 
             return (
               <Link
                 key={category}
                 href={`/blog/category/${category.toLowerCase().replace(' ', '-')}`}
-                className={`p-4 rounded-lg text-center transition-colors hover:opacity-80 ${categoryConfig.color}`}
+                className={`category-card ${categoryConfig.color}`}
               >
-                <div className="font-semibold">{categoryConfig.label}</div>
+                <div className="font-semibold relative z-10">{categoryConfig.label}</div>
               </Link>
             );
           })}

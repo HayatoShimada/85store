@@ -60,9 +60,9 @@ export default function ContactPage() {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen section-bg-gradient">
       {/* Hero Section */}
-      <section className="bg-white py-20">
+      <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
@@ -80,7 +80,7 @@ export default function ContactPage() {
         <div className="section-padding max-container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Store Information */}
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="card-acrylic p-8">
               <h2 className="text-2xl font-bold text-secondary mb-6">
                 店舗情報
               </h2>
@@ -122,7 +122,7 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="card-acrylic p-8">
               <h2 className="text-2xl font-bold text-secondary mb-6">
                 お問い合わせフォーム
               </h2>
@@ -229,7 +229,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">
@@ -250,7 +250,7 @@ export default function ContactPage() {
       </section>
 
       {/* Map Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16">
         <div className="section-padding max-container">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-secondary mb-4">
@@ -261,7 +261,7 @@ export default function ContactPage() {
             </p>
           </div>
           
-          <div className="rounded-lg h-96 overflow-hidden shadow-lg">
+          <div className="card-acrylic h-96 overflow-hidden">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
               width="100%"

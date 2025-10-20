@@ -9,7 +9,7 @@ export default function Header() {
   const [isAlternateImage, setIsAlternateImage] = useState(false);
 
   return (
-    <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+    <header className="fixed top-0 w-full header-acrylic z-50">
       <nav className="section-padding max-container">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3">

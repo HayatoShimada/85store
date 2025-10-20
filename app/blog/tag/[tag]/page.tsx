@@ -26,7 +26,7 @@ export default async function TagPage({ params }: TagPageProps) {
   const blogPosts = await getBlogPostsByTag(decodedTag);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen section-bg-gradient">
       {/* Page Header */}
       <div className="section-padding max-container py-8 md:py-16">
         <div className="mb-8 md:mb-12">
