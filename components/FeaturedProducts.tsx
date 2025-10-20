@@ -13,7 +13,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16">
       <div className="section-padding max-container">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
@@ -36,7 +36,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         </div>
 
         <div className="text-center mt-8">
-          <Link href="https://shop.85-store.com" target="_blank" rel="noopener noreferrer" className="btn-outline">
+          <Link href="https://shop.85-store.com" target="_blank" rel="noopener noreferrer" className="btn-primary">
             View all Products in Online Shop
           </Link>
         </div>

@@ -53,11 +53,11 @@ export default async function Home() {
   
 
   return (
-    <>
+    <div className="section-bg-gradient">
       <HeroSection />
 
       {/* 最新のブログ記事 */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16">
         <div className="section-padding max-container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
@@ -77,7 +77,7 @@ export default async function Home() {
           )}
 
           <div className="text-center mt-8">
-            <Link href="/blog" className="btn-outline">
+            <Link href="/blog" className="btn-primary">
               See All Posts
             </Link>
           </div>
@@ -86,6 +86,6 @@ export default async function Home() {
 
       {/* おすすめ商品セクション */}
       <FeaturedProducts products={featuredProducts} />
-    </>
+    </div>
   );
 }

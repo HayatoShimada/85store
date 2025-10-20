@@ -49,7 +49,7 @@ export default function BlogCard({ post }: BlogCardProps) {
   const displayImageUrl = (hasImage && imageUrl && imageUrl.trim() !== '') ? imageUrl : '/images/placeholder.svg';
 
   return (
-    <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
+    <article className="card-acrylic group">
       <Link href={`/blog/${post.slug}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
           {/* ローディングスピナー - 画像が存在し、かつローディング中またはリフレッシュ中の場合のみ表示 */}

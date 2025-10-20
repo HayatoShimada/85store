@@ -74,7 +74,7 @@ export default function HeroSection({
           <Link href="https://shop.85-store.com/" className="btn-primary">
             Online Shop
           </Link>
-          <Link href="/blog" className="btn-outline border-white text-white hover:bg-white hover:text-charcoal">
+          <Link href="/blog" className="btn-secondary">
             Blog
           </Link>
         </div>

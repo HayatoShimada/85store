@@ -15,9 +15,9 @@ export default async function BlogPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen section-bg-gradient">
       {/* Hero Section */}
-      <section className="bg-white py-20">
+      <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6">

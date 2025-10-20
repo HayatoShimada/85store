@@ -4,7 +4,7 @@ import Zenn from "./icons/Zenn";
 
 export default function Footer() {
   return (
-    <footer className="bg-secondary text-white">
+    <footer className="footer-acrylic text-white">
       <div className="section-padding max-container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>

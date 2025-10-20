@@ -23,7 +23,7 @@ export default function ShopifyProductCard({
   };
 
   return (
-    <article className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-200 hover:shadow-xl hover:-translate-y-1 group">
+    <article className="card-acrylic group">
       <Link href={productUrl} target="_blank" rel="noopener noreferrer">
         <div className="relative h-64 w-full overflow-hidden bg-gray-50">
           {product.images[0] ? (
