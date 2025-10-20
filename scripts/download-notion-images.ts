@@ -1,3 +1,7 @@
+// 環境変数を最初に読み込む（他のimportより前）
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
 import fs, { createWriteStream } from 'fs';
 import path from 'path';
 import crypto from 'crypto';
@@ -5,11 +9,7 @@ import { pipeline } from 'node:stream/promises';
 import axios from 'axios';
 import sharp from 'sharp';
 import ExifTransformer from 'exif-be-gone';
-import dotenv from 'dotenv';
-import { getBlogPosts, getBlogPost } from '../lib/notion';
-
-// 環境変数を読み込む
-dotenv.config({ path: '.env.local' });
+// Notionクライアントは動的にimportする（環境変数読み込み後）
 
 // デバッグ: 環境変数の確認
 console.log('Environment check:', {
@@ -51,11 +51,18 @@ async function downloadImage(url: string, filename: string): Promise<string | nu
   let stream = res.data;
   // JPEG画像の場合は、EXIFメタデータを削除しながら自動回転
   if (isJpeg) {
-    try {
-      stream = stream.pipe(new ExifTransformer()).pipe(rotate);
-      console.log(`Downloaded: ${filename} (EXIF removed, auto-rotated)`);
-    } catch (exifErr) {
-      console.warn(`Warning: Could not process EXIF for ${filename}:`, exifErr);
+    // ExifTransformerを関数として呼び出す（クラスではない場合）
+    if (typeof ExifTransformer === 'function') {
+      try {
+        const exifTransformer = ExifTransformer.prototype ? new ExifTransformer() : ExifTransformer();
+        stream = stream.pipe(exifTransformer).pipe(rotate);
+        console.log(`Downloaded: ${filename} (EXIF removed, auto-rotated)`);
+      } catch (exifErr) {
+        // EXIF処理に失敗した場合は、sharpのみで回転
+        stream = res.data.pipe(rotate);
+        console.log(`Downloaded: ${filename} (rotated only)`);
+      }
+    } else {
       stream = res.data.pipe(rotate);
       console.log(`Downloaded: ${filename} (rotated only)`);
     }
@@ -115,7 +122,10 @@ async function processBlockImages(blocks: any[], postSlug: string, imageMap: Map
 
 export async function downloadAllNotionImages() {
   console.log('Starting Notion image download...');
-  
+
+  // 動的にNotionクライアントをimport（環境変数読み込み後）
+  const { getBlogPosts, getBlogPost } = await import('../lib/notion.js');
+
   // 画像保存ディレクトリを作成
   if (!fs.existsSync(IMAGES_DIR)) {
     fs.mkdirSync(IMAGES_DIR, { recursive: true });

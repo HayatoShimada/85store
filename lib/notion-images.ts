@@ -20,22 +20,53 @@ function loadImageMapping(): Record<string, Record<string, string>> {
   return {};
 }
 
+// URLからベース部分（クエリパラメータを除く）を抽出
+function getUrlBase(url: string): string {
+  try {
+    const urlObj = new URL(url);
+    return `${urlObj.origin}${urlObj.pathname}`;
+  } catch {
+    return url;
+  }
+}
+
 export function getLocalImageUrl(originalUrl: string, postSlug?: string): string {
+  if (!originalUrl) return originalUrl;
+
   const mapping = loadImageMapping();
-  
+  const originalUrlBase = getUrlBase(originalUrl);
+
   // 記事ごとのマッピングを確認
   if (postSlug && mapping[postSlug]) {
-    const localUrl = mapping[postSlug][originalUrl];
-    if (localUrl) return localUrl;
+    // 完全一致を試す
+    if (mapping[postSlug][originalUrl]) {
+      return mapping[postSlug][originalUrl];
+    }
+
+    // ベースURL（クエリパラメータなし）で比較
+    for (const [mappedUrl, localPath] of Object.entries(mapping[postSlug])) {
+      if (getUrlBase(mappedUrl) === originalUrlBase) {
+        return localPath;
+      }
+    }
   }
-  
+
   // 全記事を検索
   for (const slug in mapping) {
-    const localUrl = mapping[slug][originalUrl];
-    if (localUrl) return localUrl;
+    // 完全一致を試す
+    if (mapping[slug][originalUrl]) {
+      return mapping[slug][originalUrl];
+    }
+
+    // ベースURL（クエリパラメータなし）で比較
+    for (const [mappedUrl, localPath] of Object.entries(mapping[slug])) {
+      if (getUrlBase(mappedUrl) === originalUrlBase) {
+        return localPath;
+      }
+    }
   }
-  
-  // マッピングが見つからない場合は元のURLを返す（期限情報は保持）
+
+  // マッピングが見つからない場合は元のURLを返す
   return originalUrl;
 }
 
