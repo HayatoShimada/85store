@@ -26,6 +26,7 @@ export default function Header() {
               width={120}
               height={40}
               className="h-10 w-auto cursor-pointer"
+              style={{ width: 'auto' }}
               onClick={(e) => {
                 e.preventDefault();
                 setIsAlternateImage(!isAlternateImage);
