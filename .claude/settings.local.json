@@ -25,7 +25,9 @@
       "Bash(DOTENV_CONFIG_PATH=.env.local node:*)",
       "Read(//tmp/**)",
       "Bash(node test-all-products.js)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(tsx test-local-images.ts)"
     ],
     "deny": []
   }

@@ -25,13 +25,15 @@ export default function ShopifyProductCard({
   return (
     <article className="card-acrylic group">
       <Link href={productUrl} target="_blank" rel="noopener noreferrer">
-        <div className="relative h-64 w-full overflow-hidden bg-gray-50">
+        <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-gray-100 rounded-t-lg">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-200"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1200px) 50vw, 33vw"
+              quality={75}
             />
           ) : (
             <div className="flex items-center justify-center h-full text-gray-400">

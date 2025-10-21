@@ -1,15 +1,18 @@
+// 環境変数を最初に読み込む（他のimportより前）
+// ローカル開発時のみ.env.localを読み込む（Vercelでは不要）
+import dotenv from 'dotenv';
 import fs, { createWriteStream } from 'fs';
+if (fs.existsSync('.env.local')) {
+  dotenv.config({ path: '.env.local' });
+}
+
 import path from 'path';
 import crypto from 'crypto';
 import { pipeline } from 'node:stream/promises';
 import axios from 'axios';
 import sharp from 'sharp';
 import ExifTransformer from 'exif-be-gone';
-import dotenv from 'dotenv';
-import { getBlogPosts, getBlogPost } from '../lib/notion';
-
-// 環境変数を読み込む
-dotenv.config({ path: '.env.local' });
+// Notionクライアントは動的にimportする（環境変数読み込み後）
 
 // デバッグ: 環境変数の確認
 console.log('Environment check:', {
@@ -51,11 +54,18 @@ async function downloadImage(url: string, filename: string): Promise<string | nu
   let stream = res.data;
   // JPEG画像の場合は、EXIFメタデータを削除しながら自動回転
   if (isJpeg) {
-    try {
-      stream = stream.pipe(new ExifTransformer()).pipe(rotate);
-      console.log(`Downloaded: ${filename} (EXIF removed, auto-rotated)`);
-    } catch (exifErr) {
-      console.warn(`Warning: Could not process EXIF for ${filename}:`, exifErr);
+    // ExifTransformerを関数として呼び出す（クラスではない場合）
+    if (typeof ExifTransformer === 'function') {
+      try {
+        const exifTransformer = ExifTransformer.prototype ? new ExifTransformer() : (ExifTransformer as any)();
+        stream = stream.pipe(exifTransformer).pipe(rotate);
+        console.log(`Downloaded: ${filename} (EXIF removed, auto-rotated)`);
+      } catch (exifErr) {
+        // EXIF処理に失敗した場合は、sharpのみで回転
+        stream = res.data.pipe(rotate);
+        console.log(`Downloaded: ${filename} (rotated only)`);
+      }
+    } else {
       stream = res.data.pipe(rotate);
       console.log(`Downloaded: ${filename} (rotated only)`);
     }
@@ -85,37 +95,43 @@ async function processBlockImages(blocks: any[], postSlug: string, imageMap: Map
 
   for (const block of blocks) {
     const processedBlock = { ...block };
-    
+
     if (block.type === 'image') {
-      const imageUrl = block.image?.type === 'external' 
-        ? block.image.external?.url 
+      const imageUrl = block.image?.type === 'external'
+        ? block.image.external?.url
         : block.image?.file?.url;
-      
-      if (imageUrl && !imageMap.has(imageUrl)) {
+
+      // ローカルパス（すでにダウンロード済み）の場合はスキップ
+      const isLocalPath = imageUrl && (imageUrl.startsWith('/notion-images/') || imageUrl.startsWith('/images/'));
+
+      if (imageUrl && !isLocalPath && !imageMap.has(imageUrl)) {
         imageIndex++;
         const filename = getImageFilename(imageUrl, postSlug, imageIndex);
         const localPath = await downloadImage(imageUrl, filename);
-        
+
         if (localPath) {
           imageMap.set(imageUrl, localPath);
         }
       }
     }
-    
+
     // 子ブロックも再帰的に処理
     if (block.children && block.children.length > 0) {
       processedBlock.children = await processBlockImages(block.children, postSlug, imageMap);
     }
-    
+
     processedBlocks.push(processedBlock);
   }
-  
+
   return processedBlocks;
 }
 
 export async function downloadAllNotionImages() {
   console.log('Starting Notion image download...');
-  
+
+  // 動的にNotionクライアントをimport（環境変数読み込み後）
+  const { getBlogPosts, getBlogPost } = await import('../lib/notion.js');
+
   // 画像保存ディレクトリを作成
   if (!fs.existsSync(IMAGES_DIR)) {
     fs.mkdirSync(IMAGES_DIR, { recursive: true });
@@ -138,11 +154,16 @@ export async function downloadAllNotionImages() {
       
       // カバー画像をダウンロード
       if (post.coverImage) {
-        const coverFilename = getImageFilename(post.coverImage, post.slug, 0);
-        const localCoverPath = await downloadImage(post.coverImage, coverFilename);
-        
-        if (localCoverPath) {
-          imageMap.set(post.coverImage, localCoverPath);
+        // ローカルパス（すでにダウンロード済み）の場合はスキップ
+        const isLocalPath = post.coverImage.startsWith('/notion-images/') || post.coverImage.startsWith('/images/');
+
+        if (!isLocalPath) {
+          const coverFilename = getImageFilename(post.coverImage, post.slug, 0);
+          const localCoverPath = await downloadImage(post.coverImage, coverFilename);
+
+          if (localCoverPath) {
+            imageMap.set(post.coverImage, localCoverPath);
+          }
         }
       }
       
