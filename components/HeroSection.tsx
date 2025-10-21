@@ -5,20 +5,25 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 interface HeroSectionProps {
+  images?: string[]; // 画像パスの配列（オプショナル）
   subtitle?: string;
   transitionInterval?: number; // ミリ秒単位
 }
 
-// /public/heroフォルダ内の画像パス
-const HERO_IMAGES = [
+// デフォルトの画像パス（imagesが渡されない場合のフォールバック）
+const DEFAULT_HERO_IMAGES = [
   "/hero/HeroSample.jpg",
   "/hero/HeroSample2.jpg",
+  "/hero/HeroSample3.png",
 ];
 
 export default function HeroSection({ 
+  images,
   subtitle = "Short-Term & Long-Term",
-  transitionInterval = 5000 // デフォルト5秒
+  transitionInterval = 10000 // デフォルト10秒
 }: HeroSectionProps) {
+  // propsで渡された画像またはデフォルト画像を使用
+  const HERO_IMAGES = images && images.length > 0 ? images : DEFAULT_HERO_IMAGES;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
