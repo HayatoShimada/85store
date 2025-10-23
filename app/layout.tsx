@@ -34,6 +34,12 @@ export const metadata: Metadata = {
     apple: '/apple-icon.png',
   },
   manifest: '/manifest.json',
+  alternates: {
+    types: {
+      'application/rss+xml': '/feed.xml',
+      'application/atom+xml': '/atom.xml',
+    },
+  },
 };
 
 export default function RootLayout({
