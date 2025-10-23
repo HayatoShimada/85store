@@ -40,6 +40,9 @@ export const metadata: Metadata = {
       'application/atom+xml': '/atom.xml',
     },
   },
+  other: {
+    'facebook-domain-verification': 'y84pyco7jwz9q0tpw5rz6yv4154e6s',
+  },
 };
 
 export default function RootLayout({
