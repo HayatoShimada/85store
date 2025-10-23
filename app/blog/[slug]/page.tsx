@@ -8,6 +8,7 @@ import { NotionTableOfContents } from "@/components/NotionTableOfContents";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { ViewTracker } from "@/components/ViewTracker";
 import { getCategoryStyleClasses, getTagStyleClasses } from "@/utils/notionColors";
+import Rss from "@/components/icons/Rss";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -185,6 +186,38 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               
               {/* Article Content */}
               <NotionRenderer blocks={blocks} />
+
+              {/* RSS Subscribe Button */}
+              <div className="mt-12 pt-8 border-t border-gray-200">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 text-primary">
+                      <Rss />
+                    </div>
+                    <p className="text-gray-700 font-medium">
+                      最新記事をRSSで購読
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <a
+                      href="/feed.xml"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                      RSS
+                    </a>
+                    <a
+                      href="/atom.xml"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors text-sm font-medium"
+                    >
+                      Atom
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

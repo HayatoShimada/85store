@@ -36,7 +36,23 @@ export async function GET() {
     // 各ブログポストをフィードに追加
     posts.forEach((post) => {
       const postUrl = `${siteUrl}/blog/${post.slug}`;
-      
+
+      // 画像URLが相対パスの場合は絶対URLに変換
+      // NotionのS3 URLは除外（XMLエスケープの問題を避けるため）
+      let imageUrl: string | undefined = undefined;
+      if (post.coverImage) {
+        // NotionのS3 URLでない場合のみ含める
+        const isNotionS3Url = post.coverImage.includes('prod-files-secure.s3') ||
+                              post.coverImage.includes('s3.us-west-2.amazonaws.com') ||
+                              post.coverImage.includes('s3.amazonaws.com');
+
+        if (!isNotionS3Url) {
+          imageUrl = post.coverImage.startsWith('http')
+            ? post.coverImage
+            : `${siteUrl}${post.coverImage}`;
+        }
+      }
+
       feed.addItem({
         title: post.title,
         id: post.id,
@@ -53,7 +69,7 @@ export async function GET() {
           ...(post.category ? [{ name: post.category }] : []),
           ...post.tags.map(tag => ({ name: tag })),
         ],
-        image: post.coverImage || undefined,
+        image: imageUrl,
       });
     });
 

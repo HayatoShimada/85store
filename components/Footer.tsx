@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Zenn from "./icons/Zenn";
+import Rss from "./icons/Rss";
 
 export default function Footer() {
   return (
@@ -98,6 +99,17 @@ export default function Footer() {
               >
                 <div className="w-6 h-6">
                   <Zenn />
+                </div>
+              </a>
+              <a
+                href="/feed.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-primary transition-colors"
+                aria-label="RSS Feed"
+              >
+                <div className="w-6 h-6">
+                  <Rss />
                 </div>
               </a>
             </div>
