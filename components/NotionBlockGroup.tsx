@@ -7,6 +7,7 @@ interface NotionBlockGroupProps {
   endIndex?: number;
 }
 
+
 export function NotionBlockGroup({ blocks, startIndex = 0, endIndex }: NotionBlockGroupProps) {
   const blocksToRender = blocks.slice(startIndex, endIndex);
   
