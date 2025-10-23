@@ -40,9 +40,11 @@ export const metadata: Metadata = {
       'application/atom+xml': '/atom.xml',
     },
   },
-  other: {
-    'facebook-domain-verification': 'y84pyco7jwz9q0tpw5rz6yv4154e6s',
-  },
+  ...(process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION && {
+    other: {
+      'facebook-domain-verification': process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION,
+    },
+  }),
 };
 
 export default function RootLayout({
@@ -50,21 +52,27 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+
   return (
     <html lang="ja" className={`${montserrat.variable} ${notoSansJP.variable}`}>
       <head>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-6P0Q6TXEF6"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-6P0Q6TXEF6');
-          `}
-        </Script>
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}');
+              `}
+            </Script>
+          </>
+        )}
       </head>
       <body className="antialiased font-japanese">
         <Header />
