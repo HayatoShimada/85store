@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://85-store.com
+
+# Sitemaps
+Sitemap: https://85-store.com/sitemap.xml
