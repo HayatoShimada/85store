@@ -119,6 +119,45 @@ export default function ContactPage() {
                   </div>
                 </div>
               </div>
+
+              <h2 className="text-2xl font-bold text-secondary mb-6 mt-6">
+                WEEKEND LIMITED STORE
+              </h2>
+
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">住所</h3>
+                    <p className="text-gray-600">
+                      〒939-1305<br />
+                      富山県砺波市千保１３８番地<br />
+                      WEEKEND LIMITED STORE
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">営業時間</h3>
+                    <p className="text-gray-600">
+                      金曜日: 18:00 - 24:00<br />
+                      土日: 8:00 - 24:00<br />
+                      <span className="text-sm text-gray-500">※定休日は店舗にお問い合わせください</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Contact Form */}
@@ -254,7 +293,7 @@ export default function ContactPage() {
         <div className="section-padding max-container">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-secondary mb-4">
-              Access
+              85-Store
             </h2>
             <p className="text-gray-600">
               〒932-0217 富山県南砺市本町４丁目１００番地
@@ -264,6 +303,33 @@ export default function ContactPage() {
           <div className="card-acrylic h-96 overflow-hidden">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="85 STORE アクセス地図"
+            />
+          </div>
+        </div>
+      </section>
+
+            {/* Map Section */}
+      <section className="py-16">
+        <div className="section-padding max-container">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-secondary mb-4">
+              WEEKEND LIMITED STORE
+            </h2>
+            <p className="text-gray-600">
+              〒939-1305 富山県砺波市千保１３８番地
+            </p>
+          </div>
+          
+          <div className="card-acrylic h-96 overflow-hidden">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3201.3287369170434!2d136.9814815!3d36.642541400000006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff7870c0e306e7b%3A0x8934aa3333a1f0c6!2z44CSOTM5LTEzMDUg5a-M5bGx55yM56C65rOi5biC5Y2D5L-d77yR77yT77yY!5e0!3m2!1sja!2sjp!4v1764286493935!5m2!1sja!2sjp" 
               width="100%"
               height="100%"
               style={{ border: 0 }}
