@@ -70,6 +70,7 @@ function parseNotionBlogPost(page: unknown): BlogPost {
     tagColors: properties.Tags?.multi_select?.map((tag: unknown) => (tag as any).color) || [],
     status: properties.Status?.multi_select?.[0]?.name || "",
     views: properties.Views?.number || 0,
+    featured: properties.Featured?.checkbox || false,
   };
 }
 

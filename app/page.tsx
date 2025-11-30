@@ -4,6 +4,7 @@ import path from "path";
 import HeroSection from "@/components/HeroSection";
 import BlogCard from "@/components/BlogCard";
 import FeaturedProducts from "@/components/FeaturedProducts";
+import FeaturedBlogPosts from "@/components/FeaturedBlogPosts";
 import { getBlogPosts, getFeaturedProductMeta } from "@/lib/notion";
 import { getProductsByHandles, isShopifyConfigured } from "@/lib/shopify";
 import { BlogPost, Product } from "@/types/notion";
@@ -29,6 +30,12 @@ function getHeroImages(): string[] {
 export default async function Home() {
   // Notionからデータを取得
   const blogPosts = await getBlogPosts(3);
+  
+  // Featuredブログ投稿を取得（Tagsに"Featured"または"⭐ Featured"が含まれるもの）
+  const allBlogPosts = await getBlogPosts(100);
+  const featuredBlogPosts = allBlogPosts.filter((post) =>
+    post.featured === true
+  );
 
   // Featured商品の取得: NotionからメタデータとShopifyから商品情報を統合
   let featuredProducts: Product[] = [];
@@ -78,6 +85,9 @@ export default async function Home() {
   return (
     <div className="section-bg-gradient">
       <HeroSection images={heroImages} />
+
+      {/* Featuredブログ記事 */}
+      <FeaturedBlogPosts posts={featuredBlogPosts} />
 
       {/* 最新のブログ記事 */}
       <section className="py-16">
