@@ -15,11 +15,11 @@ export default function FeaturedBlogPosts({ posts }: FeaturedBlogPostsProps) {
     <section className="py-16">
       <div className="section-padding max-container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 font-inter">
             Featured Posts
           </h2>
-          <p className="text-gray-600">
-            おすすめのブログ記事
+          <p className="text-gray-600 font-inter">
+            Featured blog posts about 85-Store
           </p>
         </div>
 
@@ -31,7 +31,7 @@ export default function FeaturedBlogPosts({ posts }: FeaturedBlogPostsProps) {
 
         <div className="text-center mt-8">
           <Link href="/blog" className="btn-primary">
-            すべての記事を見る
+            SEE ALL POSTS
           </Link>
         </div>
       </div>

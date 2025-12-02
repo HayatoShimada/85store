@@ -6,7 +6,7 @@ export default function About() {
     <div className="min-h-screen section-bg-gradient">
       <div className="section-padding max-container py-16">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-8">
+          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-8 font-inter">
             About Us
           </h1>
 

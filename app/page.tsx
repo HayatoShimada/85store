@@ -26,7 +26,7 @@ export default async function Home() {
       <section className="py-16">
         <div className="section-padding max-container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 font-inter">
               Latest Posts
             </h2>
             <p className="text-gray-600">Trend and Styling Information</p>

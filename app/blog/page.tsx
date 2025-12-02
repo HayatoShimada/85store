@@ -20,7 +20,7 @@ export default async function BlogPage() {
       <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 font-inter">
               Blog
             </h1>
           </div>
