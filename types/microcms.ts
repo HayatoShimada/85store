@@ -16,6 +16,7 @@ export interface Blog extends MicroCMSContentId, MicroCMSDate {
   tags?: string[];
   author?: string;
   excerpt?: string;
+  description?: string; // 記事の説明文
 }
 
 // MicroCMS 商品
