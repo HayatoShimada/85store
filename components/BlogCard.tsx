@@ -16,8 +16,8 @@ export default function BlogCard({ post }: BlogCardProps) {
     ? post.eyecatch.url
     : '/images/placeholder.svg';
 
-  // HTMLからプレーンテキストを抽出
-  const excerpt = post.excerpt || extractExcerpt(post.content);
+  // description > excerpt > content から説明文を取得
+  const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
 
   // カテゴリ（配列の最初の要素を使用）
   const primaryCategory = post.category?.[0] || null;
@@ -52,7 +52,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           <h3 className="text-xl font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
             {post.title}
           </h3>
-          <p className="text-gray-600 line-clamp-2">{excerpt}</p>
+          <p className="text-gray-600 line-clamp-2">{displayDescription}</p>
         </div>
       </Link>
       {post.tags && post.tags.length > 0 && (

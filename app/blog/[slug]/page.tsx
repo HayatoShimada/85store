@@ -29,22 +29,22 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     };
   }
 
-  const excerpt = post.excerpt || extractExcerpt(post.content);
+  const description = post.description || post.excerpt || extractExcerpt(post.content);
   const coverImageUrl = post.eyecatch?.url;
 
   return {
     title: `${post.title} - 85-Store Blog`,
-    description: excerpt,
+    description: description,
     openGraph: {
       title: post.title,
-      description: excerpt,
+      description: description,
       images: coverImageUrl ? [coverImageUrl] : [],
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: excerpt,
+      description: description,
       images: coverImageUrl ? [coverImageUrl] : [],
     },
   };
@@ -64,7 +64,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   // 関連記事を取得
   const relatedPosts = await getRelatedPosts(post.id, primaryCategory, 3);
 
-  const excerpt = post.excerpt || extractExcerpt(post.content);
+  const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
   const coverImage = post.eyecatch?.url;
 
   return (
@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </h1>
 
             <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-4 md:mb-6">
-              {excerpt}
+              {displayDescription}
             </p>
 
             {post.tags && post.tags.length > 0 && (

@@ -46,7 +46,7 @@ function RelatedPostCard({ post }: { post: Blog }) {
     ? post.eyecatch.url
     : '/images/placeholder.svg';
 
-  const excerpt = post.excerpt || extractExcerpt(post.content);
+  const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
 
   // カテゴリ（配列の最初の要素を使用）
   const primaryCategory = post.category?.[0] || null;
@@ -79,7 +79,7 @@ function RelatedPostCard({ post }: { post: Blog }) {
           </h3>
 
           <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {excerpt}
+            {displayDescription}
           </p>
 
           <div className="flex items-center justify-between text-sm text-gray-500">
