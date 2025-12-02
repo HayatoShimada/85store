@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function About() {
   return (
     <div className="min-h-screen section-bg-gradient">
@@ -6,37 +8,52 @@ export default function About() {
           <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-8">
             About Us
           </h1>
+
         </div>
 
         <div className="max-w-4xl mx-auto">
           <div className="card-acrylic p-8 mb-8">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-              85-Storeについて
-            </h2>
+
+            <div className="flex justify-center mb-8">
+              <div className="relative w-48 h-48 md:w-64 md:h-64">
+                <Image 
+                  src="/logo.svg" 
+                  alt="85-Store" 
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
             
             <div className="space-y-6 text-gray-700 leading-relaxed">
               <p>
-                2025年9月9日に富山県井波に物件を取得し、開業準備中。
+                A面はオーセンティック。B面は心のままに<br />
+                そんな二面性を楽しむための、小さなセレクトショップを作っています。
               </p>
-              
-              <div className="rounded-lg p-6 border-l-4 border-primary bg-white/40 backdrop-blur-sm">
-                <p className="text-lg font-medium text-gray-800 italic">
-                  「今好きなもの」が「ずっと好きなもの」をつくる
-                </p>
+              <p>
+              <strong>「今好きなもの」が、「ずっと好きなもの」をつくる。</strong>
+                <br />
+                その想いを軸に、
+                <br />
+                オーセンティック＋αな古着とニューアイテムのスタイルを提案します。
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+
+                  <tbody>
+                    <tr className="border-b border-gray-200">
+                      <td className="py-3 px-4">2025年9月9日</td>
+                      <td className="py-3 px-4">富山県井波に物件を取得し、現在オープン準備中。</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="py-3 px-4">2025年11月15日</td>
+                      <td className="py-3 px-4">オンラインストアオープン。</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               
-              <p>
-                このテーマのもと、トレンドを抑えた中古衣料と<br />
-                ずっと使える新品衣料という2つの軸で<br />
-                <strong className="text-gray-800">「むすんでひらく感性」</strong>を表現する衣料品店です。
-              </p>
             </div>
-          </div>
-          
-          <div className="text-center">
-            <p className="text-gray-500">
-              まもなくオープン予定です。お楽しみに。
-            </p>
           </div>
         </div>
       </div>
