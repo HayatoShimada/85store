@@ -144,6 +144,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
               {/* MicroCMS HTML Content */}
               <div
+                id="blog-content"
                 className="prose prose-lg max-w-none
                   prose-headings:text-secondary prose-headings:font-bold
                   prose-h2:text-2xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200

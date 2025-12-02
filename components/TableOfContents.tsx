@@ -56,8 +56,11 @@ export function TableOfContents({ html }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
-    // DOM上の見出し要素から抽出
-    const elements = document.querySelectorAll('h2, h3');
+    // ブログコンテンツ内の見出し要素のみ抽出
+    const contentElement = document.getElementById('blog-content');
+    if (!contentElement) return;
+
+    const elements = contentElement.querySelectorAll('h2, h3');
     const items: TocItem[] = [];
 
     elements.forEach((el, index) => {
@@ -65,7 +68,7 @@ export function TableOfContents({ html }: TableOfContentsProps) {
       if (text) {
         // IDがなければ付与
         if (!el.id) {
-          el.id = `heading-${index}`;
+          el.id = `blog-heading-${index}`;
         }
         items.push({
           id: el.id,
