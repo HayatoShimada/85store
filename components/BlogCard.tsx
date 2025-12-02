@@ -30,7 +30,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             src={displayImageUrl}
             alt={post.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-200"
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-200"
             onError={() => setImageError(true)}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
             priority={false}

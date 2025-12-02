@@ -59,7 +59,7 @@ function RelatedPostCard({ post }: { post: Blog }) {
             src={displayUrl}
             alt={post.title}
             fill
-            className="object-cover transition-transform duration-200"
+            className="object-cover object-center transition-transform duration-200"
             onError={() => setImageError(true)}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
