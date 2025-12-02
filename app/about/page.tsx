@@ -27,6 +27,9 @@ export default function About() {
             </div>
             
             <div className="space-y-6 text-gray-700 leading-relaxed">
+              <h2 className="text-2xl font-bold text-secondary mb-4 font-inter">
+                85-Store(ハコストア)
+              </h2>
               <p>
                 A面はオーセンティック。B面は心のままに<br />
                 そんな二面性を楽しむための、小さなセレクトショップを作っています。
