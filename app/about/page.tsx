@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function About() {
   return (
@@ -47,7 +48,13 @@ export default function About() {
                     </tr>
                     <tr className="border-b border-gray-200">
                       <td className="py-3 px-4">2025年11月15日</td>
-                      <td className="py-3 px-4">オンラインストアオープン。</td>
+                      <td className="py-3 px-4"><Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors">
+                      オンラインストア</Link>をオープン。</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="py-3 px-4">2025年11月16日</td>
+                      <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
+                      週末限定のストア</Link>の予約開始。</td>
                     </tr>
                   </tbody>
                 </table>
