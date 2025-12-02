@@ -28,3 +28,16 @@ export interface Product extends MicroCMSContentId, MicroCMSDate {
   description?: string;
   featured?: boolean;
 }
+
+// MicroCMS バナー
+export interface Banner extends MicroCMSContentId, MicroCMSDate {
+  image: MicroCMSImage;
+  title?: string;
+  subtitle?: string;
+  showOnlineShopButton?: boolean;
+  showBlogButton?: boolean;
+  showDetailButton?: boolean;
+  detailButtonUrl?: string;
+  detailButtonText?: string;
+  order?: number;
+}

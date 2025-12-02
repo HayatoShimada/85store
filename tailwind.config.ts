@@ -35,9 +35,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['var(--font-futura)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ['var(--font-inter)', 'var(--font-noto-sans-jp)', 'Helvetica Neue', 'Arial', 'sans-serif'],
         japanese: ['var(--font-noto-sans-jp)', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'sans-serif'],
-        futura: ['var(--font-futura)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        inter: ['var(--font-inter)', 'Helvetica Neue', 'Arial', 'sans-serif'],
         noto: ['var(--font-noto-sans-jp)', 'sans-serif'],
       },
     },

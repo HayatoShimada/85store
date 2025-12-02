@@ -1,45 +1,23 @@
 import Link from "next/link";
-import fs from "fs";
-import path from "path";
 import HeroSection from "@/components/HeroSection";
 import BlogCard from "@/components/BlogCard";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import FeaturedBlogPosts from "@/components/FeaturedBlogPosts";
-import { getBlogPosts, getFeaturedBlogPosts, getFeaturedProducts } from "@/lib/microcms";
+import { getBlogPosts, getFeaturedBlogPosts, getFeaturedProducts, getBanners } from "@/lib/microcms";
 import type { Blog } from "@/types/microcms";
-
-// ビルド時にheroフォルダ内の画像を動的に取得
-function getHeroImages(): string[] {
-  const heroDir = path.join(process.cwd(), "public", "hero");
-
-  try {
-    const files = fs.readdirSync(heroDir);
-    // 画像ファイルのみをフィルタリング（jpg, jpeg, png, gif, webp）
-    const imageFiles = files.filter(file =>
-      /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
-    );
-    // /hero/ファイル名 の形式で返す
-    return imageFiles.map(file => `/hero/${file}`).sort();
-  } catch (error) {
-    console.error("Error reading hero images:", error);
-    return [];
-  }
-}
 
 export default async function Home() {
   // MicroCMSからデータを取得
-  const [blogPosts, featuredBlogPosts, featuredProducts] = await Promise.all([
+  const [blogPosts, featuredBlogPosts, featuredProducts, banners] = await Promise.all([
     getBlogPosts(3),
     getFeaturedBlogPosts(),
     getFeaturedProducts(6),
+    getBanners(),
   ]);
-
-  // Hero画像を取得
-  const heroImages = getHeroImages();
 
   return (
     <div className="section-bg-gradient">
-      <HeroSection images={heroImages} />
+      <HeroSection banners={banners} />
 
       {/* Featuredブログ記事 */}
       <FeaturedBlogPosts posts={featuredBlogPosts} />

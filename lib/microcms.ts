@@ -1,5 +1,5 @@
 import { createClient } from "microcms-js-sdk";
-import type { Blog, Product, Category } from "@/types/microcms";
+import type { Blog, Product, Category, Banner } from "@/types/microcms";
 
 // MicroCMSクライアントの作成
 export const client = createClient({
@@ -196,6 +196,24 @@ export async function getFeaturedProductMeta(limit: number = 6): Promise<Product
     return response.contents;
   } catch (error) {
     console.error("Error fetching featured product meta:", error);
+    return [];
+  }
+}
+
+// バナー一覧を取得
+export async function getBanners(): Promise<Banner[]> {
+  try {
+    const response = await client.getList<Banner>({
+      endpoint: "banners",
+      queries: {
+        limit: 10,
+        orders: "order",
+      },
+    });
+
+    return response.contents;
+  } catch (error) {
+    console.error("Error fetching banners:", error);
     return [];
   }
 }

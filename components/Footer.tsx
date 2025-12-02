@@ -23,7 +23,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-gray-300 font-futura">Menu</h4>
+            <h4 className="font-semibold mb-4 text-gray-300 font-inter">Menu</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-gray-300 hover:text-primary transition-colors">
@@ -44,7 +44,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-gray-300 font-futura">Customer Support</h4>
+            <h4 className="font-semibold mb-4 text-gray-300 font-inter">Customer Support</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/contact" className="text-gray-300 hover:text-primary transition-colors">
@@ -65,7 +65,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-gray-300 font-futura">Follow Us</h4>
+            <h4 className="font-semibold mb-4 text-gray-300 font-inter">Follow Us</h4>
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/85store_inami/"

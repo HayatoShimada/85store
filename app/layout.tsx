@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
+import { Inter, Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,21 +7,20 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
 
-// Futuraの代替として、モダンでクリーンなMontserratを使用
-// 実際のFuturaフォントファイルがある場合は、public/fontsに配置して下記のlocalFontを使用
-import { Montserrat } from "next/font/google";
-
-const montserrat = Montserrat({
-  weight: ["300", "400", "500", "700"],
+// 英字フォント: Inter
+const inter = Inter({
+  weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-futura",
+  variable: "--font-inter",
   display: "swap",
 });
 
+// 日本語フォント: Noto Sans JP
 const notoSansJP = Noto_Sans_JP({
   weight: ["300", "400", "500", "700"],
   subsets: ["latin"],
   variable: "--font-noto-sans-jp",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -55,7 +54,7 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
   return (
-    <html lang="ja" className={`${montserrat.variable} ${notoSansJP.variable}`}>
+    <html lang="ja" className={`${inter.variable} ${notoSansJP.variable}`}>
       <head>
         {gaId && (
           <>

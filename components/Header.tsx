@@ -35,19 +35,19 @@ export default function Header() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+            <Link href="/" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               Home
             </Link>
-            <Link href="https://shop.85-store.com/" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+            <Link href="https://shop.85-store.com/" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               Online Shop
             </Link>
-            <Link href="/blog" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+            <Link href="/blog" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               Blog
             </Link>
-            <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+            <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               About
             </Link>
-            <Link href="/contact" className="text-charcoal hover:text-primary transition-colors font-futura uppercase tracking-wider text-sm">
+            <Link href="/contact" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               Contact
             </Link>
           </div>
