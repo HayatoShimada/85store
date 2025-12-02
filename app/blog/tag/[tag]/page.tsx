@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
-import { getBlogPostsByTag } from "@/lib/notion";
+import { getBlogPostsByTag } from "@/lib/microcms";
 
 interface TagPageProps {
   params: Promise<{

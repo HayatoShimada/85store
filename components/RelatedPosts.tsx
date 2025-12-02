@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import useSWR from 'swr';
-import { BlogPost } from '@/types/notion';
-import { getCategoryStyleClasses } from '@/utils/notionColors';
+import type { Blog } from '@/types/microcms';
 
 interface RelatedPostsProps {
-  posts: BlogPost[];
+  posts: Blog[];
   title?: string;
 }
 
@@ -40,55 +38,22 @@ export function RelatedPosts({ posts, title = "Related Posts" }: RelatedPostsPro
   );
 }
 
-// 期限切れ判定とブロック取得
-const isExpired = (expiryTime?: string) => {
-  if (!expiryTime) return false;
-  return Date.parse(expiryTime) < Date.now();
-};
-
-const fetchBlock = async (blockId: string) => {
-  try {
-    const response = await fetch(`/api/blocks/${blockId}`);
-    if (!response.ok) return null;
-    const block = await response.json();
-    return block.Image?.File?.Url || block.Image?.External?.Url || null;
-  } catch {
-    return null;
-  }
-};
-
 // 個別の投稿カードコンポーネント
-function RelatedPostCard({ post }: { post: BlogPost }) {
+function RelatedPostCard({ post }: { post: Blog }) {
   const [imageError, setImageError] = useState(false);
 
-  // シンプルな期限切れチェックとSWR
-  const shouldRefresh = isExpired(post.coverImageExpiryTime) && post.coverImageBlockId;
-  const { data: newUrl } = useSWR(
-    shouldRefresh ? post.coverImageBlockId : null,
-    fetchBlock,
-    { revalidateOnFocus: false }
-  );
+  const displayUrl = (!imageError && post.eyecatch?.url)
+    ? post.eyecatch.url
+    : '/images/placeholder.svg';
 
-  // 画像URLの決定
-  let imageUrl = post.coverImage || '/images/placeholder.svg';
+  const excerpt = post.excerpt || extractExcerpt(post.content);
 
-  // 新しいURLがあれば使用
-  if (newUrl) {
-    imageUrl = newUrl;
-  }
-
-  // S3 URLはプロキシ経由
-  if (imageUrl.includes('amazonaws.com')) {
-    imageUrl = `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
-  }
-
-  // エラー時はプレースホルダー
-  const displayUrl = imageError ? '/images/placeholder.svg' : imageUrl;
-
+  // カテゴリ（配列の最初の要素を使用）
+  const primaryCategory = post.category?.[0] || null;
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <Link href={`/blog/${post.slug}`}>
+      <Link href={`/blog/${post.id}`}>
         <div className="relative h-48 w-full overflow-hidden bg-gray-50">
           <Image
             src={displayUrl}
@@ -99,29 +64,29 @@ function RelatedPostCard({ post }: { post: BlogPost }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
-        
+
         <div className="p-6">
           <div className="flex flex-wrap gap-2 mb-3">
-            {post.categoryColors && post.categoryColors.length > 0 && (
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryStyleClasses(post.categoryColors)}`}>
-                {post.category}
+            {primaryCategory && (
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                {primaryCategory}
               </span>
             )}
           </div>
-          
+
           <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-primary transition-colors">
             {post.title}
           </h3>
-          
+
           <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {post.excerpt}
+            {excerpt}
           </p>
-          
+
           <div className="flex items-center justify-between text-sm text-gray-500">
-            <span>{new Date(post.date).toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'short', 
-              day: 'numeric' 
+            <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
             })}</span>
             {post.author && (
               <span>by {post.author}</span>
@@ -131,4 +96,15 @@ function RelatedPostCard({ post }: { post: BlogPost }) {
       </Link>
     </article>
   );
+}
+
+function extractExcerpt(html: string, maxLength: number = 100): string {
+  const text = html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + "...";
 }

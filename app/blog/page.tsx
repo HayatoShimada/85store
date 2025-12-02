@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import BlogCard from "@/components/BlogCard";
 import { CategorySection } from "@/components/CategorySection";
-import { getBlogPosts, getAllCategories } from "@/lib/notion";
+import { getBlogPosts, getAllCategories } from "@/lib/microcms";
 
 export const metadata: Metadata = {
   title: "Blog - 85-Store",

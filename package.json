@@ -4,27 +4,24 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run download-images && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "download-images": "tsx scripts/download-notion-images.ts"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@notionhq/client": "^4.0.2",
     "@shopify/storefront-api-client": "^1.0.9",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/nodemailer": "^7.0.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
-    "async-retry": "^1.3.3",
     "axios": "^1.12.2",
     "dotenv": "^17.2.2",
-    "exif-be-gone": "^1.5.1",
     "feed": "^5.1.0",
+    "microcms-js-sdk": "^3.2.0",
     "next": "15.5.0",
     "nodemailer": "^7.0.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "sharp": "^0.34.3",
     "swr": "^2.3.6"
   },
   "devDependencies": {

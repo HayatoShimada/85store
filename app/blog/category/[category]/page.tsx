@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
-import { getBlogPostsByCategory, getAllCategories } from "@/lib/notion";
+import { getBlogPostsByCategory, getAllCategories } from "@/lib/microcms";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -13,35 +13,26 @@ interface CategoryPageProps {
 export async function generateStaticParams() {
   const categories = await getAllCategories();
   return categories.map((category) => ({
-    category: category.toLowerCase().replace(' ', '-'),
+    category: encodeURIComponent(category),
   }));
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category } = await params;
-  const categoryName = category.replace('-', ' ');
-  const capitalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-  
+  const categoryName = decodeURIComponent(category);
+
   return {
-    title: `${capitalizedCategory} - 85-Store Blog`,
-    description: `85-Storeの${capitalizedCategory}に関する記事一覧`,
+    title: `${categoryName} - 85-Store Blog`,
+    description: `85-Storeの${categoryName}に関する記事一覧`,
   };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category } = await params;
-  const categoryName = category.replace('-', ' ');
-  const capitalizedCategory = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-  
-  // 有効なカテゴリかどうかを確認
+  const categoryName = decodeURIComponent(category);
+
+  const blogPosts = await getBlogPostsByCategory(categoryName);
   const allCategories = await getAllCategories();
-  const isValidCategory = allCategories.includes(capitalizedCategory);
-  
-  if (!isValidCategory) {
-    notFound();
-  }
-  
-  const blogPosts = await getBlogPostsByCategory(capitalizedCategory);
 
   if (blogPosts.length === 0) {
     notFound();
@@ -60,15 +51,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   ブログ
                 </Link>
                 <span>›</span>
-                <span className="text-primary font-semibold">{capitalizedCategory}</span>
+                <span className="text-primary font-semibold">{categoryName}</span>
               </div>
             </nav>
 
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
-              {capitalizedCategory}
+              {categoryName}
             </h1>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              {capitalizedCategory}に関する記事をまとめました。
+              {categoryName}に関する記事をまとめました。
             </p>
           </div>
         </div>
@@ -79,10 +70,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <div className="section-padding max-container">
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-secondary mb-2">
-              {capitalizedCategory}の記事 ({blogPosts.length}件)
+              {categoryName}の記事 ({blogPosts.length}件)
             </h2>
             <p className="text-gray-600">
-              最新の{capitalizedCategory}に関する記事をお届けします。
+              最新の{categoryName}に関する記事をお届けします。
             </p>
           </div>
 
@@ -95,38 +86,34 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       </section>
 
       {/* Other Categories */}
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-secondary mb-4">
-              他のカテゴリ
-            </h2>
-            <p className="text-gray-600">
-              他のカテゴリの記事もご覧ください
-            </p>
+      {allCategories.length > 1 && (
+        <section className="py-16">
+          <div className="section-padding max-container">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-secondary mb-4">
+                他のカテゴリ
+              </h2>
+              <p className="text-gray-600">
+                他のカテゴリの記事もご覧ください
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {allCategories
+                .filter(cat => cat !== categoryName)
+                .map((cat) => (
+                  <Link
+                    key={cat}
+                    href={`/blog/category/${encodeURIComponent(cat)}`}
+                    className="category-card text-gray-700"
+                  >
+                    <div className="font-semibold relative z-10">{cat}</div>
+                  </Link>
+                ))}
+            </div>
           </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { name: "Fashion", label: "ファッション", color: "text-pink-700" },
-              { name: "Life Style", label: "ライフスタイル", color: "text-blue-700" },
-              { name: "Shop Info", label: "店舗情報", color: "text-green-700" },
-              { name: "Products", label: "商品", color: "text-purple-700" },
-              { name: "Event", label: "イベント", color: "text-orange-700" },
-            ]
-            .filter(cat => cat.name !== capitalizedCategory)
-            .map((category) => (
-              <Link
-                key={category.name}
-                href={`/blog/category/${category.name.toLowerCase().replace(' ', '-')}`}
-                className={`category-card ${category.color}`}
-              >
-                <div className="font-semibold relative z-10">{category.label}</div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

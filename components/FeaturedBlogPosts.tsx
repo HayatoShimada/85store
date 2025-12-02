@@ -1,13 +1,13 @@
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
-import { BlogPost } from "@/types/notion";
+import type { Blog } from "@/types/microcms";
 
 interface FeaturedBlogPostsProps {
-  posts: BlogPost[];
+  posts: Blog[];
 }
 
 export default function FeaturedBlogPosts({ posts }: FeaturedBlogPostsProps) {
-  if (posts.length === 0) {
+  if (!posts || posts.length === 0) {
     return null;
   }
 
@@ -38,4 +38,3 @@ export default function FeaturedBlogPosts({ posts }: FeaturedBlogPostsProps) {
     </section>
   );
 }
-
