@@ -2,13 +2,20 @@ import { createClient } from "microcms-js-sdk";
 import type { Blog, Product, Category, Banner } from "@/types/microcms";
 
 // MicroCMSクライアントの作成
-export const client = createClient({
-  serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN || "",
-  apiKey: process.env.MICROCMS_API_KEY || "",
-});
+const serviceDomain = process.env.MICROCMS_SERVICE_DOMAIN || "";
+const apiKey = process.env.MICROCMS_API_KEY || "";
+
+export const client = serviceDomain && apiKey ? createClient({
+  serviceDomain,
+  apiKey,
+}) : null;
 
 // ブログ記事一覧を取得
 export async function getBlogPosts(limit?: number): Promise<Blog[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Blog>({
       endpoint: "blogs",
@@ -27,6 +34,10 @@ export async function getBlogPosts(limit?: number): Promise<Blog[]> {
 
 // 単一のブログ記事を取得（idで取得）
 export async function getBlogPost(id: string): Promise<Blog | null> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return null;
+  }
   try {
     const blog = await client.get<Blog>({
       endpoint: "blogs",
@@ -42,6 +53,10 @@ export async function getBlogPost(id: string): Promise<Blog | null> {
 
 // カテゴリ別のブログ記事を取得
 export async function getBlogPostsByCategory(categoryName: string, limit?: number): Promise<Blog[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Blog>({
       endpoint: "blogs",
@@ -61,6 +76,10 @@ export async function getBlogPostsByCategory(categoryName: string, limit?: numbe
 
 // タグ別のブログ記事を取得
 export async function getBlogPostsByTag(tag: string, limit?: number): Promise<Blog[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Blog>({
       endpoint: "blogs",
@@ -80,6 +99,10 @@ export async function getBlogPostsByTag(tag: string, limit?: number): Promise<Bl
 
 // すべてのカテゴリを取得（ブログ記事から抽出）
 export async function getAllCategories(): Promise<string[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Blog>({
       endpoint: "blogs",
@@ -104,6 +127,10 @@ export async function getAllCategories(): Promise<string[]> {
 
 // 関連記事を取得
 export async function getRelatedPosts(currentPostId: string, category?: string | null, limit: number = 3): Promise<Blog[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const queries: Record<string, unknown> = {
       limit: limit + 1,
@@ -130,6 +157,10 @@ export async function getRelatedPosts(currentPostId: string, category?: string |
 
 // おすすめブログ記事を取得
 export async function getFeaturedBlogPosts(limit?: number): Promise<Blog[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Blog>({
       endpoint: "blogs",
@@ -149,6 +180,10 @@ export async function getFeaturedBlogPosts(limit?: number): Promise<Blog[]> {
 
 // 商品一覧を取得
 export async function getProducts(options?: { featured?: boolean; limit?: number }): Promise<Product[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const queries: Record<string, unknown> = {
       limit: options?.limit || 100,
@@ -183,6 +218,10 @@ export async function getLatestProducts(limit: number = 4): Promise<Product[]> {
 
 // おすすめ商品のメタデータを取得（Shopify連携用）
 export async function getFeaturedProductMeta(limit: number = 6): Promise<Product[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Product>({
       endpoint: "products",
@@ -202,6 +241,10 @@ export async function getFeaturedProductMeta(limit: number = 6): Promise<Product
 
 // バナー一覧を取得
 export async function getBanners(): Promise<Banner[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
   try {
     const response = await client.getList<Banner>({
       endpoint: "banners",
