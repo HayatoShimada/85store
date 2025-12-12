@@ -63,7 +63,7 @@ export default function HeroSection({
             >
               <Image
                 src={banner.image.url}
-                alt={banner.title || `Banner ${index + 1}`}
+                alt={banner.title || `富山県南砺市井波の古着・セレクトショップ 85-Store バナー ${index + 1}`}
                 fill
                 className="object-cover"
                 priority={index === 0}
@@ -82,7 +82,7 @@ export default function HeroSection({
             >
               <Image
                 src={image}
-                alt={`Hero background ${index + 1}`}
+                alt={`富山県南砺市井波の古着・セレクトショップ 85-Store ヒーロー画像 ${index + 1}`}
                 fill
                 className="object-cover"
                 priority={index === 0}

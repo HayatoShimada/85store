@@ -1,6 +1,26 @@
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Zenn from '@/components/icons/Zenn';
+
+export const metadata: Metadata = {
+  title: "About Us | 富山県南砺市井波の古着・セレクトショップ 85-Store",
+  description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」について。オーセンティックな古着とニューアイテムを提案するセレクトショップです。",
+  keywords: [
+    "富山",
+    "南砺市",
+    "井波",
+    "古着",
+    "セレクトショップ",
+    "85-Store",
+    "ハコストア",
+    "富山県",
+    "古着屋",
+    "セレクトショップ 富山",
+    "古着 井波",
+    "南砺市 古着",
+  ],
+};
 
 export default function About() {
   return (
@@ -33,7 +53,7 @@ export default function About() {
               </h2>
               <p>
                 A面はオーセンティック。B面は心のままに<br />
-                そんな二面性を楽しむための、小さなセレクトショップを作っています。
+                そんな二面性を楽しむための、富山県南砺市井波の小さなセレクトショップを作っています。
               </p>
               <p>
               <strong>「今好きなもの」が、「ずっと好きなもの」をつくる。</strong>
@@ -48,7 +68,7 @@ export default function About() {
                   <tbody>
                     <tr className="border-b border-gray-200">
                       <td className="py-3 px-4">2025年9月9日</td>
-                      <td className="py-3 px-4">富山県井波に物件を取得し、現在オープン準備中。</td>
+                      <td className="py-3 px-4">富山県南砺市井波に物件を取得し、現在オープン準備中。</td>
                     </tr>
                     <tr className="border-b border-gray-200">
                       <td className="py-3 px-4">2025年11月15日</td>

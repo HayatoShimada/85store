@@ -1,10 +1,33 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import BlogCard from "@/components/BlogCard";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import FeaturedBlogPosts from "@/components/FeaturedBlogPosts";
+import StructuredData from "@/components/StructuredData";
 import { getBlogPosts, getFeaturedBlogPosts, getFeaturedProducts, getBanners } from "@/lib/microcms";
 import type { Blog } from "@/types/microcms";
+
+export const metadata: Metadata = {
+  title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
+  description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
+  keywords: [
+    "富山",
+    "南砺市",
+    "井波",
+    "古着",
+    "セレクトショップ",
+    "85-Store",
+    "ハコストア",
+    "富山県",
+    "古着屋",
+    "セレクトショップ 富山",
+    "古着 井波",
+    "南砺市 古着",
+    "オーセンティック",
+    "ヴィンテージ",
+  ],
+};
 
 export default async function Home() {
   // MicroCMSからデータを取得
@@ -17,6 +40,7 @@ export default async function Home() {
 
   return (
     <div className="section-bg-gradient">
+      <StructuredData type="WebSite" />
       <HeroSection banners={banners} />
 
       {/* Featuredブログ記事 */}
@@ -29,7 +53,7 @@ export default async function Home() {
             <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 font-inter">
               Latest Posts
             </h2>
-            <p className="text-gray-600">Trend and Styling Information</p>
+            <p className="text-gray-600">富山県南砺市井波の古着・セレクトショップ「85-Store」からのスタイリング情報とトレンドをお届けします</p>
           </div>
 
           {blogPosts.length > 0 ? (

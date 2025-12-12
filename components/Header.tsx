@@ -15,14 +15,14 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.svg"
-              alt="85-Store Logo"
+              alt="富山県南砺市井波の古着・セレクトショップ 85-Store ロゴ"
               width={40}
               height={40}
               className="w-10 h-10"
             />
             <Image
               src={isAlternateImage ? "/headersnoo2.png" : "/headersnoo.png"}
-              alt="85-Store"
+              alt="富山県南砺市井波の古着・セレクトショップ 85-Store（ハコストア）"
               width={120}
               height={40}
               className="h-10 w-auto cursor-pointer"

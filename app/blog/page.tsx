@@ -1,11 +1,26 @@
 import { Metadata } from "next";
 import BlogCard from "@/components/BlogCard";
 import { CategorySection } from "@/components/CategorySection";
+import StructuredData from "@/components/StructuredData";
 import { getBlogPosts, getAllCategories } from "@/lib/microcms";
 
 export const metadata: Metadata = {
-  title: "Blog - 85-Store",
-  description: "85-Storeのブログ記事一覧",
+  title: "Blog | 富山県南砺市井波の古着・セレクトショップ 85-Store",
+  description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ。スタイリング情報やトレンド、古着の楽しみ方などをお届けします。",
+  keywords: [
+    "富山",
+    "南砺市",
+    "井波",
+    "古着",
+    "セレクトショップ",
+    "85-Store",
+    "ハコストア",
+    "ブログ",
+    "スタイリング",
+    "トレンド",
+    "古着 ブログ",
+    "セレクトショップ ブログ",
+  ],
 };
 
 export default async function BlogPage() {
@@ -16,6 +31,7 @@ export default async function BlogPage() {
 
   return (
     <div className="min-h-screen section-bg-gradient">
+      <StructuredData type="Blog" />
       {/* Hero Section */}
       <section className="py-20">
         <div className="section-padding max-container">
@@ -23,6 +39,7 @@ export default async function BlogPage() {
             <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 font-inter">
               Blog
             </h1>
+            <p className="text-gray-600 text-lg">富山県南砺市井波の古着・セレクトショップ「85-Store」からのスタイリング情報とトレンド</p>
           </div>
         </div>
       </section>

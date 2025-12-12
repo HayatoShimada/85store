@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import StructuredData from "@/components/StructuredData";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
@@ -23,9 +24,67 @@ const notoSansJP = Noto_Sans_JP({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
+
 export const metadata: Metadata = {
-  title: "85-Store - Select Shop & Blog",
-  description: "富山県井波のセレクトショップ",
+  title: {
+    default: "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ",
+    template: "%s | 85-Store（ハコストア）",
+  },
+  description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
+  keywords: [
+    "富山",
+    "南砺市",
+    "井波",
+    "古着",
+    "セレクトショップ",
+    "85-Store",
+    "ハコストア",
+    "富山県",
+    "古着屋",
+    "セレクトショップ 富山",
+    "古着 井波",
+    "南砺市 古着",
+    "オーセンティック",
+    "ヴィンテージ",
+  ],
+  authors: [{ name: "85-Store" }],
+  creator: "85-Store",
+  publisher: "85-Store",
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: siteUrl,
+    siteName: "85-Store（ハコストア）",
+    title: "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ",
+    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。",
+    images: [
+      {
+        url: `${siteUrl}/logo.svg`,
+        width: 1200,
+        height: 630,
+        alt: "85-Store（ハコストア）",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ",
+    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。",
+    images: [`${siteUrl}/logo.svg`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: [
       { url: '/logo.svg', type: 'image/svg+xml' },
@@ -74,6 +133,9 @@ export default function RootLayout({
         )}
       </head>
       <body className="antialiased font-japanese">
+        <StructuredData type="Organization" />
+        <StructuredData type="LocalBusiness" />
+        <StructuredData type="WebSite" />
         <Header />
         <main className="min-h-screen pt-16">
           {children}
