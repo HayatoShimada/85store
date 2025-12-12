@@ -17,8 +17,15 @@ export default function Footer() {
                 className="w-8 h-8 brightness-0 invert"
               />
             </div>
-            <p className="text-gray-300 font-noto">
+            <p className="text-gray-300 font-noto mb-2">
               Short-Term & Long-Term
+            </p>
+            <p className="text-gray-300 font-noto text-sm">
+              富山県南砺市井波の古着・セレクトショップ
+            </p>
+            <p className="text-gray-300 font-noto text-sm mt-2">
+              〒939-1863<br />
+              富山県南砺市井波
             </p>
           </div>
 
