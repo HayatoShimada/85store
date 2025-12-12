@@ -21,11 +21,12 @@ export default function Footer() {
               Short-Term & Long-Term
             </p>
             <p className="text-gray-300 font-noto text-sm">
-              富山県南砺市井波の古着・セレクトショップ
+              富山県南砺市井波の<br />古着・セレクトショップ
             </p>
             <p className="text-gray-300 font-noto text-sm mt-2">
-              〒939-1863<br />
-              富山県南砺市井波
+              〒932-0217<br />
+              富山県南砺市本町4丁目100<br />
+              85-Store
             </p>
           </div>
 
