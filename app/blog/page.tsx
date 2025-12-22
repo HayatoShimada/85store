@@ -1,8 +1,10 @@
 import { Metadata } from "next";
 import BlogCard from "@/components/BlogCard";
+import NoteCard from "@/components/NoteCard";
 import { CategorySection } from "@/components/CategorySection";
 import StructuredData from "@/components/StructuredData";
 import { getBlogPosts, getAllCategories } from "@/lib/microcms";
+import { getNoteArticles } from "@/lib/note";
 
 export const metadata: Metadata = {
   title: "Blog | 富山県南砺市井波の古着・セレクトショップ 85-Store",
@@ -24,9 +26,10 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const [blogPosts, categories] = await Promise.all([
+  const [blogPosts, categories, noteArticles] = await Promise.all([
     getBlogPosts(),
-    getAllCategories()
+    getAllCategories(),
+    getNoteArticles()
   ]);
 
   return (
@@ -73,6 +76,36 @@ export default async function BlogPage() {
 
       {/* Categories Section */}
       <CategorySection categories={categories} />
+
+      {/* note Articles Section */}
+      {noteArticles.length > 0 && (
+        <section className="py-16">
+          <div className="section-padding max-container">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-secondary mb-4 font-inter">
+                note
+              </h2>
+              <a
+                href="https://note.com/85_store"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-600 hover:text-primary transition-colors inline-flex items-center gap-1 text-sm font-medium"
+              >
+                すべて見る
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {noteArticles.map((article) => (
+                <NoteCard key={article.id} article={article} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
     </div>
   );
 }

@@ -30,7 +30,8 @@
       "Bash(tsx test-local-images.ts)",
       "Bash(xmllint --noout /tmp/atom.xml)",
       "Bash(python3 -c \"import xml.etree.ElementTree as ET; ET.parse(''/tmp/atom.xml'')\")",
-      "Bash(python3 -c \"import xml.etree.ElementTree as ET; ET.parse(''/tmp/feed.xml''); print(''RSS feed is valid XML'')\")"
+      "Bash(python3 -c \"import xml.etree.ElementTree as ET; ET.parse(''/tmp/feed.xml''); print(''RSS feed is valid XML'')\")",
+      "WebFetch(domain:note.com)"
     ],
     "deny": []
   }

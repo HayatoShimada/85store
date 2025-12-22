@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Zenn from "./icons/Zenn";
+import Note from "./icons/Note";
 
 export default function Footer() {
   return (
@@ -128,6 +129,17 @@ export default function Footer() {
               >
                 <div className="w-6 h-6">
                   <Zenn />
+                </div>
+              </a>
+              <a
+                href="https://note.com/85_store"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-primary transition-colors"
+                aria-label="note Blog"
+              >
+                <div className="w-6 h-6">
+                  <Note />
                 </div>
               </a>
             </div>
