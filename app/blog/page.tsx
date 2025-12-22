@@ -85,6 +85,9 @@ export default async function BlogPage() {
               <h2 className="text-3xl font-bold text-secondary mb-4 font-inter">
                 note
               </h2>
+              <p className="text-gray-600 mb-4">
+                85-Storeの仕入れ担当（Hayato）の洋服、哲学、日常に関するエッセイ。
+              </p>
               <a
                 href="https://note.com/85_store"
                 target="_blank"
