@@ -20,10 +20,44 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { category } = await params;
   const categoryName = decodeURIComponent(category);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
   return {
     title: `${categoryName} - 85-Store Blog`,
     description: `85-Storeの${categoryName}に関する記事一覧`,
+    keywords: [
+      "富山",
+      "南砺市",
+      "井波",
+      "古着",
+      "セレクトショップ",
+      "85-Store",
+      "ハコストア",
+      "ブログ",
+      categoryName,
+    ],
+    openGraph: {
+      type: "website",
+      locale: "ja_JP",
+      url: `${siteUrl}/blog/category/${encodeURIComponent(category)}`,
+      siteName: "85-Store（ハコストア）",
+      title: `${categoryName} - 85-Store Blog`,
+      description: `85-Storeの${categoryName}に関する記事一覧`,
+      images: [
+        {
+          url: `${siteUrl}/logo.svg`,
+          width: 1200,
+          height: 630,
+          alt: "85-Store（ハコストア）",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${categoryName} - 85-Store Blog`,
+      description: `85-Storeの${categoryName}に関する記事一覧`,
+      images: [`${siteUrl}/logo.svg`],
+    },
   };
 }
 

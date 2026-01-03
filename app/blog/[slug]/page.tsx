@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getBlogPost, getBlogPosts, getRelatedPosts } from "@/lib/microcms";
+import { getBlogPost, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { TableOfContents } from "@/components/TableOfContents";
 
@@ -13,15 +13,21 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = await getBlogPosts();
-  return posts.map((post) => ({
-    slug: post.id,
-  }));
+  try {
+    const posts = await getAllBlogPosts();
+    return posts.map((post) => ({
+      slug: post.id,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = await getBlogPost(slug);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
   if (!post) {
     return {
@@ -31,21 +37,54 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   const description = post.description || post.excerpt || extractExcerpt(post.content);
   const coverImageUrl = post.eyecatch?.url;
+  const primaryCategory = post.category?.[0] || null;
+  const publishedTime = post.publishedAt || post.createdAt;
+  const modifiedTime = post.updatedAt || post.publishedAt || post.createdAt;
 
   return {
     title: `${post.title} - 85-Store Blog`,
     description: description,
+    keywords: [
+      "富山",
+      "南砺市",
+      "井波",
+      "古着",
+      "セレクトショップ",
+      "85-Store",
+      "ハコストア",
+      "ブログ",
+      ...(primaryCategory ? [primaryCategory] : []),
+      ...(post.tags || []),
+    ],
+    authors: post.author ? [{ name: post.author }] : undefined,
     openGraph: {
+      type: 'article',
+      locale: "ja_JP",
+      url: `${siteUrl}/blog/${slug}`,
+      siteName: "85-Store（ハコストア）",
       title: post.title,
       description: description,
-      images: coverImageUrl ? [coverImageUrl] : [],
-      type: 'article',
+      images: coverImageUrl 
+        ? [coverImageUrl] 
+        : [
+            {
+              url: `${siteUrl}/logo.svg`,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ],
+      publishedTime: publishedTime ? new Date(publishedTime).toISOString() : undefined,
+      modifiedTime: modifiedTime ? new Date(modifiedTime).toISOString() : undefined,
+      authors: post.author ? [post.author] : undefined,
+      section: primaryCategory || undefined,
+      tags: post.tags || undefined,
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: description,
-      images: coverImageUrl ? [coverImageUrl] : [],
+      images: coverImageUrl ? [coverImageUrl] : [`${siteUrl}/logo.svg`],
     },
   };
 }

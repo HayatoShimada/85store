@@ -10,6 +10,8 @@ import { getBlogPosts, getFeaturedBlogPosts, getFeaturedProducts, getBanners } f
 import { getNoteArticles } from "@/lib/note";
 import type { Blog } from "@/types/microcms";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
+
 export const metadata: Metadata = {
   title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
   description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
@@ -29,6 +31,28 @@ export const metadata: Metadata = {
     "オーセンティック",
     "ヴィンテージ",
   ],
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: siteUrl,
+    siteName: "85-Store（ハコストア）",
+    title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
+    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
+    images: [
+      {
+        url: `${siteUrl}/logo.svg`,
+        width: 1200,
+        height: 630,
+        alt: "85-Store（ハコストア）",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
+    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
+    images: [`${siteUrl}/logo.svg`],
+  },
 };
 
 export default async function Home() {

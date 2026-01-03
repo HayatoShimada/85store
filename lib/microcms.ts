@@ -32,6 +32,42 @@ export async function getBlogPosts(limit?: number): Promise<Blog[]> {
   }
 }
 
+// すべてのブログ記事を取得（ページネーション対応、SSG用）
+export async function getAllBlogPosts(): Promise<Blog[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
+  try {
+    const allPosts: Blog[] = [];
+    let offset = 0;
+    const limit = 100;
+    let hasMore = true;
+
+    while (hasMore) {
+      const response = await client.getList<Blog>({
+        endpoint: "blogs",
+        queries: {
+          limit,
+          offset,
+          orders: "-publishedAt",
+        },
+      });
+
+      allPosts.push(...response.contents);
+      
+      // 次のページがあるかチェック
+      hasMore = response.contents.length === limit;
+      offset += limit;
+    }
+
+    return allPosts;
+  } catch (error) {
+    console.error("Error fetching all blog posts:", error);
+    return [];
+  }
+}
+
 // 単一のブログ記事を取得（idで取得）
 export async function getBlogPost(id: string): Promise<Blog | null> {
   if (!client) {

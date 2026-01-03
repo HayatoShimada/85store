@@ -6,6 +6,8 @@ import StructuredData from "@/components/StructuredData";
 import { getBlogPosts, getAllCategories } from "@/lib/microcms";
 import { getNoteArticles } from "@/lib/note";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
+
 export const metadata: Metadata = {
   title: "Blog | 富山県南砺市井波の古着・セレクトショップ 85-Store",
   description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ。スタイリング情報やトレンド、古着の楽しみ方などをお届けします。",
@@ -23,6 +25,28 @@ export const metadata: Metadata = {
     "古着 ブログ",
     "セレクトショップ ブログ",
   ],
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: `${siteUrl}/blog`,
+    siteName: "85-Store（ハコストア）",
+    title: "Blog | 富山県南砺市井波の古着・セレクトショップ 85-Store",
+    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ。スタイリング情報やトレンド、古着の楽しみ方などをお届けします。",
+    images: [
+      {
+        url: `${siteUrl}/logo.svg`,
+        width: 1200,
+        height: 630,
+        alt: "85-Store（ハコストア）",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | 富山県南砺市井波の古着・セレクトショップ 85-Store",
+    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ。スタイリング情報やトレンド、古着の楽しみ方などをお届けします。",
+    images: [`${siteUrl}/logo.svg`],
+  },
 };
 
 export default async function BlogPage() {
