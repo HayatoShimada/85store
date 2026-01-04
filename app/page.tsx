@@ -112,22 +112,21 @@ export default async function Home() {
               <p className="text-gray-600 mb-4">
                 85-Storeの仕入れ担当（Hayato）の洋服、哲学、日常に関するエッセイ。
               </p>
-              <a
-                href="https://note.com/85_store"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-600 hover:text-primary transition-colors inline-flex items-center gap-1 text-sm font-medium"
-              >
-                すべて見る
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {noteArticles.slice(0, 3).map((article) => (
                 <NoteCard key={article.id} article={article} />
               ))}
+            </div>
+            <div className="text-center mt-8">
+              <a
+                href="https://note.com/85_store"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                See All Posts
+              </a>
             </div>
           </div>
         </section>

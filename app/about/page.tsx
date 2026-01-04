@@ -71,43 +71,123 @@ export default function About() {
               </div>
             </div>
 
-            <div className="space-y-6 text-gray-700 leading-relaxed">
+            <div className="space-y-8 text-gray-700 leading-relaxed">
               <h2 className="text-2xl font-bold text-secondary mb-4 font-inter">
                 85-Store(ハコストア)
               </h2>
-              <p>
-                A面はオーセンティック。B面は心のままに<br />
-                そんな二面性を楽しむための、富山県南砺市井波の小さなセレクトショップを作っています。
-              </p>
-              <p>
-              <strong>「今好きなもの」が、「ずっと好きなもの」をつくる。</strong>
-                <br />
-                その想いを軸に、
-                <br />
-                オーセンティック＋αな古着とニューアイテムのスタイルを提案します。
-              </p>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
+              
+              {/* 85-Storeとは？セクション */}
+              <section>
+                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                  85-Storeとは？
+                </h3>
+                <p className="mb-4">
+                  85-Store（ハコストア）は古着と新品を扱うセレクトショップです。<br />
+                  商品のセレクト基準には<br />
+                  <strong className="text-secondary">「オーセンティック + アルファ」</strong><br />
+                  を掲げ、自分がずっと好きなもの（軸）と今好きなもの（まわり）をバランス良くミックスして、変化する感性、変化しない感性を表現するお店です。
+                </p>
+                <p className="mb-4">
+                  洋服が軸にはありますが、場所（ハコ）を作って、その周りに色んな人や物が集まることで、常に変化していくことを受け入れながら進んでいくコンセプトで<br />
+                  洋服以外の創作活動（小説、デザイン、イラスト、写真、動画）を楽しみながら表現し、ブレながら進んでいくことを是としています。
+                </p>
+              </section>
 
-                  <tbody>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4">2025年9月9日</td>
-                      <td className="py-3 px-4">富山県南砺市井波に物件を取得し、現在オープン準備中。</td>
-                    </tr>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4">2025年11月15日</td>
-                      <td className="py-3 px-4"><Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors">
-                      オンラインストア</Link>をオープン。</td>
-                    </tr>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4">2025年11月16日</td>
-                      <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
-                      週末限定のストア</Link>の予約開始。</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              {/* 3人の店員についてセクション */}
+              <section>
+                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                  3人の店員について
+                </h3>
+                <p className="mb-6">
+                  「会社員を辞めたいが、やりたいことが無い」ゆいまる<br />
+                  「洋服屋をやりたいが、時間が無い」はやとの夫婦と<br />
+                  「決まった時間に投薬が必要な」スヌー（猫）の３人が楽しみながら生きる事を中心にデザインされたお店になります。
+                </p>
 
+                <div className="space-y-6">
+                  {/* ゆいまる */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-bold text-secondary mb-3 font-inter">
+                      ゆいまる（販売担当・店主）
+                    </h4>
+                    <p className="mb-2">
+                      長年接客業で会社員として勤めながら、毎日数字に追われ、人間関係にも疲れストレスで突発性難聴も発症。その後会社員を辞める決意を固めて、アパレルという異業種に挑戦。
+                    </p>
+                    <p className="mb-2">
+                      洋服は畳めません（練習中）が、販売・接客が好き。<br />
+                      前職では、顧客満足度(NPS)の上位常連で、全国規模の接客コンテストで入賞するなど、人と接し、その人が笑顔で帰ってくれる、来てよかったと感じる接客に定評がある。
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      基本性格はギャル。
+                    </p>
+                  </div>
+
+                  {/* はやと */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-bold text-secondary mb-3 font-inter">
+                      はやと（仕入れ・EC担当）
+                    </h4>
+                    <p className="mb-2">
+                      某総合機械メーカーで、AIとロボットの自律制御の開発を行うなど、機械とプログラムに滅法強い85-Storeの頭脳。
+                    </p>
+                    <p className="mb-2">
+                      以前はアパレルメーカーに勤めていたり、デザイン雑貨のお店に勤めていたり、セレクトショップに勤めていたり、多様なデザイン視点とモノづくりの視点から独自の審美眼を培う。
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      考えすぎてショートするのが偶に瑕。<br />
+                      平日は会社員。85-Storeには土日のみ参加。
+                    </p>
+                  </div>
+
+                  {/* スヌー */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h4 className="text-lg font-bold text-secondary mb-3 font-inter">
+                      スヌー（店長）
+                    </h4>
+                    <p className="mb-2">
+                      職業は猫。裏の顔は名探偵(迷探偵)。85-Storeの店長も務めるパラレルワーカー。基本的にはツンが多めのまれにデレのビビりまん。
+                    </p>
+                    <p className="mb-2">
+                      生まれつき心臓が肥大する疾患を持つ。<br />
+                      平常時の心拍数が高く、心臓が肺を圧迫し、少しの運動で口を開ける（息が速くなる）症状を抑えるための薬（よくなーると呼んでいる）を処方されている。
+                    </p>
+                    <p className="mb-2">
+                      毎日決まった時間の処方が必要で、時間をコントロールできる働き方としての85-Storeの中心にいる存在。
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      数年の命と言われていたが、5歳になった今もなんだかんだで元気。<br />
+                      5歳なのに永遠のベイビー。声が子猫で可愛すぎる。
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* 沿革 */}
+              <section>
+                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                  沿革
+                </h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <tbody>
+                      <tr className="border-b border-gray-200">
+                        <td className="py-3 px-4 font-medium">2025年9月9日</td>
+                        <td className="py-3 px-4">富山県南砺市井波に物件を取得し、現在オープン準備中。</td>
+                      </tr>
+                      <tr className="border-b border-gray-200">
+                        <td className="py-3 px-4 font-medium">2025年11月15日</td>
+                        <td className="py-3 px-4"><Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors">
+                        オンラインストア</Link>をオープン。</td>
+                      </tr>
+                      <tr className="border-b border-gray-200">
+                        <td className="py-3 px-4 font-medium">2025年11月16日</td>
+                        <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
+                        週末限定のストア</Link>の予約開始。</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
             </div>
           </div>
 
