@@ -38,3 +38,7 @@ export default function FeaturedBlogPosts({ posts }: FeaturedBlogPostsProps) {
     </section>
   );
 }
+
+
+
+
