@@ -78,7 +78,7 @@ export default function UpStore() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/placeholder.svg"
+                    src="/images/upstore1.JPG"
                     alt="Co-creation"
                     fill
                     className="object-cover"
@@ -106,7 +106,7 @@ export default function UpStore() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/placeholder.svg"
+                    src="/images/upstore2.JPG"
                     alt="2nd Floor"
                     fill
                     className="object-cover"
@@ -134,7 +134,7 @@ export default function UpStore() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/placeholder.svg"
+                    src="/images/upstore3.JPG"
                     alt="Space"
                     fill
                     className="object-cover"
