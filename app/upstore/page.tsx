@@ -68,53 +68,92 @@ export default function UpStore() {
         </div>
 
         {/* 3つの柱 */}
-        <div className="max-w-6xl mx-auto mb-16">
+        <div className="max-w-4xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-12 text-center font-inter">
             3つの柱
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="space-y-8">
             {/* Co-creation */}
             <div className="card-acrylic p-6">
-              <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
-                1. 【Co-creation】
-                <br />
-                完璧な場所より、未完成な興奮を
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                ここは、最初からすべてが揃ったレンタルスペースではありません。
-                「エアコンがないなら、どう涼むか？」「棚がないなら、どう見せるか？」
-                そんな不便さを逆手に取り、利用者とオーナー、そしてお客さまが知恵を出し合い、
-                <strong>設備の一つひとつをアップデートしていくプロセスそのものを楽しむ場所</strong>です。
-              </p>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/images/placeholder.svg"
+                    alt="Co-creation"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-secondary mb-2 font-inter">
+                    【Co-creation】
+                  </h3>
+                  <p className="text-lg text-gray-600 mb-4">
+                    完璧な場所より、未完成な興奮を
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    ここは、最初からすべてが揃ったレンタルスペースではありません。
+                    「エアコンがないなら、どう涼むか？」「棚がないなら、どう見せるか？」
+                    そんな不便さを逆手に取り、利用者とオーナー、そしてお客さまが知恵を出し合い、
+                    <strong>設備の一つひとつをアップデートしていくプロセスそのものを楽しむ場所</strong>です。
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* 2nd Floor */}
             <div className="card-acrylic p-6">
-              <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
-                2. 【2nd Floor】
-                <br />
-                街へ出る前の、一番近い「二歩目」
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                1階の85-Storeが、街に開かれた「一歩目」の顔。
-                2階のこのスペースは、事業者が自身の夢やアイデアを初めて形にする「二歩目（2nd Floor）」の場所です。
-                店舗を持つ前のプレ・オープン、個展、実験的なワークショップ。
-                <strong>挑戦者が階段を一段上がる（Upする）ための、最も身近なアクセラレーター（加速器）</strong>としての役割を担います。
-              </p>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/images/placeholder.svg"
+                    alt="2nd Floor"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-secondary mb-2 font-inter">
+                    【2nd Floor】
+                  </h3>
+                  <p className="text-lg text-gray-600 mb-4">
+                    街へ出る前の、一番近い「二歩目」
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    1階の85-Storeが、街に開かれた「一歩目」の顔。
+                    2階のこのスペースは、事業者が自身の夢やアイデアを初めて形にする「二歩目（2nd Floor）」の場所です。
+                    店舗を持つ前のプレ・オープン、個展、実験的なワークショップ。
+                    <strong>挑戦者が階段を一段上がる（Upする）ための、最も身近なアクセラレーター（加速器）</strong>としての役割を担います。
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Space */}
             <div className="card-acrylic p-6">
-              <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
-                3. 【Space】
-                <br />
-                繋がりが「醸成」される場所
-              </h3>
-              <p className="text-gray-700 leading-relaxed">
-                85（発酵）の名を冠するように、ここは多様な事業者の活動が混ざり合う場所です。
-                清掃や管理を利用者自らが行うことで、場所への愛着が生まれ、利用者同士のネットワークが自然と形成されます。
-                <strong>空間（Space）を共有するだけでなく、未来の井波を面白くする「企み」を共有するコミュニティ</strong>を目指します。
-              </p>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  <Image
+                    src="/images/placeholder.svg"
+                    alt="Space"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-secondary mb-2 font-inter">
+                    【Space】
+                  </h3>
+                  <p className="text-lg text-gray-600 mb-4">
+                    繋がりが「醸成」される場所
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    85（発酵）の名を冠するように、ここは多様な事業者の活動が混ざり合う場所です。
+                    清掃や管理を利用者自らが行うことで、場所への愛着が生まれ、利用者同士のネットワークが自然と形成されます。
+                    <strong>空間（Space）を共有するだけでなく、未来の井波を面白くする「企み」を共有するコミュニティ</strong>を目指します。
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
