@@ -78,7 +78,7 @@ export default function UpStore() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/placeholder.svg"
+                    src="/images/upstore1.JPG"
                     alt="Co-creation"
                     fill
                     className="object-cover"
@@ -86,7 +86,7 @@ export default function UpStore() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-secondary mb-2 font-inter">
-                    【Co-creation】
+                    Co-creation
                   </h3>
                   <p className="text-lg text-gray-600 mb-4">
                     完璧な場所より、未完成な興奮を
@@ -106,7 +106,7 @@ export default function UpStore() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/placeholder.svg"
+                    src="/images/upstore2.JPG"
                     alt="2nd Floor"
                     fill
                     className="object-cover"
@@ -114,7 +114,7 @@ export default function UpStore() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-secondary mb-2 font-inter">
-                    【2nd Floor】
+                    2nd Floor
                   </h3>
                   <p className="text-lg text-gray-600 mb-4">
                     街へ出る前の、一番近い「二歩目」
@@ -134,7 +134,7 @@ export default function UpStore() {
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src="/images/placeholder.svg"
+                    src="/images/upstore3.JPG"
                     alt="Space"
                     fill
                     className="object-cover"
@@ -142,7 +142,7 @@ export default function UpStore() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-bold text-secondary mb-2 font-inter">
-                    【Space】
+                    Space
                   </h3>
                   <p className="text-lg text-gray-600 mb-4">
                     繋がりが「醸成」される場所
