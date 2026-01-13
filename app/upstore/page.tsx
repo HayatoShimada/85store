@@ -34,7 +34,7 @@ export default function UpStore() {
           <div className="card-acrylic p-8 md:p-12">
             <div className="text-center space-y-6 text-gray-700 leading-relaxed">
               <p className="text-2xl md:text-3xl font-bold text-secondary mb-6">
-                ここに、あなたの「＋（プラス）」を。
+                一段ごとに、店を広くする。
               </p>
               <p className="text-lg">
                 85-UpStore 2nd Floor Co-creation Space
