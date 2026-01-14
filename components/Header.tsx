@@ -47,6 +47,9 @@ export default function Header() {
             <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               About
             </Link>
+            <Link href="/reserve" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+              Reserve
+            </Link>
             <Link href="/upstore" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               2nd Floor
             </Link>
@@ -103,6 +106,12 @@ export default function Header() {
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
                 About
+              </Link>
+              <Link
+                href="/reserve"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                Reserve
               </Link>
               <Link
                 href="/upstore"
