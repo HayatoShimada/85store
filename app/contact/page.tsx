@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -81,8 +82,8 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Store Information */}
             <div className="card-acrylic p-8">
-              <h2 className="text-2xl font-bold text-secondary mb-6">
-                店舗情報
+              <h2 className="text-2xl font-bold text-secondary mb-6 font-inter">
+                1st Floor (85-Store)
               </h2>
               
               <div className="space-y-6">
@@ -112,9 +113,50 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">営業時間</h3>
                     <p className="text-gray-600">
-                      平日: 10:00 - 19:00<br />
-                      土日祝: 10:00 - 18:00<br />
-                      <span className="text-sm text-gray-500">※定休日は店舗にお問い合わせください</span>
+                      12:00 ~ 18:00（木曜定休）<br />
+                      <span className="text-sm text-gray-500">
+                        事前予約で木曜と18:00～20:00延長営業可<br />
+                        <Link href="/reserve" className="text-primary hover:text-primary-dark transition-colors underline">
+                          事前予約はこちら
+                        </Link>
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <h2 className="text-2xl font-bold text-secondary mb-6 mt-6 font-inter">
+                2nd Floor (85-UpStore)
+              </h2>
+
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">住所</h3>
+                    <p className="text-gray-600">
+                      〒932-0217<br />
+                      富山県南砺市本町４丁目１００<br />
+                      85-Store 2階
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">営業時間</h3>
+                    <p className="text-gray-600">
+                      12:00 ~ 18:00（木曜定休）
                     </p>
                   </div>
                 </div>
@@ -293,7 +335,7 @@ export default function ContactPage() {
         <div className="section-padding max-container">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-secondary mb-4 font-inter">
-              85-Store
+              1st Floor & 2nd Floor (85-Store)
             </h2>
             <p className="text-gray-600">
               〒932-0217 富山県南砺市本町４丁目１００番地

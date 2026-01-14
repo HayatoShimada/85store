@@ -44,11 +44,11 @@ export default function Header() {
             <Link href="/blog" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               Blog
             </Link>
-            <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
-              About
-            </Link>
             <Link href="/reserve" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               Reserve
+            </Link>
+            <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+              About
             </Link>
             <Link href="/upstore" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
               2nd Floor
@@ -105,18 +105,18 @@ export default function Header() {
                 <span className="block text-xs text-gray-500 mt-0.5">ブログ</span>
               </Link>
               <Link
-                href="/about"
-                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
-              >
-                <span className="font-inter uppercase tracking-wider">About</span>
-                <span className="block text-xs text-gray-500 mt-0.5">店舗について</span>
-              </Link>
-              <Link
                 href="/reserve"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
                 <span className="font-inter uppercase tracking-wider">Reserve</span>
                 <span className="block text-xs text-gray-500 mt-0.5">予約</span>
+              </Link>
+              <Link
+                href="/about"
+                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+              >
+                <span className="font-inter uppercase tracking-wider">About</span>
+                <span className="block text-xs text-gray-500 mt-0.5">店舗について</span>
               </Link>
               <Link
                 href="/upstore"

@@ -162,6 +162,35 @@ export default function About() {
                 </div>
               </section>
 
+              {/* 店舗情報 */}
+              <section>
+                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                  1st Floor (85-Store) 店舗情報
+                </h3>
+                <div className="bg-gray-50 p-6 rounded-lg space-y-4">
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-2">住所</p>
+                    <p className="text-gray-700">
+                      〒932-0217<br />
+                      富山県南砺市本町４丁目１００<br />
+                      85-Store
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 mb-2">営業時間</p>
+                    <p className="text-gray-700">
+                      12:00 ~ 18:00（木曜定休）
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      事前予約で木曜と18:00～20:00延長営業可<br />
+                      <Link href="/reserve" className="text-primary hover:text-primary-dark transition-colors underline">
+                        事前予約はこちら
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+              </section>
+
               {/* 沿革 */}
               <section>
                 <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
@@ -183,6 +212,11 @@ export default function About() {
                         <td className="py-3 px-4 font-medium">2025年11月16日</td>
                         <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
                         週末限定のストア</Link>の予約開始。</td>
+                      </tr>
+                      <tr className="border-b border-gray-200">
+                        <td className="py-3 px-4 font-medium">2025年</td>
+                        <td className="py-3 px-4"><Link href="/upstore" className="text-primary hover:text-primary-dark transition-colors">
+                        2nd Floor構想</Link>の立ち上げ。</td>
                       </tr>
                     </tbody>
                   </table>
