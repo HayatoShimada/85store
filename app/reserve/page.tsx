@@ -68,7 +68,7 @@ const stores: StoreInfo[] = [
     nameEn: "Limited Store",
     description: "3/1までの仮店舗。週末限定でオープンしています。",
     hours: "土日: 12:00 ~ 18:00",
-    aboutUrl: "https://85-store.com/blog/limitedstore",
+    aboutUrl: "https://85-store.com/blog/ms-m904jli",
     calendarUrl: "https://calendar.app.google/oFsPPYZUiPXDtZSB7",
     calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ05-VrhHdbdc_WLtoZiijEV-yVeaXDpfYCQVKXn4DTkjMG_D0eKowifeNSTWFlZbtDQ1J6MDjmO?gv=true",
     images: ["/logo.svg"], // 実際の画像パスに置き換えてください
