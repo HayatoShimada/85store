@@ -36,6 +36,7 @@
 - 説明
 - 予約ページボタン
 - 詳細ページボタン
+- イベント一覧（Event1st, Event2nd blogs, category)
 - 埋め込み
 
 ## 埋め込み

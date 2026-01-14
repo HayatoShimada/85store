@@ -57,6 +57,7 @@ interface StoreInfo {
   calendarEmbedUrl: string;
   images: string[];
   note?: string;
+  eventCategory?: string; // イベントカテゴリ（Event1st, Event2ndなど）
 }
 
 // 店舗情報
@@ -84,6 +85,7 @@ const stores: StoreInfo[] = [
     calendarUrl: "https://calendar.app.google/MJkz1WnXuv7JoN6B9",
     calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2JUkgse1YjUHHZxq77oo9ePtjpwItHH0OHtG5s-BODbPRxY8b74zfH4ofAaFwZi7PyU4FQ1u0J?gv=true",
     images: ["/logo.svg"], // 実際の画像パスに置き換えてください
+    eventCategory: "Event1st",
   },
   {
     id: "2nd-floor",
@@ -95,6 +97,7 @@ const stores: StoreInfo[] = [
     calendarUrl: "https://calendar.app.google/uaU1rBEzcqVUTQkA6",
     calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2JUkgse1YjUHHZxq77oo9ePtjpwItHH0OHtG5s-BODbPRxY8b74zfH4ofAaFwZi7PyU4FQ1u0J?gv=true",
     images: ["/logo.svg"], // 実際の画像パスに置き換えてください
+    eventCategory: "Event2nd",
   },
 ];
 
@@ -227,6 +230,27 @@ export default async function ReservePage() {
                   </div>
                 </div>
               </div>
+
+              {/* イベント一覧 */}
+              {store.eventCategory && (() => {
+                const eventPosts = store.eventCategory === "Event1st" ? event1stPosts : event2ndPosts;
+                const displayPosts = eventPosts.slice(0, 3);
+                
+                if (displayPosts.length === 0) return null;
+                
+                return (
+                  <div className="mt-12">
+                    <h3 className="text-2xl font-bold text-secondary mb-6 font-inter">
+                      {store.name} 開催イベント
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {displayPosts.map((post) => (
+                        <BlogCard key={post.id} post={post} />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Google Calendar埋め込み */}
               <div className="mt-12 card-acrylic p-4 md:p-8">
