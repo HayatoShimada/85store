@@ -34,7 +34,7 @@
   body {
     max-width: 100vw;
     overflow-x: hidden;
-    font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
+    font-family: var(--font-sans), 'Helvetica Neue', Arial, sans-serif;
   }
 
   body {
@@ -42,9 +42,9 @@
     color: rgb(var(--charcoal));
   }
 
-  /* 日本語を含むテキストに自動的にNoto Sans JPを適用 */
+  /* 日本語はフォールバックとしてNoto Sans JPを使用 */
   body:lang(ja) {
-    font-family: var(--font-noto-sans-jp), var(--font-inter), sans-serif;
+    font-family: var(--font-sans), var(--font-noto-sans-jp), sans-serif;
   }
 
   a {
@@ -54,36 +54,23 @@
 
   /* 英語の見出しはFutura、日本語の見出しはNoto Sans JP */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-inter), sans-serif;
+    font-family: var(--font-sans), sans-serif;
     font-weight: 700;
     color: rgb(var(--secondary));
-    letter-spacing: 0.05em;
   }
 
-  /* 日本語の見出し */
-  h1:lang(ja), h2:lang(ja), h3:lang(ja), 
-  h4:lang(ja), h5:lang(ja), h6:lang(ja) {
-    font-family: var(--font-noto-sans-jp), sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-  }
-
-  /* 本文の日本語テキスト */
-  p:lang(ja), li:lang(ja), span:lang(ja) {
-    font-family: var(--font-noto-sans-jp), sans-serif;
-    line-height: 1.8;
-  }
+  /* 日本語の見出し/本文は必要な場合に個別指定する */
 
   /* ボタンやナビゲーションは常にFutura */
   button, nav {
-    font-family: var(--font-inter), sans-serif !important;
-    letter-spacing: 0.1em;
+    font-family: var(--font-sans), sans-serif !important;
+    letter-spacing: 0.06em;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply relative px-8 py-3 rounded-none font-medium transition-all duration-300 uppercase tracking-wider font-inter flex items-center justify-center overflow-hidden;
+    @apply relative px-8 py-3 rounded-none font-medium transition-all duration-300 uppercase tracking-wider  flex items-center justify-center overflow-hidden;
     background: rgba(255, 107, 53, 0.25);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 107, 53, 0.4);
@@ -120,7 +107,7 @@
   }
 
   .btn-secondary {
-    @apply relative px-8 py-3 rounded-none font-medium transition-all duration-300 uppercase tracking-wider font-inter flex items-center justify-center overflow-hidden;
+    @apply relative px-8 py-3 rounded-none font-medium transition-all duration-300 uppercase tracking-wider  flex items-center justify-center overflow-hidden;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.4);
@@ -157,7 +144,7 @@
   }
 
   .btn-outline {
-    @apply border-2 border-primary text-primary px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary hover:text-white uppercase tracking-wider font-inter flex items-center justify-center;
+    @apply border-2 border-primary text-primary px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary hover:text-white uppercase tracking-wider  flex items-center justify-center;
   }
 
   .category-card {

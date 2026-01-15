@@ -51,7 +51,7 @@ export default function About() {
     <div className="min-h-screen section-bg-gradient">
       <div className="section-padding max-container py-16">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-8 font-inter">
+          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-8 ">
             About Us
           </h1>
 
@@ -72,13 +72,13 @@ export default function About() {
             </div>
 
             <div className="space-y-8 text-gray-700 leading-relaxed">
-              <h2 className="text-2xl font-bold text-secondary mb-4 font-inter">
+              <h2 className="text-2xl font-bold text-secondary mb-4 ">
                 85-Store(ハコストア)
               </h2>
               
               {/* 85-Storeとは？セクション */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                <h3 className="text-xl font-bold text-secondary mb-4 ">
                   85-Storeとは？
                 </h3>
                 <p className="mb-4">
@@ -95,7 +95,7 @@ export default function About() {
 
               {/* 3人の店員についてセクション */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                <h3 className="text-xl font-bold text-secondary mb-4 ">
                   3人の店員について
                 </h3>
                 <p className="mb-6">
@@ -107,7 +107,7 @@ export default function About() {
                 <div className="space-y-6">
                   {/* ゆいまる */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold text-secondary mb-3 font-inter">
+                    <h4 className="text-lg font-bold text-secondary mb-3 ">
                       ゆいまる（販売担当・店主）
                     </h4>
                     <p className="mb-2">
@@ -124,7 +124,7 @@ export default function About() {
 
                   {/* はやと */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold text-secondary mb-3 font-inter">
+                    <h4 className="text-lg font-bold text-secondary mb-3 ">
                       はやと（仕入れ・EC担当）
                     </h4>
                     <p className="mb-2">
@@ -141,7 +141,7 @@ export default function About() {
 
                   {/* スヌー */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold text-secondary mb-3 font-inter">
+                    <h4 className="text-lg font-bold text-secondary mb-3 ">
                       スヌー（店長）
                     </h4>
                     <p className="mb-2">
@@ -164,7 +164,7 @@ export default function About() {
 
               {/* 店舗情報 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                <h3 className="text-xl font-bold text-secondary mb-4 ">
                   1st Floor (85-Store) 店舗情報
                 </h3>
                 <div className="bg-gray-50 p-6 rounded-lg space-y-4">
@@ -193,7 +193,7 @@ export default function About() {
 
               {/* 沿革 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 font-inter">
+                <h3 className="text-xl font-bold text-secondary mb-4 ">
                   沿革
                 </h3>
                 <div className="overflow-x-auto">
@@ -227,7 +227,7 @@ export default function About() {
 
           {/* SNS Links Section */}
           <div className="card-acrylic p-8">
-            <h2 className="text-2xl font-bold text-secondary mb-6 text-center font-inter">
+            <h2 className="text-2xl font-bold text-secondary mb-6 text-center ">
               Follow Us
             </h2>
             <div className="flex justify-center space-x-6">
