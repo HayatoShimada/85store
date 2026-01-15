@@ -63,7 +63,7 @@ export default async function BlogPage() {
       <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 font-inter">
+            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 ">
               Blog
             </h1>
             <p className="text-gray-600 text-lg">富山県南砺市井波の古着・セレクトショップ「85-Store」からのスタイリング情報とトレンド</p>
@@ -106,7 +106,7 @@ export default async function BlogPage() {
         <section className="py-16">
           <div className="section-padding max-container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-secondary mb-4 font-inter">
+              <h2 className="text-3xl font-bold text-secondary mb-4 ">
                 note
               </h2>
               <p className="text-gray-600 mb-4">

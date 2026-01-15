@@ -18,13 +18,13 @@ export default function Footer() {
                 className="w-8 h-8 brightness-0 invert"
               />
             </div>
-            <p className="text-gray-300 font-noto mb-2">
+            <p className="text-gray-300 mb-2">
               Short-Term & Long-Term
             </p>
-            <p className="text-gray-300 font-noto text-sm">
+            <p className="text-gray-300 text-sm">
               富山県南砺市井波の<br />古着・セレクトショップ
             </p>
-            <p className="text-gray-300 font-noto text-sm mt-2">
+            <p className="text-gray-300 text-sm mt-2">
               〒932-0217<br />
               富山県南砺市本町4丁目100<br />
               85-Store
@@ -32,7 +32,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-gray-300 font-inter">Menu</h4>
+            <h4 className="font-semibold mb-4 text-gray-300 ">Menu</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-gray-300 hover:text-primary transition-colors">
@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-gray-300 font-inter">Customer Support</h4>
+            <h4 className="font-semibold mb-4 text-gray-300 ">Customer Support</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/contact" className="text-gray-300 hover:text-primary transition-colors">
@@ -79,7 +79,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-gray-300 font-inter">Follow Us</h4>
+            <h4 className="font-semibold mb-4 text-gray-300 ">Follow Us</h4>
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/85store_inami/"

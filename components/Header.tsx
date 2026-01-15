@@ -35,25 +35,25 @@ export default function Header() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="/" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Home
             </Link>
-            <Link href="https://shop.85-store.com/" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="https://shop.85-store.com/" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Online Shop
             </Link>
-            <Link href="/blog" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="/blog" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Blog
             </Link>
-            <Link href="/reserve" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="/reserve" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Reserve
             </Link>
-            <Link href="/about" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="/about" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               About
             </Link>
-            <Link href="/upstore" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="/upstore" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               2nd Floor
             </Link>
-            <Link href="/contact" className="text-charcoal hover:text-primary transition-colors font-inter uppercase tracking-wider text-sm">
+            <Link href="/contact" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Contact
             </Link>
           </div>
@@ -87,49 +87,49 @@ export default function Header() {
                 href="/"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">Home</span>
+                <span className=" uppercase tracking-wider">Home</span>
                 <span className="block text-xs text-gray-500 mt-0.5">ホーム</span>
               </Link>
               <Link
                 href="https://shop.85-store.com/"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">Online Shop</span>
+                <span className=" uppercase tracking-wider">Online Shop</span>
                 <span className="block text-xs text-gray-500 mt-0.5">オンラインストア</span>
               </Link>
               <Link
                 href="/blog"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">Blog</span>
+                <span className=" uppercase tracking-wider">Blog</span>
                 <span className="block text-xs text-gray-500 mt-0.5">ブログ</span>
               </Link>
               <Link
                 href="/reserve"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">Reserve</span>
+                <span className=" uppercase tracking-wider">Reserve</span>
                 <span className="block text-xs text-gray-500 mt-0.5">予約</span>
               </Link>
               <Link
                 href="/about"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">About</span>
+                <span className=" uppercase tracking-wider">About</span>
                 <span className="block text-xs text-gray-500 mt-0.5">店舗について</span>
               </Link>
               <Link
                 href="/upstore"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">2nd Floor</span>
+                <span className=" uppercase tracking-wider">2nd Floor</span>
                 <span className="block text-xs text-gray-500 mt-0.5">2階店舗</span>
               </Link>
               <Link
                 href="/contact"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
               >
-                <span className="font-inter uppercase tracking-wider">Contact</span>
+                <span className=" uppercase tracking-wider">Contact</span>
                 <span className="block text-xs text-gray-500 mt-0.5">お問い合わせ</span>
               </Link>
             </div>

@@ -114,7 +114,7 @@ export default async function ReservePage() {
       <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 font-inter">
+            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 ">
               Reserve
             </h1>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -131,7 +131,7 @@ export default async function ReservePage() {
       <section className="py-8 bg-white/30">
         <div className="section-padding max-container">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-secondary mb-6 text-center font-inter">
+            <h2 className="text-2xl font-bold text-secondary mb-6 text-center ">
               店舗一覧
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -141,7 +141,7 @@ export default async function ReservePage() {
                   href={`#${store.id}`}
                   className="card-acrylic p-6 hover:scale-105 transition-transform duration-200 text-center group"
                 >
-                  <h3 className="text-xl font-bold text-secondary mb-2 font-inter group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-bold text-secondary mb-2  group-hover:text-primary transition-colors">
                     {store.name}
                   </h3>
                   <p className="text-gray-600 text-sm mb-2">{store.nameEn}</p>
@@ -191,7 +191,7 @@ export default async function ReservePage() {
                 {/* 店舗情報 */}
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-2 font-inter">
+                    <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-2 ">
                       {store.name}
                     </h2>
                     <p className="text-xl text-gray-600 mb-4">{store.nameEn}</p>
@@ -240,7 +240,7 @@ export default async function ReservePage() {
                 
                 return (
                   <div className="mt-12">
-                    <h3 className="text-2xl font-bold text-secondary mb-6 font-inter">
+                    <h3 className="text-2xl font-bold text-secondary mb-6 ">
                       {store.name} 開催イベント
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -254,7 +254,7 @@ export default async function ReservePage() {
 
               {/* Google Calendar埋め込み */}
               <div className="mt-12 card-acrylic p-4 md:p-8">
-                <h3 className="text-2xl font-bold text-secondary mb-6 font-inter text-center">
+                <h3 className="text-2xl font-bold text-secondary mb-6  text-center">
                   {store.name} 予約カレンダー
                 </h3>
                 <div className="w-full overflow-hidden rounded-lg">
@@ -278,7 +278,7 @@ export default async function ReservePage() {
         <section id="events" className="py-16 scroll-mt-20">
           <div className="section-padding max-container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 font-inter">
+              <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 ">
                 開催イベント
               </h2>
               <p className="text-gray-600">
@@ -289,7 +289,7 @@ export default async function ReservePage() {
             {/* Event1st */}
             {event1stPosts.length > 0 && (
               <div className="mb-12">
-                <h3 className="text-2xl font-bold text-secondary mb-6 font-inter">
+                <h3 className="text-2xl font-bold text-secondary mb-6 ">
                   1st Floor イベント
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -303,7 +303,7 @@ export default async function ReservePage() {
             {/* Event2nd */}
             {event2ndPosts.length > 0 && (
               <div>
-                <h3 className="text-2xl font-bold text-secondary mb-6 font-inter">
+                <h3 className="text-2xl font-bold text-secondary mb-6 ">
                   2nd Floor イベント
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

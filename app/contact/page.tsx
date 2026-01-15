@@ -66,7 +66,7 @@ export default function ContactPage() {
       <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 font-inter">
+            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 ">
               Contact
             </h1>
             <p className="text-gray-600 text-lg max-w-2xl mx-auto">
@@ -82,7 +82,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Store Information */}
             <div className="card-acrylic p-8">
-              <h2 className="text-2xl font-bold text-secondary mb-6 font-inter">
+              <h2 className="text-2xl font-bold text-secondary mb-6 ">
                 1st Floor (85-Store)
               </h2>
               
@@ -125,7 +125,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <h2 className="text-2xl font-bold text-secondary mb-6 mt-6 font-inter">
+              <h2 className="text-2xl font-bold text-secondary mb-6 mt-6 ">
                 2nd Floor (85-UpStore)
               </h2>
 
@@ -162,7 +162,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <h2 className="text-2xl font-bold text-secondary mb-6 mt-6 font-inter">
+              <h2 className="text-2xl font-bold text-secondary mb-6 mt-6 ">
                 WEEKEND LIMITED STORE
               </h2>
 
@@ -334,7 +334,7 @@ export default function ContactPage() {
       <section className="py-16">
         <div className="section-padding max-container">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-secondary mb-4 font-inter">
+            <h2 className="text-3xl font-bold text-secondary mb-4 ">
               1st Floor & 2nd Floor (85-Store)
             </h2>
             <p className="text-gray-600">
@@ -361,7 +361,7 @@ export default function ContactPage() {
       <section className="py-16">
         <div className="section-padding max-container">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-secondary mb-4 font-inter">
+            <h2 className="text-3xl font-bold text-secondary mb-4 ">
               WEEKEND LIMITED STORE
             </h2>
             <p className="text-gray-600">
