@@ -89,7 +89,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </div>
             </nav>
 
-            <h1 className="text-xl font-bold text-secondary mb-6">
+            <h1 className="text-3xl font-bold text-secondary mb-6">
               {categoryName}
             </h1>
             <p className="text-gray-600 text-base max-w-2xl mx-auto">
@@ -103,7 +103,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <section className="py-16">
         <div className="section-padding max-container">
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-secondary mb-2">
+            <h2 className="text-3xl font-bold text-secondary mb-2">
               {categoryName}の記事 ({blogPosts.length}件)
             </h2>
             <p className="text-gray-600">
@@ -124,7 +124,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <section className="py-16">
           <div className="section-padding max-container">
             <div className="text-center mb-12">
-              <h2 className="text-xl font-bold text-secondary mb-4">
+              <h2 className="text-3xl font-bold text-secondary mb-4">
                 他のカテゴリ
               </h2>
               <p className="text-gray-600">

@@ -135,7 +135,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               )}
             </div>
 
-            <h1 className="text-xl font-bold text-secondary mb-4 md:mb-6">
+            <h1 className="text-3xl font-bold text-secondary mb-4 md:mb-6">
               {post.title}
             </h1>
 
@@ -186,8 +186,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 id="blog-content"
                 className="prose prose-lg max-w-none
                   prose-headings:text-secondary prose-headings:font-bold
-                  prose-h2:text-xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200
-                  prose-h3:text-xl prose-h3:mt-12 prose-h3:mb-4
+                  prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200
+                  prose-h3:text-3xl prose-h3:mt-12 prose-h3:mb-4
                   prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6
                   prose-a:text-primary prose-a:underline hover:prose-a:text-primary/80
                   prose-img:rounded-lg prose-img:shadow-md prose-img:my-8

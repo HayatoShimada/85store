@@ -16,7 +16,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     <section className="py-16">
       <div className="section-padding max-container">
         <div className="text-center mb-12">
-          <h2 className="text-xl font-bold text-secondary mb-4 ">
+          <h2 className="text-3xl font-bold text-secondary mb-4 ">
             Featured Products
           </h2>
           <p className="text-gray-600">
@@ -64,7 +64,7 @@ function ProductCard({ product }: { product: Product }) {
               {product.category}
             </span>
           )}
-          <h3 className="text-xl font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
+          <h3 className="text-3xl font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
           {product.price && (

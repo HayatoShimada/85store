@@ -98,11 +98,11 @@ export default function HeroSection({
       {/* コンテンツ */}
       <div className="relative z-20 text-center text-white px-4">
         {currentBanner?.title ? (
-          <h1 className="text-xl font-bold mb-4 tracking-wider">
+          <h1 className="text-3xl font-bold mb-4 tracking-wider">
             <span className=" text-white">{currentBanner.title}</span>
           </h1>
         ) : (
-          <h1 className="text-xl font-bold mb-4 tracking-wider">
+          <h1 className="text-3xl font-bold mb-4 tracking-wider">
             <span className=" text-white">&ldquo;今好きなもの&rdquo;が&ldquo;ずっと好きなもの&rdquo;をつくる</span>
           </h1>
         )}

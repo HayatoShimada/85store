@@ -109,10 +109,10 @@ export default function ShopifyProductEmbed({ productHandle }: ShopifyProductEmb
           <div className="flex-1 flex flex-col justify-between">
             <div>
               <div className="flex items-start justify-between gap-4 mb-3">
-                <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
+                <h3 className="text-3xl font-bold text-gray-900 line-clamp-2">
                   {product.title}
                 </h3>
-                <span className="text-xl font-bold text-primary whitespace-nowrap">
+                <span className="text-3xl font-bold text-primary whitespace-nowrap">
                   {product.price}
                 </span>
               </div>

@@ -16,8 +16,8 @@ export default function TagError({ error, reset }: ErrorProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center max-w-md mx-auto px-4">
-        <h1 className="text-xl font-bold text-gray-400 mb-4">500</h1>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Something went wrong</h2>
+        <h1 className="text-3xl font-bold text-gray-400 mb-4">500</h1>
+        <h2 className="text-3xl font-semibold text-gray-900 mb-4">Something went wrong</h2>
         <p className="text-gray-600 mb-8">An error occurred while loading the tag page.</p>
         
         <div className="space-y-4">

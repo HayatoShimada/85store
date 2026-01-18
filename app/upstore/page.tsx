@@ -18,7 +18,7 @@ export default function UpStore() {
               />
             </div>
           </div>
-          <h1 className="text-xl font-bold text-secondary mb-4 ">
+          <h1 className="text-3xl font-bold text-secondary mb-4 ">
             85-UpStore
           </h1>
           <p className="text-base text-gray-600 mb-2">
@@ -33,7 +33,7 @@ export default function UpStore() {
         <div className="max-w-4xl mx-auto mb-16">
           <div className="card-acrylic p-8 md:p-12">
             <div className="text-center space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-xl font-bold text-secondary mb-6">
+              <p className="text-3xl font-bold text-secondary mb-6">
                 一段ごとに、店を広くする。
               </p>
               <p className="text-base">
@@ -69,7 +69,7 @@ export default function UpStore() {
 
         {/* 3つの柱 */}
         <div className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-xl font-bold text-secondary mb-12 text-center ">
+          <h2 className="text-3xl font-bold text-secondary mb-12 text-center ">
             3つの柱
           </h2>
           <div className="space-y-8">
@@ -85,7 +85,7 @@ export default function UpStore() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-secondary mb-2 ">
+                  <h3 className="text-3xl font-bold text-secondary mb-2 ">
                     Co-creation
                   </h3>
                   <p className="text-base text-gray-600 mb-4">
@@ -113,7 +113,7 @@ export default function UpStore() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-secondary mb-2 ">
+                  <h3 className="text-3xl font-bold text-secondary mb-2 ">
                     2nd Floor
                   </h3>
                   <p className="text-base text-gray-600 mb-4">
@@ -141,7 +141,7 @@ export default function UpStore() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-secondary mb-2 ">
+                  <h3 className="text-3xl font-bold text-secondary mb-2 ">
                     Space
                   </h3>
                   <p className="text-base text-gray-600 mb-4">
@@ -161,14 +161,14 @@ export default function UpStore() {
         {/* 利用ガイドライン */}
         <div className="max-w-4xl mx-auto mb-16">
           <div className="card-acrylic p-8 md:p-12">
-            <h2 className="text-xl font-bold text-secondary mb-8 text-center ">
+            <h2 className="text-3xl font-bold text-secondary mb-8 text-center ">
               利用ガイドライン
             </h2>
 
             <div className="space-y-8 text-gray-700">
               {/* 基本コンセプト */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   1. 基本コンセプト
                 </h3>
                 <p className="leading-relaxed">
@@ -178,7 +178,7 @@ export default function UpStore() {
 
               {/* 利用資格・目的 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   2. 利用資格・目的
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -190,7 +190,7 @@ export default function UpStore() {
 
               {/* 利用料金と設備協力金 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   3. 利用料金と「設備協力金」
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -204,7 +204,7 @@ export default function UpStore() {
 
               {/* 利用時間と予約 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   4. 利用時間と予約
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -216,7 +216,7 @@ export default function UpStore() {
 
               {/* 設備と管理 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   5. 設備と管理
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -229,7 +229,7 @@ export default function UpStore() {
 
               {/* 安全と防犯 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   6. 安全と防犯
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -247,7 +247,7 @@ export default function UpStore() {
 
               {/* 禁止事項 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   7. 禁止事項
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -259,7 +259,7 @@ export default function UpStore() {
 
               {/* ネットワークの形成 */}
               <section>
-                <h3 className="text-xl font-bold text-secondary mb-4 ">
+                <h3 className="text-3xl font-bold text-secondary mb-4 ">
                   8. ネットワークの形成
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -274,7 +274,7 @@ export default function UpStore() {
         {/* お問い合わせ */}
         <div className="max-w-4xl mx-auto text-center">
           <div className="card-acrylic p-8">
-            <h2 className="text-xl font-bold text-secondary mb-6 ">
+            <h2 className="text-3xl font-bold text-secondary mb-6 ">
               お問い合わせ・ご予約
             </h2>
             <p className="text-gray-700 mb-6 leading-relaxed">

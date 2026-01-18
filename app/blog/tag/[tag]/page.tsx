@@ -70,7 +70,7 @@ export default async function TagPage({ params }: TagPageProps) {
             </Link>
           </nav>
 
-          <h1 className="text-xl font-bold text-secondary mb-4">
+          <h1 className="text-3xl font-bold text-secondary mb-4">
             #{decodedTag}
           </h1>
 
