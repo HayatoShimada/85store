@@ -70,7 +70,7 @@
 
 @layer components {
   .btn-primary {
-    @apply relative px-8 py-3 rounded-none font-medium transition-all duration-300 uppercase tracking-wider  flex items-center justify-center overflow-hidden;
+    @apply relative px-8 py-3 rounded-none font-semibold transition-all duration-300 uppercase tracking-wider  flex items-center justify-center overflow-hidden;
     background: rgba(255, 107, 53, 0.25);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 107, 53, 0.4);
@@ -107,7 +107,7 @@
   }
 
   .btn-secondary {
-    @apply relative px-8 py-3 rounded-none font-medium transition-all duration-300 uppercase tracking-wider  flex items-center justify-center overflow-hidden;
+    @apply relative px-8 py-3 rounded-none font-semibold transition-all duration-300 uppercase tracking-wider  flex items-center justify-center overflow-hidden;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.4);
@@ -144,7 +144,7 @@
   }
 
   .btn-outline {
-    @apply border-2 border-primary text-primary px-8 py-3 rounded-none font-medium transition-all duration-200 hover:bg-primary hover:text-white uppercase tracking-wider  flex items-center justify-center;
+    @apply border-2 border-primary text-primary px-8 py-3 rounded-none font-semibold transition-all duration-200 hover:bg-primary hover:text-white uppercase tracking-wider  flex items-center justify-center;
   }
 
   .category-card {

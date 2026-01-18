@@ -40,7 +40,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         <div className="p-6 pb-2">
           <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
             {primaryCategory && (
-              <span className="px-2 py-1 rounded-full text-xs font-medium border bg-gray-100 text-gray-700 border-gray-300">
+              <span className="px-2 py-1 rounded-full text-sm font-semibold border bg-gray-100 text-gray-700 border-gray-300">
                 {primaryCategory}
               </span>
             )}
@@ -49,10 +49,10 @@ export default function BlogCard({ post }: BlogCardProps) {
               <span className="text-gray-600">by {post.author}</span>
             )}
           </div>
-          <h3 className="text-xl font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
+          <h3 className="text-sm font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
             {post.title}
           </h3>
-          <p className="text-gray-600 line-clamp-2">{displayDescription}</p>
+          <p className="text-sm text-gray-600 line-clamp-2">{displayDescription}</p>
         </div>
       </Link>
       {post.tags && post.tags.length > 0 && (
@@ -61,7 +61,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
+              className="text-sm px-2 py-1 rounded bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
               onClick={(e) => e.stopPropagation()}
             >
               #{tag}

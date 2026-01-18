@@ -65,12 +65,12 @@ export default async function TagPage({ params }: TagPageProps) {
       <div className="section-padding max-container py-8 md:py-16">
         <div className="mb-8 md:mb-12">
           <nav className="mb-4 md:mb-6">
-            <Link href="/blog" className="text-primary hover:text-primary/80 transition-colors text-sm md:text-base">
+            <Link href="/blog" className="text-primary hover:text-primary/80 transition-colors text-base">
               ← ブログ一覧に戻る
             </Link>
           </nav>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary mb-4">
+          <h1 className="text-xl font-bold text-secondary mb-4">
             #{decodedTag}
           </h1>
 
@@ -88,7 +88,7 @@ export default async function TagPage({ params }: TagPageProps) {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">このタグの記事はまだありません。</p>
+            <p className="text-gray-500 text-base">このタグの記事はまだありません。</p>
           </div>
         )}
       </div>

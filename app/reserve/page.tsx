@@ -114,10 +114,10 @@ export default async function ReservePage() {
       <section className="py-20">
         <div className="section-padding max-container">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-6 ">
+            <h1 className="text-xl font-bold text-secondary mb-6 ">
               Reserve
             </h1>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 text-base max-w-2xl mx-auto">
               85-Storeの予約ページ。各店舗の空き状況をご確認いただき、ご予約ください。
             </p>
             <p className="text-gray-500 text-sm mt-4">
@@ -131,7 +131,7 @@ export default async function ReservePage() {
       <section className="py-8 bg-white/30">
         <div className="section-padding max-container">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-secondary mb-6 text-center ">
+            <h2 className="text-xl font-bold text-secondary mb-6 text-center ">
               店舗一覧
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -145,9 +145,9 @@ export default async function ReservePage() {
                     {store.name}
                   </h3>
                   <p className="text-gray-600 text-sm mb-2">{store.nameEn}</p>
-                  <p className="text-gray-500 text-xs">{store.hours}</p>
+                  <p className="text-gray-500 text-sm">{store.hours}</p>
                   {store.note && (
-                    <p className="text-xs text-orange-600 font-medium mt-2">{store.note}</p>
+                    <p className="text-sm text-orange-600 font-semibold mt-2">{store.note}</p>
                   )}
                 </a>
               ))}
@@ -156,7 +156,7 @@ export default async function ReservePage() {
               <div className="mt-6 text-center">
                 <a
                   href="#events"
-                  className="text-primary hover:text-primary-dark transition-colors font-medium inline-flex items-center gap-2"
+                  className="text-primary hover:text-primary-dark transition-colors font-semibold inline-flex items-center gap-2"
                 >
                   開催イベントを見る
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,12 +191,12 @@ export default async function ReservePage() {
                 {/* 店舗情報 */}
                 <div className="space-y-6">
                   <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-2 ">
+                    <h2 className="text-xl font-bold text-secondary mb-2 ">
                       {store.name}
                     </h2>
-                    <p className="text-xl text-gray-600 mb-4">{store.nameEn}</p>
+                    <p className="text-base text-gray-600 mb-4">{store.nameEn}</p>
                     {store.note && (
-                      <p className="text-sm text-orange-600 font-medium mb-4">{store.note}</p>
+                      <p className="text-sm text-orange-600 font-semibold mb-4">{store.note}</p>
                     )}
                   </div>
 
@@ -240,7 +240,7 @@ export default async function ReservePage() {
                 
                 return (
                   <div className="mt-12">
-                    <h3 className="text-2xl font-bold text-secondary mb-6 ">
+                    <h3 className="text-xl font-bold text-secondary mb-6 ">
                       {store.name} 開催イベント
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -254,7 +254,7 @@ export default async function ReservePage() {
 
               {/* Google Calendar埋め込み */}
               <div className="mt-12 card-acrylic p-4 md:p-8">
-                <h3 className="text-2xl font-bold text-secondary mb-6  text-center">
+                <h3 className="text-xl font-bold text-secondary mb-6  text-center">
                   {store.name} 予約カレンダー
                 </h3>
                 <div className="w-full overflow-hidden rounded-lg">
@@ -278,7 +278,7 @@ export default async function ReservePage() {
         <section id="events" className="py-16 scroll-mt-20">
           <div className="section-padding max-container">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 ">
+              <h2 className="text-xl font-bold text-secondary mb-4 ">
                 開催イベント
               </h2>
               <p className="text-gray-600">
@@ -289,7 +289,7 @@ export default async function ReservePage() {
             {/* Event1st */}
             {event1stPosts.length > 0 && (
               <div className="mb-12">
-                <h3 className="text-2xl font-bold text-secondary mb-6 ">
+                <h3 className="text-xl font-bold text-secondary mb-6 ">
                   1st Floor イベント
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -303,7 +303,7 @@ export default async function ReservePage() {
             {/* Event2nd */}
             {event2ndPosts.length > 0 && (
               <div>
-                <h3 className="text-2xl font-bold text-secondary mb-6 ">
+                <h3 className="text-xl font-bold text-secondary mb-6 ">
                   2nd Floor イベント
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

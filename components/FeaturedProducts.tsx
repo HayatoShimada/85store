@@ -16,7 +16,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     <section className="py-16">
       <div className="section-padding max-container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4 ">
+          <h2 className="text-xl font-bold text-secondary mb-4 ">
             Featured Products
           </h2>
           <p className="text-gray-600">
@@ -60,7 +60,7 @@ function ProductCard({ product }: { product: Product }) {
         </div>
         <div className="p-6">
           {product.category && (
-            <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-300 mb-2 inline-block">
+            <span className="px-2 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 border border-gray-300 mb-2 inline-block">
               {product.category}
             </span>
           )}
@@ -68,7 +68,7 @@ function ProductCard({ product }: { product: Product }) {
             {product.name}
           </h3>
           {product.price && (
-            <p className="text-lg font-bold text-primary">
+            <p className="text-base font-bold text-primary">
               ¥{product.price.toLocaleString()}
             </p>
           )}

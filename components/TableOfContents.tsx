@@ -129,7 +129,7 @@ export function TableOfContents({ html }: TableOfContentsProps) {
 
   return (
     <nav className="bg-gray-50 rounded-lg p-4 md:p-6 mb-8">
-      <h2 className="text-lg font-bold text-secondary mb-4">目次</h2>
+      <h2 className="text-xl font-bold text-secondary mb-4">目次</h2>
       <ul className="space-y-2">
         {headings.map((heading) => (
           <li
@@ -141,7 +141,7 @@ export function TableOfContents({ html }: TableOfContentsProps) {
               onClick={(e) => handleClick(e, heading.id)}
               className={`block text-sm transition-colors hover:text-primary ${
                 activeId === heading.id
-                  ? 'text-primary font-medium'
+                  ? 'text-primary font-semibold'
                   : 'text-gray-600'
               }`}
             >

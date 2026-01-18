@@ -113,18 +113,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="px-4 sm:px-6 lg:px-8 max-container py-8 md:py-16">
           {/* Breadcrumb */}
           <nav className="mb-6 md:mb-8">
-            <Link href="/blog" className="text-primary hover:text-primary/80 transition-colors text-sm md:text-base">
+            <Link href="/blog" className="text-primary hover:text-primary/80 transition-colors text-base">
               ← ブログ一覧に戻る
             </Link>
           </nav>
 
           {/* Article Meta */}
           <div className="mb-6 md:mb-8">
-            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-500 mb-4">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm text-gray-500 mb-4">
               {primaryCategory && (
                 <Link
                   href={`/blog/category/${encodeURIComponent(primaryCategory)}`}
-                  className="px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium border bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 transition-colors"
+                  className="px-2 md:px-3 py-1 rounded-full text-sm font-semibold border bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 transition-colors"
                 >
                   {primaryCategory}
                 </Link>
@@ -135,11 +135,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-secondary mb-4 md:mb-6">
+            <h1 className="text-xl font-bold text-secondary mb-4 md:mb-6">
               {post.title}
             </h1>
 
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 mb-4 md:mb-6">
+            <p className="text-base text-gray-600 mb-4 md:mb-6">
               {displayDescription}
             </p>
 
@@ -149,7 +149,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <Link
                     key={tag}
                     href={`/blog/tag/${encodeURIComponent(tag)}`}
-                    className="text-xs md:text-sm px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity inline-block"
+                    className="text-sm px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity inline-block"
                   >
                     #{tag}
                   </Link>
@@ -186,7 +186,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 id="blog-content"
                 className="prose prose-lg max-w-none
                   prose-headings:text-secondary prose-headings:font-bold
-                  prose-h2:text-2xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200
+                  prose-h2:text-xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200
                   prose-h3:text-xl prose-h3:mt-12 prose-h3:mb-4
                   prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6
                   prose-a:text-primary prose-a:underline hover:prose-a:text-primary/80

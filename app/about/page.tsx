@@ -51,7 +51,7 @@ export default function About() {
     <div className="min-h-screen section-bg-gradient">
       <div className="section-padding max-container py-16">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-8 ">
+          <h1 className="text-xl font-bold text-secondary mb-8 ">
             About Us
           </h1>
 
@@ -72,7 +72,7 @@ export default function About() {
             </div>
 
             <div className="space-y-8 text-gray-700 leading-relaxed">
-              <h2 className="text-2xl font-bold text-secondary mb-4 ">
+              <h2 className="text-xl font-bold text-secondary mb-4 ">
                 85-Store(ハコストア)
               </h2>
               
@@ -107,7 +107,7 @@ export default function About() {
                 <div className="space-y-6">
                   {/* ゆいまる */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold text-secondary mb-3 ">
+                    <h4 className="text-xl font-bold text-secondary mb-3 ">
                       ゆいまる（販売担当・店主）
                     </h4>
                     <p className="mb-2">
@@ -124,7 +124,7 @@ export default function About() {
 
                   {/* はやと */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold text-secondary mb-3 ">
+                    <h4 className="text-xl font-bold text-secondary mb-3 ">
                       はやと（仕入れ・EC担当）
                     </h4>
                     <p className="mb-2">
@@ -141,7 +141,7 @@ export default function About() {
 
                   {/* スヌー */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-bold text-secondary mb-3 ">
+                    <h4 className="text-xl font-bold text-secondary mb-3 ">
                       スヌー（店長）
                     </h4>
                     <p className="mb-2">
@@ -200,21 +200,21 @@ export default function About() {
                   <table className="w-full border-collapse">
                     <tbody>
                       <tr className="border-b border-gray-200">
-                        <td className="py-3 px-4 font-medium">2025年9月9日</td>
+                        <td className="py-3 px-4 font-semibold">2025年9月9日</td>
                         <td className="py-3 px-4">富山県南砺市井波に物件を取得し、現在オープン準備中。</td>
                       </tr>
                       <tr className="border-b border-gray-200">
-                        <td className="py-3 px-4 font-medium">2025年11月15日</td>
+                        <td className="py-3 px-4 font-semibold">2025年11月15日</td>
                         <td className="py-3 px-4"><Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors">
                         オンラインストア</Link>をオープン。</td>
                       </tr>
                       <tr className="border-b border-gray-200">
-                        <td className="py-3 px-4 font-medium">2025年11月16日</td>
+                        <td className="py-3 px-4 font-semibold">2025年11月16日</td>
                         <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
                         週末限定のストア</Link>の予約開始。</td>
                       </tr>
                       <tr className="border-b border-gray-200">
-                        <td className="py-3 px-4 font-medium">2025年</td>
+                        <td className="py-3 px-4 font-semibold">2025年</td>
                         <td className="py-3 px-4"><Link href="/upstore" className="text-primary hover:text-primary-dark transition-colors">
                         2nd Floor構想</Link>の立ち上げ。</td>
                       </tr>
@@ -227,7 +227,7 @@ export default function About() {
 
           {/* SNS Links Section */}
           <div className="card-acrylic p-8">
-            <h2 className="text-2xl font-bold text-secondary mb-6 text-center ">
+            <h2 className="text-xl font-bold text-secondary mb-6 text-center ">
               Follow Us
             </h2>
             <div className="flex justify-center space-x-6">
