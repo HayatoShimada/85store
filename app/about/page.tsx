@@ -58,7 +58,7 @@ export default function About() {
 
         </div>
 
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="space-y-8">
           {/* ロゴとタイトル */}
           <div className="card-acrylic p-8">
             <div className="flex justify-center mb-8">

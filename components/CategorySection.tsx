@@ -2,9 +2,10 @@ import Link from 'next/link';
 
 interface CategorySectionProps {
   categories: string[];
+  inline?: boolean;
 }
 
-export function CategorySection({ categories }: CategorySectionProps) {
+export function CategorySection({ categories, inline = false }: CategorySectionProps) {
   const categoryConfigs: Record<string, { label: string; color: string }> = {
     "Fashion": { label: "ファッション", color: "text-pink-700" },
     "Life Style": { label: "ライフスタイル", color: "text-blue-700" },
@@ -19,11 +20,36 @@ export function CategorySection({ categories }: CategorySectionProps) {
     return null;
   }
 
+  // インラインモード（控えめなデザイン）
+  if (inline) {
+    return (
+      <div className="flex flex-wrap justify-center gap-2">
+        {categories.map((category) => {
+          const categoryConfig = categoryConfigs[category] || {
+            label: category,
+            color: "text-gray-700"
+          };
+
+          return (
+            <Link
+              key={category}
+              href={`/blog/category/${encodeURIComponent(category)}`}
+              className="px-3 py-1 text-sm rounded-full border border-gray-300 text-gray-600 hover:border-primary hover:text-primary transition-colors"
+            >
+              {categoryConfig.label}
+            </Link>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // 通常モード（フルセクション）
   return (
     <section className="py-16">
       <div className="section-padding max-container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-secondary mb-4 ">
+          <h2 className="text-3xl font-bold text-secondary mb-4">
             Category
           </h2>
         </div>

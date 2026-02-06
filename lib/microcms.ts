@@ -161,6 +161,34 @@ export async function getAllCategories(): Promise<string[]> {
   }
 }
 
+// すべてのタグを取得（ブログ記事から抽出）
+export async function getAllTags(): Promise<string[]> {
+  if (!client) {
+    console.warn("MicroCMS client is not initialized");
+    return [];
+  }
+  try {
+    const response = await client.getList<Blog>({
+      endpoint: "blogs",
+      queries: {
+        limit: 100,
+        fields: "tags",
+      },
+    });
+
+    // 全記事のタグを収集してユニークな値を返す
+    const tags = new Set<string>();
+    response.contents.forEach((blog) => {
+      blog.tags?.forEach((tag) => tags.add(tag));
+    });
+
+    return Array.from(tags);
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    return [];
+  }
+}
+
 // 関連記事を取得
 export async function getRelatedPosts(currentPostId: string, category?: string | null, limit: number = 3): Promise<Blog[]> {
   if (!client) {

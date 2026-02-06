@@ -110,7 +110,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Article Header */}
       <article className="bg-white">
-        <div className="px-4 sm:px-6 lg:px-8 max-container py-8 md:py-16">
+        <div className="section-padding max-container py-8 md:py-16">
           {/* Breadcrumb */}
           <nav className="mb-6 md:mb-8">
             <Link href="/blog" className="text-primary hover:text-primary/80 transition-colors text-base">
@@ -160,12 +160,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {/* Cover Image */}
           {coverImage && (
-            <div className="relative h-48 sm:h-64 md:h-80 lg:h-96 w-full mb-8 md:mb-12 md:rounded-lg overflow-hidden -mx-4 sm:mx-0">
+            <div className="w-full mb-8 md:mb-12 rounded-lg overflow-hidden">
               <Image
                 src={coverImage}
                 alt={post.title}
-                fill
-                className="object-cover object-center"
+                width={1200}
+                height={675}
+                className="w-full h-auto"
                 priority
               />
             </div>
@@ -175,9 +176,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Article Content */}
       <section className="py-8 md:py-16">
-        <div className="md:section-padding md:max-container">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white md:rounded-lg md:shadow-lg p-4 sm:p-6 md:p-12">
+        <div className="section-padding max-container">
+          <div className="bg-white md:rounded-lg md:shadow-lg p-4 sm:p-6 md:p-12">
               {/* 目次 */}
               <TableOfContents html={post.content} />
 
@@ -199,7 +199,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   prose-figure:my-8"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
-            </div>
           </div>
         </div>
       </section>

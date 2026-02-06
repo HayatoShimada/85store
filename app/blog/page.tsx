@@ -2,8 +2,9 @@ import { Metadata } from "next";
 import BlogCard from "@/components/BlogCard";
 import NoteCard from "@/components/NoteCard";
 import { CategorySection } from "@/components/CategorySection";
+import { TagSection } from "@/components/TagSection";
 import StructuredData from "@/components/StructuredData";
-import { getBlogPosts, getAllCategories } from "@/lib/microcms";
+import { getBlogPosts, getAllCategories, getAllTags } from "@/lib/microcms";
 import { getNoteArticles } from "@/lib/note";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
@@ -50,30 +51,34 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const [blogPosts, categories, noteArticles] = await Promise.all([
+  const [blogPosts, categories, tags, noteArticles] = await Promise.all([
     getBlogPosts(),
     getAllCategories(),
+    getAllTags(),
     getNoteArticles()
   ]);
 
   return (
     <div className="min-h-screen section-bg-gradient">
       <StructuredData type="Blog" />
-      {/* Hero Section */}
-      <section className="py-20">
-        <div className="section-padding max-container">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-secondary mb-6 ">
-              Blog
-            </h1>
-            <p className="text-sm text-gray-600">富山県南砺市井波の古着・セレクトショップ「85-Store」からのスタイリング情報とトレンド</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Blog Posts */}
+      {/* Blog Section */}
       <section className="py-16">
         <div className="section-padding max-container">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-secondary mb-4">
+              Blog
+            </h1>
+            <p className="text-sm text-gray-600 mb-6">富山県南砺市井波の古着・セレクトショップ「85-Store」からのスタイリング情報とトレンド</p>
+            
+            {/* Categories & Tags (inline) */}
+            <div className="space-y-3">
+              <CategorySection categories={categories} inline />
+              <TagSection tags={tags} inline />
+            </div>
+          </div>
+
+          {/* Blog Posts */}
           {blogPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogPosts.map((post) => (
@@ -97,9 +102,6 @@ export default async function BlogPage() {
           )}
         </div>
       </section>
-
-      {/* Categories Section */}
-      <CategorySection categories={categories} />
 
       {/* note Articles Section */}
       {noteArticles.length > 0 && (
