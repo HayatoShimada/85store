@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     url: `${siteUrl}/reserve`,
     siteName: "85-Store（ハコストア）",
     title: "Reserve | 予約 | 富山県南砺市井波の古着・セレクトショップ 85-Store",
-    description: "85-Storeの予約ページ。Limited Store、1st Floor(85-Store)、2nd Floor(85-UpStore)の予約と空き状況をご確認いただけます。",
+    description: "85-Storeの予約ページ。1st Floor(85-Store)、2nd Floor(85-UpStore)の予約と空き状況をご確認いただけます。",
     images: [
       {
         url: `${siteUrl}/logo.svg`,
@@ -63,18 +63,6 @@ interface StoreInfo {
 // 店舗情報
 const stores: StoreInfo[] = [
   {
-    id: "limited-store",
-    name: "Limited Store",
-    nameEn: "Limited Store",
-    description: "3/1までの仮店舗。週末限定でオープンしています。",
-    hours: "土日: 12:00 ~ 18:00",
-    aboutUrl: "https://85-store.com/blog/ms-m904jli",
-    calendarUrl: "https://calendar.app.google/oFsPPYZUiPXDtZSB7",
-    calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ05-VrhHdbdc_WLtoZiijEV-yVeaXDpfYCQVKXn4DTkjMG_D0eKowifeNSTWFlZbtDQ1J6MDjmO?gv=true",
-    images: ["/logo.svg"], // 実際の画像パスに置き換えてください
-    note: "※3/1までの仮店舗です",
-  },
-  {
     id: "1st-floor",
     name: "1st Floor",
     nameEn: "85-Store",
@@ -82,16 +70,16 @@ const stores: StoreInfo[] = [
     hours: "12:00 ~ 18:00（木曜定休）",
     extendedHours: "事前予約で木曜と18:00～20:00延長営業可",
     aboutUrl: "https://85-store.com/about",
-    calendarUrl: "https://calendar.app.google/MJkz1WnXuv7JoN6B9",
-    calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2JUkgse1YjUHHZxq77oo9ePtjpwItHH0OHtG5s-BODbPRxY8b74zfH4ofAaFwZi7PyU4FQ1u0J?gv=true",
-    images: ["/logo.svg"], // 実際の画像パスに置き換えてください
+    calendarUrl: "https://calendar.app.google/NC4YeDjkiWNVjLnw7",
+    calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3Z8bstlUPSWyt6ZrL_cB-aQSimveRJwfnuczdh5Zv1w23bNFljFC-HvtiVIV113oRHPZPsA_aN?gv=true",
+    images: ["/images/shop.jpg"], // 実際の画像パスに置き換えてください
     eventCategory: "Event1st",
   },
   {
     id: "2nd-floor",
     name: "2nd Floor",
     nameEn: "85-UpStore",
-    description: "2階のセレクトショップ。",
+    description: "2階のセレクトショップ。未オープン。",
     hours: "12:00 ~ 18:00（木曜定休）",
     aboutUrl: "https://85-store.com/upstore",
     calendarUrl: "https://calendar.app.google/uaU1rBEzcqVUTQkA6",
@@ -171,9 +159,9 @@ export default async function ReservePage() {
 
       {/* 店舗セクション */}
       {stores.map((store, index) => (
-        <section 
+        <section
           id={store.id}
-          key={store.id} 
+          key={store.id}
           className={`py-16 scroll-mt-20 ${index % 2 === 1 ? 'bg-white/50' : ''}`}
         >
           <div className="section-padding max-container">
@@ -235,9 +223,9 @@ export default async function ReservePage() {
               {store.eventCategory && (() => {
                 const eventPosts = store.eventCategory === "Event1st" ? event1stPosts : event2ndPosts;
                 const displayPosts = eventPosts.slice(0, 3);
-                
+
                 if (displayPosts.length === 0) return null;
-                
+
                 return (
                   <div className="mt-12">
                     <h3 className="text-3xl font-bold text-secondary mb-6 ">

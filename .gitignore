@@ -53,3 +53,4 @@ next-env.d.ts
 /lib/notion-image-mapping.json
 scripts/download-notion-images.ts
 .gitignore
+.env*.local

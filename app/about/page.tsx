@@ -132,7 +132,7 @@ export default function About() {
           {/* 沿革 */}
           <div>
             <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
-              沿革
+              History
             </h3>
             <div className="card-acrylic p-8 text-gray-700 leading-relaxed">
               <div className="overflow-x-auto">
@@ -145,17 +145,21 @@ export default function About() {
                     <tr className="border-b border-gray-200">
                       <td className="py-3 px-4 font-semibold">2025年11月15日</td>
                       <td className="py-3 px-4"><Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors">
-                      オンラインストア</Link>をオープン。</td>
+                        オンラインストア</Link>をオープン。</td>
                     </tr>
                     <tr className="border-b border-gray-200">
                       <td className="py-3 px-4 font-semibold">2025年11月16日</td>
                       <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
-                      週末限定のストア</Link>の予約開始。</td>
+                        週末限定のストア</Link>の予約開始。</td>
                     </tr>
                     <tr className="border-b border-gray-200">
                       <td className="py-3 px-4 font-semibold">2026年1月19日</td>
                       <td className="py-3 px-4"><Link href="/upstore" className="text-primary hover:text-primary-dark transition-colors">
-                      2nd Floor構想</Link>の立ち上げ。</td>
+                        2nd Floor構想</Link>の立ち上げ。</td>
+                    </tr>
+                    <tr className="border-b border-gray-200">
+                      <td className="py-3 px-4 font-semibold">2026年3月29日</td>
+                      <td className="py-3 px-4">85-Store 実店舗オープン。</td>
                     </tr>
                   </tbody>
                 </table>
