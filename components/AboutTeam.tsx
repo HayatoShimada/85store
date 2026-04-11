@@ -11,7 +11,7 @@ export default function AboutTeam() {
 
       <div className="grid grid-cols-1 gap-6">
         {/* ゆいまる */}
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
           <div className="relative w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden">
             <Image
               src="/images/yuimaru.jpg"
@@ -20,7 +20,7 @@ export default function AboutTeam() {
               className="object-cover"
             />
           </div>
-          <div className="bg-gray-50 p-6 rounded-lg flex-1">
+          <div className="bg-gray-50 p-6 rounded-lg flex-1 w-full">
             <h4 className="font-bold text-secondary mb-3 ">
               ゆいまる（販売担当・店主）
             </h4>
@@ -38,7 +38,7 @@ export default function AboutTeam() {
         </div>
 
         {/* はやと */}
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
           <div className="relative w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden">
             <Image
               src="/images/hayamaru.jpg"
@@ -47,7 +47,7 @@ export default function AboutTeam() {
               className="object-cover"
             />
           </div>
-          <div className="bg-gray-50 p-6 rounded-lg flex-1">
+          <div className="bg-gray-50 p-6 rounded-lg flex-1 w-full">
             <h4 className="font-bold text-secondary mb-3 ">
               はやと（仕入れ・EC担当）
             </h4>
@@ -65,7 +65,7 @@ export default function AboutTeam() {
         </div>
 
         {/* スヌー */}
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
           <div className="relative w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden">
             <Image
               src="/images/snoo.jpg"
@@ -74,7 +74,7 @@ export default function AboutTeam() {
               className="object-cover"
             />
           </div>
-          <div className="bg-gray-50 p-6 rounded-lg flex-1">
+          <div className="bg-gray-50 p-6 rounded-lg flex-1 w-full">
             <h4 className="font-bold text-secondary mb-3 ">
               スヌー（店長）
             </h4>
