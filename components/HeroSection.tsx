@@ -12,9 +12,8 @@ interface HeroSectionProps {
 
 // デフォルトの画像パス（bannersが渡されない場合のフォールバック）
 const DEFAULT_HERO_IMAGES = [
-  "/hero/HeroSample.jpg",
-  "/hero/HeroSample2.jpg",
-  "/hero/HeroSample3.png",
+  "/HeroSample.jpg",
+  "/hero/weekend_limited_store.png",
 ];
 
 export default function HeroSection({

@@ -73,7 +73,7 @@ export default function About() {
             </div>
             <div className="text-center">
               <h2 className="text-3xl font-bold text-secondary">
-                85-Store(ハコストア)
+                85-Store<span className="block text-lg md:text-xl mt-1">ハコストア</span>
               </h2>
             </div>
           </div>
@@ -129,40 +129,58 @@ export default function About() {
             </div>
           </div>
 
+          {/* アクセス（マップ） */}
+          <div>
+            <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
+              アクセス
+            </h3>
+            <div className="card-acrylic h-96 overflow-hidden rounded-2xl">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="85-Store アクセス地図"
+              />
+            </div>
+          </div>
+
           {/* 沿革 */}
           <div>
             <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
               History
             </h3>
             <div className="card-acrylic p-8 text-gray-700 leading-relaxed">
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <tbody>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-semibold">2025年9月9日</td>
-                      <td className="py-3 px-4">富山県南砺市井波に物件を取得し、現在オープン準備中。</td>
-                    </tr>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-semibold">2025年11月15日</td>
-                      <td className="py-3 px-4"><Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors">
-                        オンラインストア</Link>をオープン。</td>
-                    </tr>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-semibold">2025年11月16日</td>
-                      <td className="py-3 px-4"><Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors">
-                        週末限定のストア</Link>の予約開始。</td>
-                    </tr>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-semibold">2026年1月19日</td>
-                      <td className="py-3 px-4"><Link href="/upstore" className="text-primary hover:text-primary-dark transition-colors">
-                        2nd Floor構想</Link>の立ち上げ。</td>
-                    </tr>
-                    <tr className="border-b border-gray-200">
-                      <td className="py-3 px-4 font-semibold">2026年3月29日</td>
-                      <td className="py-3 px-4">85-Store 実店舗オープン。</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col sm:flex-row sm:gap-6 border-b border-gray-200 pb-6 last:border-0 last:pb-0">
+                  <div className="font-bold text-secondary sm:w-40 flex-shrink-0">2025年9月9日</div>
+                  <div className="mt-1 sm:mt-0">富山県南砺市井波に物件を取得し、現在オープン準備中。</div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:gap-6 border-b border-gray-200 pb-6 last:border-0 last:pb-0">
+                  <div className="font-bold text-secondary sm:w-40 flex-shrink-0">2025年11月15日</div>
+                  <div className="mt-1 sm:mt-0">
+                    <Link href="https://shop.85-store.com/" className="text-primary hover:text-primary-dark transition-colors font-medium underline underline-offset-2">オンラインストア</Link>をオープン。
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:gap-6 border-b border-gray-200 pb-6 last:border-0 last:pb-0">
+                  <div className="font-bold text-secondary sm:w-40 flex-shrink-0">2025年11月16日</div>
+                  <div className="mt-1 sm:mt-0">
+                    <Link href="https://85-store.com/blog/limitedstore" className="text-primary hover:text-primary-dark transition-colors font-medium underline underline-offset-2">週末限定のストア</Link>の予約開始。
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:gap-6 border-b border-gray-200 pb-6 last:border-0 last:pb-0">
+                  <div className="font-bold text-secondary sm:w-40 flex-shrink-0">2026年1月19日</div>
+                  <div className="mt-1 sm:mt-0">
+                    <Link href="/upstore" className="text-primary hover:text-primary-dark transition-colors font-medium underline underline-offset-2">2nd Floor構想</Link>の立ち上げ。
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:gap-6 border-b border-gray-200 pb-6 last:border-0 last:pb-0">
+                  <div className="font-bold text-secondary sm:w-40 flex-shrink-0">2026年3月29日</div>
+                  <div className="mt-1 sm:mt-0">85-Store 実店舗オープン。</div>
+                </div>
               </div>
             </div>
           </div>

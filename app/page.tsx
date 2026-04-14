@@ -90,7 +90,9 @@ export default async function Home() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-500">No blog posts yet</p>
+            <div className="card-acrylic p-12 text-center max-w-2xl mx-auto rounded-xl">
+              <p className="text-gray-500 font-medium tracking-wide">ただいま記事を準備中です</p>
+            </div>
           )}
 
           <div className="text-center mt-8">

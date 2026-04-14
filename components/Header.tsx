@@ -86,6 +86,7 @@ export default function Header() {
               <Link
                 href="/"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">Home</span>
                 <span className="block text-sm text-gray-500 mt-0.5">ホーム</span>
@@ -93,6 +94,7 @@ export default function Header() {
               <Link
                 href="https://shop.85-store.com/"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">Online Shop</span>
                 <span className="block text-sm text-gray-500 mt-0.5">オンラインストア</span>
@@ -100,6 +102,7 @@ export default function Header() {
               <Link
                 href="/blog"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">Blog</span>
                 <span className="block text-sm text-gray-500 mt-0.5">ブログ</span>
@@ -107,6 +110,7 @@ export default function Header() {
               <Link
                 href="/reserve"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">Reserve</span>
                 <span className="block text-sm text-gray-500 mt-0.5">予約</span>
@@ -114,6 +118,7 @@ export default function Header() {
               <Link
                 href="/about"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">About</span>
                 <span className="block text-sm text-gray-500 mt-0.5">店舗について</span>
@@ -121,6 +126,7 @@ export default function Header() {
               <Link
                 href="/upstore"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">2nd Floor</span>
                 <span className="block text-sm text-gray-500 mt-0.5">2階店舗</span>
@@ -128,6 +134,7 @@ export default function Header() {
               <Link
                 href="/contact"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
+                onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">Contact</span>
                 <span className="block text-sm text-gray-500 mt-0.5">お問い合わせ</span>

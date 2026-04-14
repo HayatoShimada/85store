@@ -12,7 +12,7 @@ export default function AboutTeam() {
       <div className="grid grid-cols-1 gap-6">
         {/* ゆいまる */}
         <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
-          <div className="relative w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden">
+          <div className="relative w-56 h-[280px] md:w-32 md:h-40 flex-shrink-0 rounded-lg overflow-hidden">
             <Image
               src="/images/yuimaru.jpg"
               alt="ゆいまる"
@@ -39,7 +39,7 @@ export default function AboutTeam() {
 
         {/* はやと */}
         <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
-          <div className="relative w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden">
+          <div className="relative w-56 h-[280px] md:w-32 md:h-40 flex-shrink-0 rounded-lg overflow-hidden">
             <Image
               src="/images/hayamaru.jpg"
               alt="はやと"
@@ -66,7 +66,7 @@ export default function AboutTeam() {
 
         {/* スヌー */}
         <div className="flex flex-col md:flex-row gap-4 items-center md:items-start">
-          <div className="relative w-32 h-40 flex-shrink-0 rounded-lg overflow-hidden">
+          <div className="relative w-56 h-[280px] md:w-32 md:h-40 flex-shrink-0 rounded-lg overflow-hidden">
             <Image
               src="/images/snoo.jpg"
               alt="スヌー"

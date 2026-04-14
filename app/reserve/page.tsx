@@ -84,7 +84,7 @@ const stores: StoreInfo[] = [
     aboutUrl: "https://85-store.com/upstore",
     calendarUrl: "https://calendar.app.google/uaU1rBEzcqVUTQkA6",
     calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2JUkgse1YjUHHZxq77oo9ePtjpwItHH0OHtG5s-BODbPRxY8b74zfH4ofAaFwZi7PyU4FQ1u0J?gv=true",
-    images: ["/logo.svg"], // 実際の画像パスに置き換えてください
+    images: ["/images/shop.jpg"], // 実際の画像パスに置き換えてください
     eventCategory: "Event2nd",
   },
 ];
