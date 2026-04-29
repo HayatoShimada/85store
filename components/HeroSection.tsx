@@ -11,9 +11,7 @@ interface HeroSectionProps {
 }
 
 // デフォルトの画像パス（bannersが渡されない場合のフォールバック）
-const DEFAULT_HERO_IMAGES = [
-  "/HeroSample.jpg",
-  "/hero/weekend_limited_store.png",
+const DEFAULT_HERO_IMAGES: string[] = [
 ];
 
 export default function HeroSection({
@@ -56,9 +54,8 @@ export default function HeroSection({
           banners.map((banner, index) => (
             <div
               key={banner.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentIndex && isLoaded ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex && isLoaded ? "opacity-100" : "opacity-0"
+                }`}
             >
               <Image
                 src={banner.image.url}
@@ -75,9 +72,8 @@ export default function HeroSection({
           DEFAULT_HERO_IMAGES.map((image, index) => (
             <div
               key={image}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentIndex && isLoaded ? "opacity-100" : "opacity-0"
-              }`}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex && isLoaded ? "opacity-100" : "opacity-0"
+                }`}
             >
               <Image
                 src={image}
@@ -145,11 +141,10 @@ export default function HeroSection({
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
                   ? "bg-white w-8"
                   : "bg-white/50 hover:bg-white/75"
-              }`}
+                }`}
               aria-label={`画像 ${index + 1} に切り替え`}
             />
           ))}

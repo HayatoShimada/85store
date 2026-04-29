@@ -51,17 +51,15 @@ export default function About() {
   return (
     <div className="min-h-screen section-bg-gradient">
       <div className="section-padding max-container py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-3xl font-bold text-secondary mb-8 ">
-            About Us
-          </h1>
-
-        </div>
-
         <div className="space-y-8">
+
           {/* ロゴとタイトル */}
           <div className="card-acrylic p-8">
+            <h1 className="text-3xl font-bold text-secondary mb-8 justify-center flex">
+              About Us
+            </h1>
             <div className="flex justify-center mb-8">
+
               <div className="relative w-48 h-48 md:w-64 md:h-64">
                 <Image
                   src="/logo.svg"
@@ -71,39 +69,27 @@ export default function About() {
                 />
               </div>
             </div>
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-secondary">
-                85-Store<span className="block text-lg md:text-xl mt-1">ハコストア</span>
-              </h2>
-            </div>
-          </div>
-
-          {/* このお店について */}
-          <div>
-            <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
-              このお店について
-            </h3>
-            <div className="card-acrylic p-8 text-gray-700 leading-relaxed">
-              <AboutStore />
-            </div>
+            <AboutStore />
           </div>
 
           {/* 3人の店員について */}
           <div>
-            <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
-              3人の店員について
-            </h3>
+
             <div className="card-acrylic p-8 text-gray-700 leading-relaxed">
+              <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
+                Team
+              </h3>
               <AboutTeam />
             </div>
           </div>
 
           {/* 店舗情報 */}
           <div>
-            <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
-              店舗情報
-            </h3>
+
             <div className="card-acrylic p-8 text-gray-700 leading-relaxed">
+              <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
+                Infomation
+              </h3>
               <div className="bg-gray-50 p-6 rounded-lg space-y-4">
                 <div>
                   <p className="font-semibold text-gray-900 mb-2">住所</p>
@@ -126,34 +112,37 @@ export default function About() {
                   </p>
                 </div>
               </div>
+
+
+              <div className="card-acrylic h-96 overflow-hidden rounded-2xl">
+
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="85-Store アクセス地図"
+                />
+              </div>
             </div>
           </div>
 
           {/* アクセス（マップ） */}
           <div>
-            <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
-              アクセス
-            </h3>
-            <div className="card-acrylic h-96 overflow-hidden rounded-2xl">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="85-Store アクセス地図"
-              />
-            </div>
+
           </div>
 
           {/* 沿革 */}
           <div>
-            <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
-              History
-            </h3>
+
             <div className="card-acrylic p-8 text-gray-700 leading-relaxed">
+              <h3 className="text-3xl font-bold text-secondary mb-4 text-center">
+                History
+              </h3>
+
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col sm:flex-row sm:gap-6 border-b border-gray-200 pb-6 last:border-0 last:pb-0">
                   <div className="font-bold text-secondary sm:w-40 flex-shrink-0">2025年9月9日</div>
