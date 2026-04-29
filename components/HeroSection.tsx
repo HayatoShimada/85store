@@ -142,8 +142,8 @@ export default function HeroSection({
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
-                  ? "bg-white w-8"
-                  : "bg-white/50 hover:bg-white/75"
+                ? "bg-white w-8"
+                : "bg-white/50 hover:bg-white/75"
                 }`}
               aria-label={`画像 ${index + 1} に切り替え`}
             />
