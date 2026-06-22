@@ -62,7 +62,7 @@ export default function HakonekoPrivacyPage() {
 
           <h2 className="text-[#9aa0aa] text-[14px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">English summary</h2>
           <p className="text-[#9aa0aa] text-[14px] leading-[1.8]">
-            "Haco Neco wa Miteiru" collects a player-chosen nickname, score, play date, and an
+            &quot;Haco Neco wa Miteiru&quot; collects a player-chosen nickname, score, play date, and an
             anonymous app-generated device identifier solely to provide a global leaderboard.
             It does <strong>not</strong> collect email, name, phone, or location, and does not track users for
             advertising. Data is stored on Supabase. To request deletion, contact
