@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'ハコネコは見ている｜プライバシーポリシー',
+  title: 'ハコネコはこちらを見ている｜プライバシーポリシー',
 };
 
 export default function HakonekoPrivacyPage() {
@@ -10,11 +10,11 @@ export default function HakonekoPrivacyPage() {
     <div className="w-full bg-[#11131a] text-[#eaeaea] flex flex-col min-h-[calc(100vh-4rem)] font-sans">
       <div className="max-w-[760px] w-full mx-auto px-5 pt-8 pb-20 flex-grow">
         <h1 className="text-[#ff8d1f] text-[26px] font-bold mb-1">プライバシーポリシー</h1>
-        <div className="text-[#9aa0aa] text-[13px] mb-6">ゲーム「ハコネコは見ている」（提供：85-Store）</div>
+        <div className="text-[#9aa0aa] text-[13px] mb-6">ゲーム「ハコネコはこちらを見ている」（提供：85-Store）</div>
 
         <div className="bg-[#1b1e27] rounded-[14px] px-[22px] py-[20px] mt-4">
           <p className="leading-[1.8] mb-4">
-            85-Store（以下「当方」）は、本ゲーム「ハコネコは見ている」（以下「本アプリ」）における
+            85-Store（以下「当方」）は、本ゲーム「ハコネコはこちらを見ている」（以下「本アプリ」）における
             ランキング機能の提供にあたり、以下のとおり利用者情報を取り扱います。
           </p>
 
