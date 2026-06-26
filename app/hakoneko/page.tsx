@@ -1,9 +1,35 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
 
+const APP_STORE_URL =
+  'https://apps.apple.com/jp/app/%E3%83%8F%E3%82%B3%E3%83%8D%E3%82%B3%E3%81%AF%E8%A6%8B%E3%81%A6%E3%81%84%E3%82%8B/id6782921863';
+const TIKTOK_URL = 'https://www.tiktok.com/@85store85';
+const YOUTUBE_SHORT_URL = 'https://www.youtube.com/shorts/P8X64R21Cmw';
+const INSTAGRAM_URL = 'https://www.instagram.com/85neco_game/';
+const X_URL = 'https://x.com/85neco';
+
+const SHARE_DESCRIPTION =
+  '可愛い猫を合体させるだけ。なのにゲームオーバー画面が、あなたの正気をそっと削ってくる。コズミック・ホラー × マージパズル『ハコネコはこちらを見ている』。App Store ¥300（買い切り）。';
+
 export const metadata: Metadata = {
   title: 'ハコネコはこちらを見ている | 85-Store',
-  description: '富山県南砺市井波のセレクトショップ「85-Store」の看板猫ハコネコによる、コズミック・ホラー風スイカ系パズルゲーム。',
+  description: SHARE_DESCRIPTION,
+  openGraph: {
+    type: 'website',
+    locale: 'ja_JP',
+    url: '/hakoneko',
+    siteName: '85-Store（ハコストア）',
+    title: 'ハコネコはこちらを見ている｜可愛い猫の、宇宙的恐怖パズル',
+    description: SHARE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@85neco',
+    creator: '@85neco',
+    title: 'ハコネコはこちらを見ている｜可愛い猫の、宇宙的恐怖パズル',
+    description: SHARE_DESCRIPTION,
+  },
+  alternates: { canonical: '/hakoneko' },
 };
 
 export default function HakonekoPage() {
@@ -113,11 +139,62 @@ export default function HakonekoPage() {
           </div>
         </div>
 
+        {/* Promo Video */}
+        <div className="w-full max-w-[400px] mb-20">
+          <h2 className="text-[#ff8d1f] text-[22px] font-bold mb-6 flex items-center justify-center gap-3 tracking-wider">
+            <span className="w-2 h-2 rounded-full bg-[#ff8d1f] animate-pulse shadow-[0_0_8px_#ff8d1f]"></span>
+            プロモーション映像
+          </h2>
+          <div className="relative w-full mx-auto rounded-2xl overflow-hidden border border-[#ff8d1f]/25 shadow-[0_0_40px_rgba(255,141,31,0.15)]" style={{ aspectRatio: '9 / 16' }}>
+            <iframe
+              src="https://www.youtube.com/embed/P8X64R21Cmw"
+              title="ハコネコはこちらを見ている プロモーション映像"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          </div>
+        </div>
+
+        {/* Cosmic Horror Messages teaser — the viral hook */}
+        <div className="w-full max-w-[640px] mb-24 text-left">
+          <h2 className="text-[#ff8d1f] text-[24px] font-bold mb-4 flex items-center gap-4 justify-center">
+            <span className="w-2 h-2 rounded-full bg-[#ff8d1f] animate-pulse shadow-[0_0_8px_#ff8d1f]"></span>
+            正気が、ほどけていく。
+          </h2>
+          <p className="text-center text-[#9aa0aa] text-[14px] mb-10 leading-[1.9]">
+            スコアが伸びるほど、ゲームオーバー画面のメッセージは深淵へと近づく。<br className="hidden sm:block" />
+            全21種。あなたはどこまで「視線」に耐えられる？
+          </p>
+          <ul className="space-y-5">
+            {[
+              { score: '0', msg: 'それは、ただ静かに見ていた。' },
+              { score: '1,000', msg: 'モフモフの奥で、何かが囁いている。' },
+              { score: '3,000', msg: '正気が、毛玉のようにほどけていく。' },
+              { score: '6,000', msg: '次元の裂け目から、白い爪が伸びる。' },
+              { score: '9,500', msg: 'あなたはもう、かつての何かではない。' },
+              { score: '10,000+', msg: '――そして世界は、静寂のモフモフへ還った。' },
+            ].map((m) => (
+              <li
+                key={m.score}
+                className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 border-l-2 border-[#ff8d1f]/30 pl-5 py-1"
+              >
+                <span className="text-[#ff8d1f]/70 text-[12px] tracking-[0.2em] font-mono shrink-0 sm:w-[90px]">
+                  {m.score} pt
+                </span>
+                <span className="text-[#cfcfcf] italic text-[15px] md:text-[17px] leading-[1.7]">
+                  「{m.msg}」
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Download & Social Links */}
         <div className="w-full max-w-[640px] mb-16 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
           {/* App Store Card */}
           <a
-            href="https://apps.apple.com/jp/app/%E3%83%8F%E3%82%B3%E3%83%8D%E3%82%B3%E3%81%AF%E8%A6%8B%E3%81%A6%E3%81%84%E3%82%8B/id6782921863"
+            href={APP_STORE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-[#ff8d1f]/20 rounded-2xl hover:border-[#ff8d1f]/60 hover:shadow-[0_0_30px_rgba(255,141,31,0.25)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative"
@@ -127,7 +204,7 @@ export default function HakonekoPage() {
             <div className="flex flex-col items-center gap-2 mb-6 z-10">
               <span className="text-[12px] uppercase tracking-[0.2em] text-[#ff8d1f] font-semibold">Download</span>
               <h3 className="text-white text-[18px] font-bold tracking-wider">App Store</h3>
-              <p className="text-[13px] text-[#9aa0aa] mt-1">iOSアプリをインストール</p>
+              <p className="text-[13px] text-[#9aa0aa] mt-1">iOS・¥300（買い切り）</p>
             </div>
             
             <div className="relative h-[40px] flex items-center justify-center transition-transform group-hover:scale-105 z-10">
@@ -141,7 +218,7 @@ export default function HakonekoPage() {
 
           {/* Instagram Card */}
           <a
-            href="https://www.instagram.com/85neco_game/"
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-purple-500/20 rounded-2xl hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(214,36,159,0.25)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative"
@@ -170,6 +247,60 @@ export default function HakonekoPage() {
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
+            </div>
+          </a>
+
+          {/* TikTok Card */}
+          <a
+            href={TIKTOK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-cyan-400/20 rounded-2xl hover:border-cyan-400/60 hover:shadow-[0_0_30px_rgba(34,211,238,0.2)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative"
+          >
+            <div className="flex flex-col items-center gap-2 mb-6 z-10">
+              <span className="text-[12px] uppercase tracking-[0.2em] text-cyan-300 font-semibold">TikTok</span>
+              <h3 className="text-white text-[18px] font-bold tracking-wider">@85store85</h3>
+              <p className="text-[13px] text-[#9aa0aa] mt-1">プレイ動画・小ネタを配信</p>
+            </div>
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-cyan-400/10 rounded-full border border-cyan-400/30 group-hover:border-cyan-400/60 transition-colors z-10">
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
+            </div>
+          </a>
+
+          {/* YouTube Card */}
+          <a
+            href={YOUTUBE_SHORT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-red-500/20 rounded-2xl hover:border-red-500/60 hover:shadow-[0_0_30px_rgba(239,68,68,0.2)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative"
+          >
+            <div className="flex flex-col items-center gap-2 mb-6 z-10">
+              <span className="text-[12px] uppercase tracking-[0.2em] text-red-400 font-semibold">YouTube</span>
+              <h3 className="text-white text-[18px] font-bold tracking-wider">プロモ映像</h3>
+              <p className="text-[13px] text-[#9aa0aa] mt-1">30秒で世界観をチェック</p>
+            </div>
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-red-500/10 rounded-full border border-red-500/30 group-hover:border-red-500/60 transition-colors z-10">
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">観る</span>
+            </div>
+          </a>
+
+          {/* X (Twitter) Card */}
+          <a
+            href={X_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-white/15 rounded-2xl hover:border-white/50 hover:shadow-[0_0_30px_rgba(255,255,255,0.12)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative sm:col-span-2"
+          >
+            <div className="flex flex-col items-center gap-2 mb-6 z-10">
+              <span className="text-[12px] uppercase tracking-[0.2em] text-gray-300 font-semibold">X (Twitter)</span>
+              <h3 className="text-white text-[18px] font-bold tracking-wider">@85neco</h3>
+              <p className="text-[13px] text-[#9aa0aa] mt-1">開発こぼれ話・最新情報をポスト</p>
+            </div>
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-white/5 rounded-full border border-white/20 group-hover:border-white/50 transition-colors z-10">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-white">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
               <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
             </div>
