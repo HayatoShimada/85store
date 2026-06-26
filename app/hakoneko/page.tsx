@@ -113,6 +113,69 @@ export default function HakonekoPage() {
           </div>
         </div>
 
+        {/* Download & Social Links */}
+        <div className="w-full max-w-[640px] mb-16 grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+          {/* App Store Card */}
+          <a
+            href="https://apps.apple.com/jp/app/%E3%83%8F%E3%82%B3%E3%83%8D%E3%82%B3%E3%81%AF%E8%A6%8B%E3%81%A6%E3%81%84%E3%82%8B/id6782921863"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-[#ff8d1f]/20 rounded-2xl hover:border-[#ff8d1f]/60 hover:shadow-[0_0_30px_rgba(255,141,31,0.25)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#ff8d1f]/5 to-[#ff8d1f]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+            <div className="flex flex-col items-center gap-2 mb-6 z-10">
+              <span className="text-[12px] uppercase tracking-[0.2em] text-[#ff8d1f] font-semibold">Download</span>
+              <h3 className="text-white text-[18px] font-bold tracking-wider">App Store</h3>
+              <p className="text-[13px] text-[#9aa0aa] mt-1">iOSアプリをインストール</p>
+            </div>
+            
+            <div className="relative h-[40px] flex items-center justify-center transition-transform group-hover:scale-105 z-10">
+              <img
+                src="/images/app_store_badge.svg"
+                alt="Download on the App Store"
+                className="h-full w-auto"
+              />
+            </div>
+          </a>
+
+          {/* Instagram Card */}
+          <a
+            href="https://www.instagram.com/85neco_game/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex flex-col justify-between items-center p-6 bg-[#11131a]/80 backdrop-blur-md border border-purple-500/20 rounded-2xl hover:border-purple-500/60 hover:shadow-[0_0_30px_rgba(214,36,159,0.25)] transition-all duration-300 transform hover:-translate-y-1 text-center overflow-hidden relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#fd5949]/10 to-[#d6249f]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+            
+            <div className="flex flex-col items-center gap-2 mb-6 z-10">
+              <span className="text-[12px] uppercase tracking-[0.2em] text-purple-400 font-semibold">Official Instagram</span>
+              <h3 className="text-white text-[18px] font-bold tracking-wider">@85neco_game</h3>
+              <p className="text-[13px] text-[#9aa0aa] mt-1">公式アカウントで最新情報をチェック</p>
+            </div>
+            
+            <div className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#fdf497]/20 via-[#fd5949]/20 to-[#d6249f]/20 rounded-full border border-purple-500/30 group-hover:border-purple-500/60 transition-colors z-10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-pink-500 transition-transform group-hover:rotate-6"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+              </svg>
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
+            </div>
+          </a>
+        </div>
+
         {/* Actions */}
         <div className="flex flex-wrap justify-center items-center gap-6 mb-20">
           <Link
