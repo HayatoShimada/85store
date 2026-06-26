@@ -35,10 +35,18 @@ export default function HakonekoPrivacyPage() {
             <li>不正・迷惑行為の防止</li>
           </ul>
 
-          <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">3. 保管および第三者提供</h2>
+          <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">3. 利用する外部サービスおよび第三者提供</h2>
+          <p className="leading-[1.8] mb-3 text-[15px]">
+            ランキング機能の提供のため、以下の外部サービスを利用します。これらのサービスの利用にあたっては、各社のプライバシーポリシーが適用されます。
+          </p>
           <ul className="pl-5 list-disc leading-[1.8] mb-4">
-            <li>取得した情報はクラウド基盤「Supabase」に保管されます（国外のサーバーに保管される場合があります）。</li>
-            <li>法令に基づく場合を除き、取得した情報を第三者へ提供することはありません。</li>
+            <li><strong>Unity Gaming Services</strong>（Leaderboards / Authentication）— Unity Technologies。ランキング記録および匿名のプレイヤーIDの処理・保管に利用します。</li>
+            <li><strong>Apple Game Center</strong>（iOS）— Apple Inc.</li>
+            <li><strong>Google Play Games</strong>（Android）— Google LLC</li>
+            <li><strong>Supabase</strong>（クラウド基盤）— 取得した情報の保管に利用します（国外のサーバーに保管される場合があります）。</li>
+          </ul>
+          <ul className="pl-5 list-disc leading-[1.8] mb-4">
+            <li>上記サービスの提供に必要な範囲、および法令に基づく場合を除き、取得した情報を第三者へ提供することはありません。</li>
             <li>広告目的の追跡（トラッキング）は行いません。</li>
           </ul>
 
@@ -65,7 +73,9 @@ export default function HakonekoPrivacyPage() {
             &quot;Haco Neco wa Miteiru&quot; collects a player-chosen nickname, score, play date, and an
             anonymous app-generated device identifier solely to provide a global leaderboard.
             It does <strong>not</strong> collect email, name, phone, or location, and does not track users for
-            advertising. Data is stored on Supabase. To request deletion, contact
+            advertising. The leaderboard is provided via Unity Gaming Services (Leaderboards /
+            Authentication), Apple Game Center (iOS) and Google Play Games (Android), and data is
+            stored on Supabase; each provider&apos;s own privacy policy applies. To request deletion, contact
             {' '}<a href="mailto:info@85-store.com" className="text-[#ff8d1f] hover:underline">info@85-store.com</a>.
           </p>
         </div>
