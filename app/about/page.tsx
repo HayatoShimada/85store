@@ -118,7 +118,7 @@ export default function About() {
       <section className="border-t border-gray-200">
         <div className="section-padding max-container py-20 md:py-28">
           <div className="grid md:grid-cols-[200px_1fr] gap-10 md:gap-16">
-            <SectionHeading en="Our Team" ja="私たちについて" />
+            <SectionHeading en="Our Team" ja="スタッフ紹介" />
             <AboutTeam />
           </div>
         </div>
