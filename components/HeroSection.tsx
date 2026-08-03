@@ -98,7 +98,7 @@ export default function HeroSection({
           </h1>
         ) : (
           <h1 className="text-3xl font-bold mb-4 tracking-wider">
-            <span className=" text-white">&ldquo;今好きなもの&rdquo;が&ldquo;ずっと好きなもの&rdquo;をつくる</span>
+            <span className=" text-white">もう一度洋服を好きになれる場所</span>
           </h1>
         )}
 

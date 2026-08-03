@@ -5,7 +5,7 @@ export default function AboutUs() {
     <div className="grid lg:grid-cols-[1fr_minmax(0,300px)] gap-12 lg:gap-16 items-start">
       <div className="max-w-2xl">
         <p className="text-xl md:text-2xl font-bold text-secondary leading-relaxed tracking-tight">
-          もう一度洋服が好きになれる場所
+          もう一度洋服を好きになれる場所
         </p>
         <div className="mt-8 space-y-6 text-charcoal leading-loose">
           <p>
