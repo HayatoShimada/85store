@@ -44,14 +44,8 @@ export default function Header() {
             <Link href="/blog" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Blog
             </Link>
-            <Link href="/reserve" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
-              Reserve
-            </Link>
             <Link href="/about" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               About
-            </Link>
-            <Link href="/upstore" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
-              2nd Floor
             </Link>
             <Link href="/contact" className="text-charcoal hover:text-primary transition-colors  uppercase tracking-wider text-sm">
               Contact
@@ -108,28 +102,12 @@ export default function Header() {
                 <span className="block text-sm text-gray-500 mt-0.5">ブログ</span>
               </Link>
               <Link
-                href="/reserve"
-                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className=" uppercase tracking-wider">Reserve</span>
-                <span className="block text-sm text-gray-500 mt-0.5">予約</span>
-              </Link>
-              <Link
                 href="/about"
                 className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className=" uppercase tracking-wider">About</span>
                 <span className="block text-sm text-gray-500 mt-0.5">店舗について</span>
-              </Link>
-              <Link
-                href="/upstore"
-                className="block px-3 py-2 text-charcoal hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className=" uppercase tracking-wider">2nd Floor</span>
-                <span className="block text-sm text-gray-500 mt-0.5">2階店舗</span>
               </Link>
               <Link
                 href="/contact"
