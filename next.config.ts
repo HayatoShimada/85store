@@ -35,6 +35,9 @@ const nextConfig: NextConfig = {
         pathname: '/images/**',
       },
       {
+        pathname: '/map-images/**',
+      },
+      {
         pathname: '/hero/**',
       },
     ],
