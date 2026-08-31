@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import BlogCard from "@/components/BlogCard";
@@ -70,38 +69,6 @@ export default async function Home() {
     <div className="section-bg-gradient">
       <StructuredData type="WebSite" />
       <HeroSection banners={banners} />
-
-      {/* 井波おすすめマップへの誘導 */}
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-secondary mb-4">
-              Our Town Map
-            </h2>
-            <p className="text-sm text-gray-600">
-              木彫刻のまち、富山県南砺市井波。85-Storeがおすすめするショップ・食事・カフェ・寺社・宿泊スポットを地図にまとめました。
-            </p>
-          </div>
-          <Link
-            href="/map"
-            className="group block max-w-3xl mx-auto mb-8 overflow-hidden rounded-xl"
-          >
-            <Image
-              src="/images/our_town.png"
-              alt="85-Storeがおすすめする井波の観光マップ"
-              width={1477}
-              height={1108}
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
-            />
-          </Link>
-          <div className="text-center">
-            <Link href="/map" className="btn-primary">
-              View Town Map
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Featuredブログ記事 */}
       <FeaturedBlogPosts posts={featuredBlogPosts} />
