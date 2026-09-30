@@ -6,6 +6,7 @@ import { getBlogPost, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { TableOfContents } from "@/components/TableOfContents";
 import { buildTableOfContents } from "@/lib/toc";
+import { optimizeContentImages } from "@/lib/content-images";
 import { formatDate } from "@/utils/date";
 
 interface BlogPostPageProps {
@@ -108,7 +109,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
   const coverImage = post.eyecatch?.url;
   const publishedAt = post.publishedAt || post.createdAt;
-  const { html: contentHtml, headings } = buildTableOfContents(post.content);
+  const { html: contentHtml, headings } = buildTableOfContents(optimizeContentImages(post.content));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -170,6 +171,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 alt={post.title}
                 width={1200}
                 height={675}
+                sizes="(max-width: 1280px) 100vw, 1280px"
                 className="w-full h-auto"
                 priority
               />
@@ -194,7 +196,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   prose-h3:text-3xl prose-h3:mt-12 prose-h3:mb-4
                   prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6
                   prose-a:text-primary prose-a:underline hover:prose-a:text-primary/80
-                  prose-img:rounded-lg prose-img:shadow-md prose-img:my-8
+                  prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-picture:my-0
                   prose-ul:my-6 prose-ol:my-6
                   prose-li:text-gray-700
                   prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:my-8

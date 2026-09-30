@@ -150,7 +150,6 @@
   .category-card {
     @apply relative p-6 rounded-lg text-center transition-all duration-300 overflow-hidden;
     background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow:
       0 4px 15px rgba(0, 0, 0, 0.1),
@@ -196,17 +195,16 @@
       rgba(44, 62, 80, 0.95) 0%,
       rgba(26, 37, 47, 0.98) 100%
     );
-    backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
       0 -4px 20px rgba(0, 0, 0, 0.1);
   }
 
+  /* カード・フッターは背景がほぼ無地のためbackdrop-filterは視覚効果がなく、描画コストだけかかるので使わない */
   .card-acrylic {
     @apply rounded-lg overflow-hidden transition-all duration-300;
     background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.4);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.08),

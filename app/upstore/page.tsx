@@ -13,6 +13,7 @@ export default function UpStore() {
                 src="/images/85upstore_logo.png"
                 alt="85-UpStore Logo"
                 fill
+                sizes="(max-width: 768px) 256px, 320px"
                 className="object-contain"
                 priority
               />
@@ -81,6 +82,7 @@ export default function UpStore() {
                     src="/images/upstore1.JPG"
                     alt="Co-creation"
                     fill
+                    sizes="(max-width: 768px) 100vw, 256px"
                     className="object-cover"
                   />
                 </div>
@@ -109,6 +111,7 @@ export default function UpStore() {
                     src="/images/upstore2.JPG"
                     alt="2nd Floor"
                     fill
+                    sizes="(max-width: 768px) 100vw, 256px"
                     className="object-cover"
                   />
                 </div>
@@ -137,6 +140,7 @@ export default function UpStore() {
                     src="/images/upstore3.JPG"
                     alt="Space"
                     fill
+                    sizes="(max-width: 768px) 100vw, 256px"
                     className="object-cover"
                   />
                 </div>
