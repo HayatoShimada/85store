@@ -212,7 +212,7 @@ export default function UpStore() {
                   4. 利用時間と予約
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
-                  <li><strong>利用可能時間：</strong> 11:00 〜 18:00（85-Storeの営業時間に準ずる）</li>
+                  <li><strong>利用可能時間：</strong> 12:00 〜 18:00（85-Storeの営業時間に準ずる）</li>
                   <li><strong>予約方法：</strong> 指定の予約フォーム、または公式LINEより事前申請。</li>
                   <li><strong>キャンセル：</strong> 無償提供のため、キャンセル時は早急に連絡すること。</li>
                 </ul>
