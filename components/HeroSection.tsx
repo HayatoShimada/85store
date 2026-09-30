@@ -19,7 +19,6 @@ export default function HeroSection({
   transitionInterval = 10000
 }: HeroSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   // バナーがあればバナーを使用、なければデフォルト画像
   const hasBanners = banners && banners.length > 0;
@@ -29,10 +28,8 @@ export default function HeroSection({
   const currentBanner = hasBanners ? banners[currentIndex] : null;
 
   useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+    if (totalSlides <= 1) return;
 
-  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % totalSlides);
     }, transitionInterval);
@@ -54,7 +51,7 @@ export default function HeroSection({
           banners.map((banner, index) => (
             <div
               key={banner.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex && isLoaded ? "opacity-100" : "opacity-0"
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? "opacity-100" : "opacity-0"
                 }`}
             >
               <Image
@@ -72,7 +69,7 @@ export default function HeroSection({
           DEFAULT_HERO_IMAGES.map((image, index) => (
             <div
               key={image}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex && isLoaded ? "opacity-100" : "opacity-0"
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? "opacity-100" : "opacity-0"
                 }`}
             >
               <Image

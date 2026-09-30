@@ -5,6 +5,8 @@ import Image from "next/image";
 import { getBlogPost, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { TableOfContents } from "@/components/TableOfContents";
+import { buildTableOfContents } from "@/lib/toc";
+import { formatDate } from "@/utils/date";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -105,6 +107,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
   const coverImage = post.eyecatch?.url;
+  const publishedAt = post.publishedAt || post.createdAt;
+  const { html: contentHtml, headings } = buildTableOfContents(post.content);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -129,7 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {primaryCategory}
                 </Link>
               )}
-              <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString('ja-JP')}</span>
+              <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
               {post.author && (
                 <span>by {post.author}</span>
               )}
@@ -179,7 +183,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="section-padding max-container">
           <div className="bg-white md:rounded-lg md:shadow-lg p-4 sm:p-6 md:p-12">
               {/* 目次 */}
-              <TableOfContents html={post.content} />
+              <TableOfContents headings={headings} />
 
               {/* MicroCMS HTML Content */}
               <div
@@ -197,7 +201,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
                   prose-pre:bg-gray-900 prose-pre:text-gray-100
                   prose-figure:my-8"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: contentHtml }}
               />
           </div>
         </div>

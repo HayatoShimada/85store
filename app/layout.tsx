@@ -89,7 +89,8 @@ export const metadata: Metadata = {
     icon: [
       { url: '/logo.svg', type: 'image/svg+xml' },
     ],
-    apple: '/apple-icon.png',
+    // app/apple-icon.tsx が生成するPNG（/apple-icon.png は存在しない）
+    apple: '/apple-icon',
   },
   manifest: '/manifest.json',
   alternates: {

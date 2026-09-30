@@ -1,37 +1,30 @@
-'use client';
-
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
+import FallbackImage from "@/components/FallbackImage";
+import { formatDate } from "@/utils/date";
 import type { Blog } from "@/types/microcms";
 
 interface BlogCardProps {
   post: Blog;
 }
 
+// サーバーコンポーネント: 記事本文（content）をクライアントへ送らないため
 export default function BlogCard({ post }: BlogCardProps) {
-  const [imageError, setImageError] = useState(false);
-
-  const displayImageUrl = (!imageError && post.eyecatch?.url)
-    ? post.eyecatch.url
-    : '/images/placeholder.svg';
-
   // description > excerpt > content から説明文を取得
   const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
 
   // カテゴリ（配列の最初の要素を使用）
   const primaryCategory = post.category?.[0] || null;
+  const publishedAt = post.publishedAt || post.createdAt;
 
   return (
     <article className="card-acrylic group">
       <Link href={`/blog/${post.id}`}>
         <div className="relative h-48 sm:h-52 md:h-48 w-full overflow-hidden bg-gray-100 rounded-t-lg">
-          <Image
-            src={displayImageUrl}
+          <FallbackImage
+            src={post.eyecatch?.url}
             alt={post.title}
             fill
             className="object-cover object-center group-hover:scale-105 transition-transform duration-200"
-            onError={() => setImageError(true)}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
             priority={false}
             quality={75}
@@ -44,7 +37,7 @@ export default function BlogCard({ post }: BlogCardProps) {
                 {primaryCategory}
               </span>
             )}
-            <span>{new Date(post.publishedAt || post.createdAt).toLocaleDateString('ja-JP')}</span>
+            <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
             {post.author && (
               <span className="text-gray-600">by {post.author}</span>
             )}
@@ -62,7 +55,6 @@ export default function BlogCard({ post }: BlogCardProps) {
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
               className="text-sm px-2 py-1 rounded bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
-              onClick={(e) => e.stopPropagation()}
             >
               #{tag}
             </Link>
