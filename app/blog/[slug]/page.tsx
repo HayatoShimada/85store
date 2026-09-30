@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getBlogPostByPath, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
 import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
+import ImageLightbox from "@/components/ImageLightbox";
 import SectionHeading from "@/components/SectionHeading";
 import StructuredData from "@/components/StructuredData";
 import { TableOfContents } from "@/components/TableOfContents";
@@ -175,15 +176,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           {eyecatch && (
             <figure className="grid place-items-center bg-surface p-6 max-[800px]:order-first">
-              <Image
-                src={eyecatch.url}
-                alt=""
-                width={eyecatch.width ?? 1200}
-                height={eyecatch.height ?? 1200}
-                sizes="(max-width: 800px) 100vw, 42vw"
-                priority
-                className="h-auto max-h-[60vh] w-auto max-w-full max-[800px]:max-h-[52vh]"
-              />
+              <button
+                type="button"
+                className="image-zoom grid place-items-center"
+                data-zoom-src={`${eyecatch.url}?fm=webp&w=${Math.min(eyecatch.width ?? 2000, 2000)}`}
+                aria-label="アイキャッチ画像を拡大表示"
+              >
+                <Image
+                  src={eyecatch.url}
+                  alt=""
+                  width={eyecatch.width ?? 1200}
+                  height={eyecatch.height ?? 1200}
+                  sizes="(max-width: 800px) 100vw, 42vw"
+                  priority
+                  className="h-auto max-h-[60vh] w-auto max-w-full max-[800px]:max-h-[52vh]"
+                />
+              </button>
             </figure>
           )}
         </header>
@@ -197,6 +205,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
         </div>
+        <ImageLightbox />
       </article>
 
       {relatedPosts.length > 0 && (
