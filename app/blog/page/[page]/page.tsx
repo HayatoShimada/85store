@@ -1,9 +1,8 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
-import BlogCard from "@/components/BlogCard";
+import BlogListLayout from "@/components/BlogListLayout";
 import Pagination, { getBlogPagePath } from "@/components/Pagination";
-import { getBlogPostsPage } from "@/lib/microcms";
+import { getAllCategories, getBlogPostsPage } from "@/lib/microcms";
 
 interface BlogPageProps {
   params: Promise<{
@@ -43,35 +42,19 @@ export default async function BlogPaginatedPage({ params }: BlogPageProps) {
   if (!page) notFound();
   if (page === 1) permanentRedirect("/blog");
 
-  const { posts, totalPages } = await getBlogPostsPage(page);
+  const [{ posts, totalPages }, categories] = await Promise.all([
+    getBlogPostsPage(page),
+    getAllCategories(),
+  ]);
   if (posts.length === 0) notFound();
 
   return (
-    <div className="min-h-screen section-bg-gradient">
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="text-center mb-8">
-            <nav className="mb-4">
-              <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
-                <Link href="/blog" className="hover:text-primary transition-colors">
-                  ブログ
-                </Link>
-                <span>›</span>
-                <span className="text-primary font-semibold">{page}ページ目</span>
-              </div>
-            </nav>
-            <h1 className="text-3xl font-bold text-secondary mb-4">Blog</h1>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
-              <BlogCard key={post.id} post={post} />
-            ))}
-          </div>
-
-          <Pagination currentPage={page} totalPages={totalPages} />
-        </div>
-      </section>
-    </div>
+    <BlogListLayout
+      title="Blog"
+      description={`${page}ページ目`}
+      posts={posts}
+      categories={categories}
+      pagination={<Pagination currentPage={page} totalPages={totalPages} />}
+    />
   );
 }

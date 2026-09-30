@@ -1,10 +1,12 @@
-export default function ShippingPage() {
-  return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-8">配送について</h1>
-      <div className="prose max-w-none">
-        <p>配送に関する情報は準備中です。</p>
-      </div>
-    </div>
-  );
+import type { Metadata } from "next";
+import PolicyPage from "@/components/PolicyPage";
+
+export const metadata: Metadata = {
+  title: "配送について",
+  description: "85-Store（ハコストア）の配送についてです。オンラインストアと共通の内容です。",
+  alternates: { canonical: "/shipping" },
+};
+
+export default function Page() {
+  return <PolicyPage policyKey="shippingPolicy" title="Shipping" titleJa="配送について" handle="shipping-policy" />;
 }

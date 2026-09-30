@@ -14,30 +14,38 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
   if (totalPages <= 1) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  const linkClass = "min-w-10 h-10 px-3 inline-flex items-center justify-center rounded-sm border text-sm transition-colors";
+  const hasPrev = currentPage > 1;
+  const hasNext = currentPage < totalPages;
 
   return (
-    <nav aria-label="ページ送り" className="mt-12 flex flex-wrap items-center justify-center gap-2">
-      {currentPage > 1 && (
-        <Link href={getBlogPagePath(currentPage - 1)} rel="prev" className={`${linkClass} border-gray-300 hover:border-secondary`}>
-          前へ
-        </Link>
+    <nav aria-label="ブログのページ送り" className="mt-12 flex items-center justify-between gap-4 border-t border-rule pt-6">
+      {hasPrev ? (
+        <Link href={getBlogPagePath(currentPage - 1)} rel="prev" className="btn btn-secondary">前のページ</Link>
+      ) : (
+        <span className="btn btn-secondary" aria-disabled="true">前のページ</span>
       )}
-      {pages.map((page) =>
-        page === currentPage ? (
-          <span key={page} aria-current="page" className={`${linkClass} border-secondary bg-secondary text-white`}>
-            {page}
-          </span>
-        ) : (
-          <Link key={page} href={getBlogPagePath(page)} className={`${linkClass} border-gray-300 hover:border-secondary`}>
-            {page}
-          </Link>
-        )
-      )}
-      {currentPage < totalPages && (
-        <Link href={getBlogPagePath(currentPage + 1)} rel="next" className={`${linkClass} border-gray-300 hover:border-secondary`}>
-          次へ
-        </Link>
+
+      <ol className="flex gap-1">
+        {pages.map((page) => (
+          // スマホでは現在のページの前後だけを表示する
+          <li key={page} className={Math.abs(page - currentPage) > 1 ? "max-[560px]:hidden" : undefined}>
+            {page === currentPage ? (
+              <span aria-current="page" className="num inline-grid h-11 min-w-11 place-items-center bg-ink text-bg">
+                {page}
+              </span>
+            ) : (
+              <Link href={getBlogPagePath(page)} className="num inline-grid h-11 min-w-11 place-items-center border border-transparent hover:border-ink">
+                {page}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+
+      {hasNext ? (
+        <Link href={getBlogPagePath(currentPage + 1)} rel="next" className="btn btn-secondary">次のページ</Link>
+      ) : (
+        <span className="btn btn-secondary" aria-disabled="true">次のページ</span>
       )}
     </nav>
   );

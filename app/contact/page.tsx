@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import SectionHeading from "@/components/SectionHeading";
+import StoreActions from "@/components/StoreActions";
+import { STORE, STORE_FULL_ADDRESS } from "@/lib/store-info";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -60,264 +63,111 @@ export default function ContactPage() {
       setIsSubmitting(false);
     }
   };
+  const fieldClass = "w-full border border-ink-2 bg-bg px-4 py-3 text-base placeholder:text-muted focus:outline-2 focus:outline-offset-2 focus:outline-ink";
+  const labelClass = "mb-2 block text-sm font-semibold";
+  const required = <span className="ml-1 text-xs font-normal text-muted">（必須）</span>;
+
   return (
-    <div className="min-h-screen section-bg-gradient">
-      {/* Hero Section */}
-      <section className="py-20">
-        <div className="section-padding max-container">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-secondary mb-6 ">
-              Contact
-            </h1>
-            <p className="text-gray-600 text-base max-w-2xl mx-auto">
-              お問い合わせやご質問がございましたら、お気軽にご連絡ください。
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="wrap pt-12">
+      <SectionHeading as="h1" title="Contact" description="お問い合わせ" />
+      <p className="max-w-[40em] text-ink-2">お問い合わせやご質問がございましたら、お気軽にご連絡ください。</p>
 
-      {/* Contact Information */}
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Store Information */}
-            <div className="card-acrylic p-8">
-              <h2 className="text-3xl font-bold text-secondary mb-6 ">
-                1st Floor (85-Store)
-              </h2>
-              
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="shrink-0">
-                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">住所</h3>
-                    <p className="text-gray-600">
-                      〒932-0217<br />
-                      富山県南砺市本町４丁目１００<br />
-                      85-Store
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="shrink-0">
-                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">営業時間</h3>
-                    <p className="text-gray-600">
-                      12:00 ~ 18:00（木曜定休）<br />
-                      <span className="text-sm text-gray-500">
-                        事前予約で木曜と18:00～20:00延長営業可<br />
-                        <Link href="/reserve" className="text-primary hover:text-primary-dark transition-colors underline">
-                          事前予約はこちら
-                        </Link>
+      <div className="mt-12 grid-lines grid-cols-12">
+        {/* 店舗情報 */}
+        <div className="col-span-5 grid content-start gap-8 p-[clamp(20px,3vw,40px)] max-[900px]:col-span-12">
+          {[
+            { title: "1F 85-Store", address: `${STORE_FULL_ADDRESS}`, extra: STORE.hours.note },
+            { title: "2F 85-UpStore", address: `${STORE_FULL_ADDRESS} 2階` },
+          ].map((floor) => (
+            <div key={floor.title}>
+              <h2 className="mb-3 font-display text-xl font-bold">{floor.title}</h2>
+              <dl className="facts">
+                <div><dt>住所</dt><dd>{floor.address}</dd></div>
+                <div>
+                  <dt>営業時間</dt>
+                  <dd>
+                    <span className="num">{STORE.hours.label}</span>（{STORE.hours.closedLabel}）
+                    {floor.extra && (
+                      <span className="block text-sm text-muted">
+                        {floor.extra}
+                        <Link href="/reserve" className="ml-1 underline underline-offset-4">事前予約はこちら</Link>
                       </span>
-                    </p>
-                  </div>
+                    )}
+                  </dd>
                 </div>
-              </div>
-
-              <h2 className="text-3xl font-bold text-secondary mb-6 mt-6 ">
-                2nd Floor (85-UpStore)
-              </h2>
-
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="shrink-0">
-                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">住所</h3>
-                    <p className="text-gray-600">
-                      〒932-0217<br />
-                      富山県南砺市本町４丁目１００<br />
-                      85-Store 2階
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="shrink-0">
-                    <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">営業時間</h3>
-                    <p className="text-gray-600">
-                      12:00 ~ 18:00（木曜定休）
-                    </p>
-                  </div>
-                </div>
-              </div>
+              </dl>
             </div>
+          ))}
+          <StoreActions showOnlineStore={false} />
+        </div>
 
-            {/* Contact Form */}
-            <div className="card-acrylic p-8">
-              <h2 className="text-3xl font-bold text-secondary mb-6">
-                お問い合わせフォーム
-              </h2>
-              
-              {/* 送信ステータス表示 */}
-              {submitStatus === 'success' && (
-                <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                  <p className="font-semibold">送信完了</p>
-                  <p>お問い合わせを受け付けました。ありがとうございます。</p>
-                </div>
-              )}
-              
-              {submitStatus === 'error' && (
-                <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                  <p className="font-semibold">送信エラー</p>
-                  <p>{errorMessage}</p>
-                </div>
-              )}
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                    お名前 <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                    placeholder="山田太郎"
-                  />
-                </div>
+        {/* お問い合わせフォーム */}
+        <div className="col-span-7 p-[clamp(20px,3vw,40px)] max-[900px]:col-span-12">
+          <h2 className="mb-6 font-display text-xl font-bold">Form<span className="ml-2 font-sans text-sm font-normal text-muted">お問い合わせフォーム</span></h2>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                    メールアドレス <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                    placeholder="example@email.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                    電話番号
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                    placeholder="090-1234-5678"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                    件名 <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                  >
-                    <option value="">選択してください</option>
-                    <option value="product">商品について</option>
-                    <option value="order">ご注文について</option>
-                    <option value="store">店舗について</option>
-                    <option value="other">その他</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                    メッセージ <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows={6}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
-                    placeholder="お問い合わせ内容をご記入ください"
-                  ></textarea>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      送信中...
-                    </span>
-                  ) : (
-                    '送信する'
-                  )}
-                </button>
-              </form>
-            </div>
+          <div aria-live="polite">
+            {submitStatus === 'success' && (
+              <div className="mb-6 border border-green bg-green p-4 text-bg">
+                <p className="font-semibold">送信しました</p>
+                <p className="text-sm">お問い合わせを受け付けました。ありがとうございます。</p>
+              </div>
+            )}
+            {submitStatus === 'error' && (
+              <div className="mb-6 border border-ink p-4">
+                <p className="font-semibold">送信できませんでした</p>
+                <p className="text-sm">{errorMessage}</p>
+              </div>
+            )}
           </div>
+
+          <form onSubmit={handleSubmit} className="grid gap-6">
+            <div>
+              <label htmlFor="name" className={labelClass}>お名前{required}</label>
+              <input type="text" id="name" name="name" autoComplete="name" value={formData.name} onChange={handleInputChange} required className={fieldClass} placeholder="山田 太郎" />
+            </div>
+            <div>
+              <label htmlFor="email" className={labelClass}>メールアドレス{required}</label>
+              <input type="email" id="email" name="email" autoComplete="email" value={formData.email} onChange={handleInputChange} required className={fieldClass} placeholder="example@email.com" />
+            </div>
+            <div>
+              <label htmlFor="phone" className={labelClass}>電話番号</label>
+              <input type="tel" id="phone" name="phone" autoComplete="tel" value={formData.phone} onChange={handleInputChange} className={fieldClass} placeholder="090-1234-5678" />
+            </div>
+            <div>
+              <label htmlFor="subject" className={labelClass}>件名{required}</label>
+              <select id="subject" name="subject" value={formData.subject} onChange={handleInputChange} required className={fieldClass}>
+                <option value="">選択してください</option>
+                <option value="product">商品について</option>
+                <option value="order">ご注文について</option>
+                <option value="store">店舗について</option>
+                <option value="other">その他</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="message" className={labelClass}>メッセージ{required}</label>
+              <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} rows={6} required className={`${fieldClass} resize-y`} placeholder="お問い合わせ内容をご記入ください" />
+            </div>
+            <button type="submit" disabled={isSubmitting} className="btn btn-primary w-full disabled:opacity-60">
+              {isSubmitting ? '送信中…' : '送信する'}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <section className="section" aria-labelledby="access-heading">
+        <SectionHeading id="access-heading" title="Access" description={STORE_FULL_ADDRESS} />
+        <div className="aspect-[4/3] max-h-[480px] w-full bg-surface md:aspect-[16/9]">
+          <iframe
+            src={STORE.mapEmbedUrl}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="85-Store の地図"
+          />
         </div>
       </section>
-
-      {/* Map Section */}
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-secondary mb-4 ">
-              1st Floor & 2nd Floor (85-Store)
-            </h2>
-            <p className="text-gray-600">
-              〒932-0217 富山県南砺市本町４丁目１００番地
-            </p>
-          </div>
-          
-          <div className="card-acrylic h-96 overflow-hidden rounded-2xl">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="85 STORE アクセス地図"
-            />
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 }

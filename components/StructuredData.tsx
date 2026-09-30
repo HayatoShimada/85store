@@ -1,100 +1,113 @@
+import { STORE, STORE_OPEN_DAYS_SCHEMA } from "@/lib/store-info";
+
 interface StructuredDataProps {
-  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog';
+  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog' | 'BlogPosting' | 'BreadcrumbList';
   data?: Record<string, any>;
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
+
+const postalAddress = {
+  '@type': 'PostalAddress',
+  postalCode: STORE.address.postalCode,
+  addressRegion: STORE.address.region,
+  addressLocality: STORE.address.locality,
+  streetAddress: STORE.address.street,
+  addressCountry: 'JP',
+};
+
+const sameAs = [
+  STORE.sns.instagram,
+  STORE.sns.facebook,
+  STORE.sns.tiktok,
+  STORE.sns.note,
+  STORE.onlineShopUrl,
+];
+
+function getStructuredData(type: StructuredDataProps['type']) {
+  switch (type) {
+    case 'Organization':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        '@id': `${baseUrl}/#organization`,
+        name: STORE.name,
+        alternateName: STORE.shortName,
+        url: baseUrl,
+        logo: `${baseUrl}/logo.svg`,
+        description: STORE.description,
+        address: postalAddress,
+        sameAs,
+      };
+
+    case 'LocalBusiness':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'ClothingStore',
+        '@id': `${baseUrl}/#store`,
+        name: STORE.name,
+        url: baseUrl,
+        image: `${baseUrl}/images/shop.jpg`,
+        priceRange: '¥¥',
+        address: postalAddress,
+        geo: {
+          '@type': 'GeoCoordinates',
+          latitude: STORE.geo.latitude,
+          longitude: STORE.geo.longitude,
+        },
+        openingHoursSpecification: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: STORE_OPEN_DAYS_SCHEMA,
+          opens: STORE.hours.opens,
+          closes: STORE.hours.closes,
+        },
+        parentOrganization: { '@id': `${baseUrl}/#organization` },
+        description: STORE.description,
+        sameAs,
+      };
+
+    case 'WebSite':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        '@id': `${baseUrl}/#website`,
+        name: STORE.shortName,
+        url: baseUrl,
+        inLanguage: 'ja',
+        description: STORE.description,
+        publisher: { '@id': `${baseUrl}/#organization` },
+      };
+
+    case 'Blog':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Blog',
+        name: '85-Store Blog',
+        url: `${baseUrl}/blog`,
+        inLanguage: 'ja',
+        description: '富山県南砺市井波の古着・セレクトショップ「85-Store」のブログ。スタイリング情報やトレンドをお届けします。',
+        publisher: { '@id': `${baseUrl}/#organization` },
+      };
+
+    // 記事ごとの値は data で渡す
+    case 'BlogPosting':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        inLanguage: 'ja',
+        publisher: { '@id': `${baseUrl}/#organization` },
+      };
+
+    case 'BreadcrumbList':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+      };
+  }
+}
+
 export default function StructuredData({ type, data }: StructuredDataProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
-
-  const getStructuredData = () => {
-    switch (type) {
-      case 'Organization':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Organization',
-          name: '85-Store（ハコストア）',
-          alternateName: '85-Store',
-          url: baseUrl,
-          logo: `${baseUrl}/logo.svg`,
-          description: '富山県南砺市井波の古着・セレクトショップ。オーセンティックな古着とニューアイテムを提案するセレクトショップです。',
-          address: {
-            '@type': 'PostalAddress',
-            addressRegion: '富山県',
-            addressLocality: '南砺市井波',
-            addressCountry: 'JP',
-          },
-          sameAs: [
-            'https://www.instagram.com/85store_inami/',
-            'https://www.facebook.com/profile.php?id=61580629616145',
-            'https://www.tiktok.com/@85store85',
-            'https://shop.85-store.com/',
-          ],
-        };
-
-      case 'LocalBusiness':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'LocalBusiness',
-          name: '85-Store（ハコストア）',
-          image: `${baseUrl}/logo.svg`,
-          '@id': baseUrl,
-          url: baseUrl,
-          telephone: '',
-          priceRange: '¥',
-          address: {
-            '@type': 'PostalAddress',
-            addressRegion: '富山県',
-            addressLocality: '南砺市井波',
-            addressCountry: 'JP',
-          },
-          geo: {
-            '@type': 'GeoCoordinates',
-            latitude: '',
-            longitude: '',
-          },
-          openingHoursSpecification: {
-            '@type': 'OpeningHoursSpecification',
-            dayOfWeek: ['Saturday', 'Sunday'],
-            opens: '10:00',
-            closes: '17:00',
-          },
-          description: '富山県南砺市井波の古着・セレクトショップ。オーセンティックな古着とニューアイテムを提案するセレクトショップです。',
-        };
-
-      case 'WebSite':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'WebSite',
-          name: '85-Store',
-          url: baseUrl,
-          description: '富山県南砺市井波の古着・セレクトショップ。オーセンティックな古着とニューアイテムを提案するセレクトショップです。',
-          publisher: {
-            '@type': 'Organization',
-            name: '85-Store（ハコストア）',
-          },
-        };
-
-      case 'Blog':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Blog',
-          name: '85-Store Blog',
-          url: `${baseUrl}/blog`,
-          description: '富山県南砺市井波の古着・セレクトショップ「85-Store」のブログ。スタイリング情報やトレンドをお届けします。',
-          publisher: {
-            '@type': 'Organization',
-            name: '85-Store（ハコストア）',
-          },
-        };
-
-      default:
-        return null;
-    }
-  };
-
-  const structuredData = { ...getStructuredData(), ...data };
-
-  if (!structuredData) return null;
+  const structuredData = { ...getStructuredData(type), ...data };
 
   return (
     <script
@@ -103,4 +116,3 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
     />
   );
 }
-

@@ -4,10 +4,10 @@ export default function AboutUs() {
   return (
     <div className="grid lg:grid-cols-[1fr_minmax(0,300px)] gap-12 lg:gap-16 items-start">
       <div className="max-w-2xl">
-        <p className="text-xl md:text-2xl font-bold text-secondary leading-relaxed tracking-tight">
+        <p className="text-xl md:text-2xl font-bold text-ink leading-relaxed tracking-tight">
           もう一度洋服を好きになれる場所
         </p>
-        <div className="mt-8 space-y-6 text-charcoal leading-loose">
+        <div className="mt-8 space-y-6 text-ink-2 leading-loose">
           <p>
             「昔は洋服が好きだったけれど」
             <br />
@@ -28,7 +28,7 @@ export default function AboutUs() {
         </div>
       </div>
       <figure className="w-full max-w-md mx-auto lg:mx-0">
-        <div className="relative aspect-square overflow-hidden rounded-xs">
+        <div className="relative aspect-square overflow-hidden">
           <Image
             src="/images/shop.jpg"
             alt="85-Store 店内の様子"

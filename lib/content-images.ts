@@ -6,6 +6,10 @@ const SIZES = "(max-width: 1024px) 100vw, 1000px";
 // 記事本文のmicroCMS画像を最適化する
 // 原寸JPEG/PNGのまま配信されていたため、AVIF/WebP・srcset・遅延読み込みに置き換える
 export function optimizeContentImages(html: string): string {
+  return groupPortraitFigures(convertImages(html));
+}
+
+function convertImages(html: string): string {
   return html.replace(/<img\b([^>]*?)\/?>/gi, (match, attrs: string) => {
     const src = getAttr(attrs, "src");
     if (!src) return match;
@@ -53,4 +57,19 @@ function withParams(url: URL, params: Record<string, string | number>): string {
   }
   // HTML属性に埋め込むため & をエスケープ
   return next.toString().replace(/&/g, "&amp;");
+}
+
+// <figure> に縦長/横長のクラスを付け、連続する縦長写真を2枚ずつ横に並べる
+function groupPortraitFigures(html: string): string {
+  const annotated = html.replace(/<figure>([\s\S]*?)<\/figure>/gi, (match, inner: string) => {
+    const width = Number(getAttr(inner, "width"));
+    const height = Number(getAttr(inner, "height"));
+    if (!width || !height) return match;
+    return `<figure class="${height > width ? "is-portrait" : "is-landscape"}">${inner}</figure>`;
+  });
+
+  return annotated.replace(
+    /(<figure class="is-portrait">(?:(?!<\/figure>)[\s\S])*<\/figure>)\s*(<figure class="is-portrait">(?:(?!<\/figure>)[\s\S])*<\/figure>)/gi,
+    '<div class="article-gallery">$1$2</div>'
+  );
 }

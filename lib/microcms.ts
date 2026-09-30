@@ -1,6 +1,6 @@
 import { createClient, type MicroCMSQueries } from "microcms-js-sdk";
 import { cacheLife, cacheTag } from "next/cache";
-import type { Blog, Product, Banner } from "@/types/microcms";
+import type { Blog, Banner } from "@/types/microcms";
 
 // MicroCMSクライアントの作成
 const serviceDomain = process.env.MICROCMS_SERVICE_DOMAIN || "";
@@ -167,29 +167,11 @@ export async function getRelatedPosts(currentPostId: string, category?: string |
   return contents.filter((blog) => blog.id !== currentPostId).slice(0, limit);
 }
 
-// おすすめブログ記事を取得
-export async function getFeaturedBlogPosts(limit?: number): Promise<Blog[]> {
-  const { contents } = await getList<Blog>("blogs", {
-    limit: limit || 100,
-    orders: "-publishedAt",
-    filters: "featured[equals]true",
-  });
-  return contents;
-}
 
 // ---------------------------------------------------------------------------
-// 商品・バナー
+// バナー
 // ---------------------------------------------------------------------------
 
-// おすすめ商品を取得
-export async function getFeaturedProducts(limit: number = 4): Promise<Product[]> {
-  const { contents } = await getList<Product>("products", {
-    limit,
-    orders: "-createdAt",
-    filters: "featured[equals]true",
-  });
-  return contents;
-}
 
 // バナー一覧を取得
 export async function getBanners(): Promise<Banner[]> {
