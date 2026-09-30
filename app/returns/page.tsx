@@ -1,10 +1,12 @@
-export default function ReturnsPage() {
-  return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold mb-8">返品・交換について</h1>
-      <div className="prose max-w-none">
-        <p>返品・交換に関する情報は準備中です。</p>
-      </div>
-    </div>
-  );
+import type { Metadata } from "next";
+import PolicyPage from "@/components/PolicyPage";
+
+export const metadata: Metadata = {
+  title: "返品・交換について",
+  description: "85-Store（ハコストア）の返品・交換についてです。オンラインストアと共通の内容です。",
+  alternates: { canonical: "/returns" },
+};
+
+export default function Page() {
+  return <PolicyPage policyKey="refundPolicy" title="Returns" titleJa="返品・交換について" handle="refund-policy" />;
 }

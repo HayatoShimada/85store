@@ -36,7 +36,7 @@ const members = [
 export default function AboutTeam() {
   return (
     <div className="max-w-3xl">
-      <p className="text-charcoal leading-loose">
+      <p className="text-ink-2 leading-loose">
         &ldquo;会社員を辞めたいが、やりたいことが無い&rdquo;ゆいまる、
         &ldquo;洋服屋をやりたいが、時間が無い&rdquo;はやとの夫婦と、
         &ldquo;決まった時間に投薬が必要な&rdquo;スヌー（猫）。
@@ -49,7 +49,7 @@ export default function AboutTeam() {
             key={member.name}
             className="grid sm:grid-cols-[180px_1fr] gap-6 sm:gap-10"
           >
-            <div className="relative w-44 sm:w-full aspect-4/5 overflow-hidden rounded-xs">
+            <div className="relative w-44 sm:w-full aspect-4/5 overflow-hidden">
               <Image
                 src={member.image}
                 alt={member.name}
@@ -59,18 +59,18 @@ export default function AboutTeam() {
               />
             </div>
             <div>
-              <p className="text-xs tracking-[0.2em] text-gray-400">
+              <p className="text-xs tracking-[0.2em] text-muted">
                 {member.role}
               </p>
-              <h3 className="mt-1 text-lg font-bold text-secondary">
+              <h3 className="mt-1 text-lg font-bold text-ink">
                 {member.name}
               </h3>
-              <div className="mt-4 space-y-3 text-sm text-charcoal leading-relaxed">
+              <div className="mt-4 space-y-3 text-sm text-ink-2 leading-relaxed">
                 {member.paragraphs.map((text, i) => (
                   <p key={i}>{text}</p>
                 ))}
               </div>
-              <p className="mt-4 text-sm text-gray-400 leading-relaxed">
+              <p className="mt-4 text-sm text-muted leading-relaxed">
                 {member.note}
               </p>
             </div>

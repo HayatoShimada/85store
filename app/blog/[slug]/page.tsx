@@ -3,13 +3,17 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getBlogPostByPath, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
-import { RelatedPosts } from "@/components/RelatedPosts";
+import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
+import SectionHeading from "@/components/SectionHeading";
+import StructuredData from "@/components/StructuredData";
 import { TableOfContents } from "@/components/TableOfContents";
 import { buildTableOfContents } from "@/lib/toc";
 import { optimizeContentImages } from "@/lib/content-images";
 import { formatDate } from "@/utils/date";
 import { getBlogPostPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -32,7 +36,6 @@ async function getPost(params: BlogPostPageProps["params"]) {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { post } = await getPost(params);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
   if (!post) {
     return {
@@ -72,16 +75,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       siteName: "85-Store（ハコストア）",
       title: post.title,
       description: description,
-      images: coverImageUrl 
-        ? [coverImageUrl] 
-        : [
-            {
-              url: `${siteUrl}/logo.svg`,
-              width: 1200,
-              height: 630,
-              alt: post.title,
-            },
-          ],
+      images: coverImageUrl ? [coverImageUrl] : undefined,
       publishedTime: publishedTime ? new Date(publishedTime).toISOString() : undefined,
       modifiedTime: modifiedTime ? new Date(modifiedTime).toISOString() : undefined,
       authors: post.author ? [post.author] : undefined,
@@ -92,7 +86,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       card: 'summary_large_image',
       title: post.title,
       description: description,
-      images: coverImageUrl ? [coverImageUrl] : [`${siteUrl}/logo.svg`],
+      images: coverImageUrl ? [coverImageUrl] : undefined,
     },
   };
 }
@@ -109,118 +103,118 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     permanentRedirect(getBlogPostPath(post));
   }
 
-  // カテゴリ（配列の最初の要素を使用）
   const primaryCategory = post.category?.[0] || null;
-
-  // 関連記事を取得
   const relatedPosts = await getRelatedPosts(post.id, primaryCategory, 3);
 
-  const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
-  const coverImage = post.eyecatch?.url;
+  const eyecatch = post.eyecatch;
   const publishedAt = post.publishedAt || post.createdAt;
+  const modifiedAt = post.updatedAt || publishedAt;
   const { html: contentHtml, headings } = buildTableOfContents(optimizeContentImages(post.content));
+  const postUrl = `${siteUrl}${getBlogPostPath(post)}`;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Article Header */}
-      <article className="bg-white">
-        <div className="section-padding max-container py-8 md:py-16">
-          {/* Breadcrumb */}
-          <nav className="mb-6 md:mb-8">
-            <Link href="/blog" className="text-primary hover:text-primary/80 transition-colors text-base">
-              ← ブログ一覧に戻る
-            </Link>
-          </nav>
+    <>
+      <StructuredData
+        type="BlogPosting"
+        data={{
+          headline: post.title,
+          description: post.description || post.excerpt || extractExcerpt(post.content),
+          url: postUrl,
+          mainEntityOfPage: postUrl,
+          datePublished: new Date(publishedAt).toISOString(),
+          dateModified: new Date(modifiedAt).toISOString(),
+          ...(eyecatch && { image: eyecatch.url }),
+          author: post.author
+            ? { "@type": "Person", name: post.author }
+            : { "@id": `${siteUrl}/#organization` },
+        }}
+      />
+      <StructuredData
+        type="BreadcrumbList"
+        data={{
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "ホーム", item: siteUrl },
+            { "@type": "ListItem", position: 2, name: "ブログ", item: `${siteUrl}/blog` },
+            { "@type": "ListItem", position: 3, name: post.title, item: postUrl },
+          ],
+        }}
+      />
 
-          {/* Article Meta */}
-          <div className="mb-6 md:mb-8">
-            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-sm text-gray-500 mb-4">
+      <article className="wrap">
+        {/* タイトルとアイキャッチ（アイキャッチは比率を保ったまま高さの上限まで縮める） */}
+        <header className={`grid-lines mt-8 ${eyecatch ? "grid-cols-[minmax(0,7fr)_minmax(0,5fr)] max-[800px]:grid-cols-1" : ""}`}>
+          <div className="grid content-between gap-12 p-[clamp(20px,3.5vw,48px)] max-[800px]:gap-6">
+            <nav aria-label="パンくずリスト" className="text-sm text-muted">
+              <Link href="/blog" className="text-ink underline underline-offset-4">ブログ</Link>
               {primaryCategory && (
-                <Link
-                  href={`/blog/category/${encodeURIComponent(primaryCategory)}`}
-                  className="px-2 md:px-3 py-1 rounded-full text-sm font-semibold border bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200 transition-colors"
-                >
-                  {primaryCategory}
-                </Link>
+                <>
+                  <span aria-hidden="true">　／　</span>
+                  <Link href={`/blog/category/${encodeURIComponent(primaryCategory)}`} className="underline underline-offset-4">
+                    {primaryCategory}
+                  </Link>
+                </>
               )}
-              <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
-              {post.author && (
-                <span>by {post.author}</span>
+            </nav>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">{post.title}</h1>
+              <p className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+                <time dateTime={publishedAt} className="num">{formatDate(publishedAt)}</time>
+                {post.author && <span>{post.author}</span>}
+              </p>
+              {post.tags && post.tags.length > 0 && (
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <li key={tag}>
+                      <Link href={`/blog/tag/${encodeURIComponent(tag)}`} className="chip">#{tag}</Link>
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
-
-            <h1 className="text-3xl font-bold text-secondary mb-4 md:mb-6">
-              {post.title}
-            </h1>
-
-            <p className="text-base text-gray-600 mb-4 md:mb-6">
-              {displayDescription}
-            </p>
-
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 md:gap-2">
-                {post.tags.map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/blog/tag/${encodeURIComponent(tag)}`}
-                    className="text-sm px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity inline-block"
-                  >
-                    #{tag}
-                  </Link>
-                ))}
-              </div>
-            )}
           </div>
 
-          {/* Cover Image */}
-          {coverImage && (
-            <div className="w-full mb-8 md:mb-12 rounded-lg overflow-hidden">
+          {eyecatch && (
+            <figure className="grid place-items-center bg-surface p-6 max-[800px]:order-first">
               <Image
-                src={coverImage}
-                alt={post.title}
-                width={1200}
-                height={675}
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                className="w-full h-auto"
+                src={eyecatch.url}
+                alt=""
+                width={eyecatch.width ?? 1200}
+                height={eyecatch.height ?? 1200}
+                sizes="(max-width: 800px) 100vw, 42vw"
                 priority
+                className="h-auto max-h-[60vh] w-auto max-w-full max-[800px]:max-h-[52vh]"
               />
-            </div>
+            </figure>
           )}
+        </header>
+
+        <div className="mt-16">
+          <div className="mx-auto max-w-[40em]">
+            <TableOfContents headings={headings} />
+          </div>
+          <div
+            className="article-body"
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          />
         </div>
       </article>
 
-      {/* Article Content */}
-      <section className="py-8 md:py-16">
-        <div className="section-padding max-container">
-          <div className="bg-white md:rounded-lg md:shadow-lg p-4 sm:p-6 md:p-12">
-              {/* 目次 */}
-              <TableOfContents headings={headings} />
-
-              {/* MicroCMS HTML Content */}
-              <div
-                id="blog-content"
-                className="prose prose-lg max-w-none
-                  prose-headings:text-secondary prose-headings:font-bold
-                  prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6 prose-h2:pb-2 prose-h2:border-b prose-h2:border-gray-200
-                  prose-h3:text-3xl prose-h3:mt-12 prose-h3:mb-4
-                  prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6
-                  prose-a:text-primary prose-a:underline hover:prose-a:text-primary/80
-                  prose-img:rounded-lg prose-img:shadow-md prose-img:my-8 prose-picture:my-0
-                  prose-ul:my-6 prose-ol:my-6
-                  prose-li:text-gray-700
-                  prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:my-8
-                  prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                  prose-pre:bg-gray-900 prose-pre:text-gray-100
-                  prose-figure:my-8"
-                dangerouslySetInnerHTML={{ __html: contentHtml }}
-              />
-          </div>
+      {relatedPosts.length > 0 && (
+        <div className="wrap">
+          <section className="section" aria-labelledby="related-heading">
+            <SectionHeading
+              id="related-heading"
+              title="More Posts"
+              description="こちらの記事もどうぞ"
+              link={{ href: "/blog", label: "ブログ一覧へ" }}
+            />
+            <BlogCardGrid>
+              {relatedPosts.map((related) => <BlogCard key={related.id} post={related} />)}
+            </BlogCardGrid>
+          </section>
         </div>
-      </section>
-
-      {/* Related Posts */}
-      <RelatedPosts posts={relatedPosts} />
-    </div>
+      )}
+    </>
   );
 }
 

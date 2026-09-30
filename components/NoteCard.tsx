@@ -1,7 +1,4 @@
-'use client';
-
-import Image from "next/image";
-import { useState } from "react";
+import FallbackImage from "@/components/FallbackImage";
 import { formatDate } from "@/utils/date";
 import type { NoteArticle } from "@/lib/note";
 
@@ -9,59 +6,36 @@ interface NoteCardProps {
   article: NoteArticle;
 }
 
+// note.com の記事カード（外部リンク）
 export default function NoteCard({ article }: NoteCardProps) {
-  const [imageError, setImageError] = useState(false);
-
-  const displayImageUrl = (!imageError && article.thumbnail)
-    ? article.thumbnail
-    : '/images/placeholder.svg';
-
   return (
-    <article className="card-acrylic group">
-      <a href={article.url} target="_blank" rel="noopener noreferrer">
-        <div className="relative h-48 sm:h-52 md:h-48 w-full overflow-hidden bg-gray-100 rounded-t-lg">
-          <Image
-            src={displayImageUrl}
-            alt={article.title}
+    <li>
+      <a
+        href={article.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group grid gap-3 max-[560px]:grid-cols-[112px_minmax(0,1fr)] max-[560px]:items-start max-[560px]:gap-4"
+      >
+        <div className="media-frame aspect-[16/9] max-[560px]:aspect-square">
+          <FallbackImage
+            src={article.thumbnail}
+            alt=""
             fill
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-200"
-            onError={() => setImageError(true)}
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
-            priority={false}
-            quality={75}
-            unoptimized={article.thumbnail?.includes('st-note.com')}
+            sizes="(max-width: 560px) 112px, (max-width: 900px) 50vw, 33vw"
+            unoptimized={article.thumbnail?.includes("st-note.com")}
           />
-          {/* noteバッジ */}
-          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-xs text-gray-900 text-sm px-2 py-1 rounded-sm font-semibold flex items-center gap-1 border border-gray-200">
-            <svg className="w-3 h-3" viewBox="0 0 493 493" fill="currentColor">
-              <path d="m139.57,142.06c41.19,0,97.6-2.09,138.1-1.04,54.34,1.39,74.76,25.06,75.45,83.53.69,33.06,0,127.73,0,127.73h-58.79c0-82.83.35-96.5,0-122.6-.69-22.97-7.25-33.92-24.9-36.01-18.69-2.09-71.07-.35-71.07-.35v158.96h-58.79v-210.22Z"/>
-            </svg>
-            note
-          </div>
         </div>
-        <div className="p-6 pb-2">
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
-            <span className="px-2 py-1 rounded-full text-sm font-semibold border bg-gray-100 text-gray-700 border-gray-300">
-              note
-            </span>
-            <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
-          </div>
-          <h3 className="text-sm font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
+        <div>
+          <p className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+            <time dateTime={article.publishedAt} className="num">{formatDate(article.publishedAt)}</time>
+            <span className="chip">note</span>
+          </p>
+          <h3 className="text-lg leading-normal group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px] max-[560px]:text-base">
             {article.title}
+            <span className="sr-only">（note.com で開きます）</span>
           </h3>
-          {article.excerpt && (
-            <p className="text-sm text-gray-600 line-clamp-2">{article.excerpt}</p>
-          )}
-        </div>
-        <div className="px-6 pb-4">
-          <span className="text-sm text-gray-500 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-            note.comで読む
-          </span>
         </div>
       </a>
-    </article>
+    </li>
   );
 }

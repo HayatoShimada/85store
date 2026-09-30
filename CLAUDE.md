@@ -9,8 +9,8 @@
 
 - Next.js 16（App Router / Turbopack / **Cache Components**）
 - React 19 / TypeScript 5
-- Tailwind CSS v4（CSSファーストの設定。`tailwind.config.ts` は無い）+ `@tailwindcss/typography`
-- microCMS（`microcms-js-sdk`）、note.com RSS、Shopify Storefront API
+- Tailwind CSS v4（CSSファーストの設定。`tailwind.config.ts` は無い）
+- microCMS（`microcms-js-sdk`）、note.com RSS、Shopify Storefront API（新着商品・ポリシー）
 - Vercel にデプロイ
 
 ## コマンド
@@ -51,12 +51,13 @@ microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び
 
 | パス | 内容 |
 |---|---|
-| `/` | トップ（バナー・注目記事・最新記事・note・Podcast・おすすめ商品） |
+| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事・note・Podcast・店舗情報） |
 | `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
 | `/blog/[slug]` | 記事。`slug` フィールドがあればスラッグ、なければ microCMS のコンテンツID。IDでアクセスされスラッグがある場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
 | `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml` | `app/sitemap.ts` 等で動的生成 |
-| `/about`, `/reserve`, `/upstore`, `/contact`, `/shipping`, `/returns`, `/hakoneko` | 固定ページ |
+| `/about`, `/reserve`, `/upstore`, `/contact`, `/hakoneko` | 固定ページ（hakoneko は独自デザインのゲーム紹介ページ） |
+| `/shipping`, `/returns`, `/terms`, `/privacy` | Shopify のポリシーを表示 |
 
 記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
 
@@ -83,6 +84,32 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 
 - 各ページで `alternates.canonical` を指定する。タイトルは `app/layout.tsx` のテンプレート（`%s | 85-Store（ハコストア）`）に任せ、ページ側で店名を重ねない。
 - 構造化データは `components/StructuredData.tsx`。
+
+## デザインシステム「モダングリッド」
+
+白地に1pxの罫線グリッドで面を区切り、写真と大きなロゴタイプ（Archivo 幅125%）で見せる。トークンは `app/globals.css` の `@theme`、共通の部品は同ファイルの `@layer components`。
+
+- **色**: `bg`（白）/ `surface`（#F4F4F1 沈んだ面）/ `ink`（黒）/ `ink-2`（補助テキスト）/ `muted`（日付・キャプション）/ `rule`（罫線）/ `orange`・`green`（アクセント）
+  - **オレンジは面にだけ使い、上の文字は必ず黒**（オレンジの文字は白地でコントラスト不足）。深緑の面の文字は白。
+- **書体**: 和文・本文は IBM Plex Sans JP（`font-sans`）、英字・数字・ロゴは Archivo（`font-display`、数字は `.num`）
+- **文字サイズ**: `text-xs`〜`text-2xl`、`text-display`（ロゴタイプ）。すべて `clamp()` で画面幅に応じて変わる
+- **形**: 角丸なし（営業状況とチップだけピル型）。影・すりガラス（backdrop-filter）は使わない
+- **見出し**: セクション見出しは英語（`SectionHeading` の `title`）＋日本語の補足（`description`）
+- **部品**: `.wrap`（最大幅と左右余白）、`.section`（セクション間の余白）、`.grid-lines`（罫線グリッド）、`.btn` + `.btn-primary / .btn-secondary / .btn-inverse`、`.chip`、`.status`、`.facts`（見出し/値の罫線リスト）、`.media-frame`、`.article-body`（記事本文）
+- **画像の比率は崩さない**: 一覧カードは4:5の枠（`.media-frame`）に `object-fit: contain` で収め、縦長は幅を狭めて中央に置く。記事本文の縦長画像は高さ72vhまで、連続する縦長写真は2枚並び（`lib/content-images.ts`）
+- **アクセシビリティ**: 文字色はすべてAA以上、`:focus-visible` の枠線、`prefers-reduced-motion` で動きを止める、タップ領域は44px以上
+
+### トップページの構成とデータの出どころ
+
+| セクション | データ |
+|---|---|
+| ヒーローの写真2枚 | microCMS の **縦長のバナー**（先頭から2枚）。足りない分は `public/images` の写真 |
+| Pick Up | microCMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
+| New Arrivals | Shopify Storefront API の新着・在庫ありの商品（`lib/shopify-storefront.ts`） |
+| Journal / note / Podcast | microCMS の最新記事 / note RSS / Spotify 埋め込み |
+| Store | `lib/store-info.ts`（店舗情報の唯一の定義元。営業時間・住所・地図・駐車場のURLもここ） |
+
+配送・返品・利用規約・プライバシーポリシーのページは、オンラインストア（Shopify）のポリシーを Storefront API で取得して表示している（`components/PolicyPage.tsx`）。内容の変更は Shopify 管理画面で行う。
 
 ## microCMS のコンテンツモデル
 

@@ -1,172 +1,200 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import HeroSection from "@/components/HeroSection";
-import BlogCard from "@/components/BlogCard";
+import Image from "next/image";
+import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
 import NoteCard from "@/components/NoteCard";
-import FeaturedProducts from "@/components/FeaturedProducts";
-import FeaturedBlogPosts from "@/components/FeaturedBlogPosts";
-import { getBlogPosts, getFeaturedBlogPosts, getFeaturedProducts, getBanners } from "@/lib/microcms";
+import ProductGrid from "@/components/ProductGrid";
+import SectionHeading from "@/components/SectionHeading";
+import StoreActions from "@/components/StoreActions";
+import StoreInfoSection from "@/components/StoreInfoSection";
+import StoreStatus from "@/components/StoreStatus";
+import { getBanners, getBlogPosts } from "@/lib/microcms";
 import { getNoteArticles } from "@/lib/note";
-import type { Blog } from "@/types/microcms";
+import { getLatestProducts } from "@/lib/shopify-storefront";
+import { STORE } from "@/lib/store-info";
+import type { Banner } from "@/types/microcms";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
+const TITLE = "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ";
+const DESCRIPTION = "もう一度、洋服を好きになれる場所。富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とトレンド感のある新品を、実店舗とオンラインストアでご紹介しています。";
 
 export const metadata: Metadata = {
-  title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
-  description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
-  keywords: [
-    "富山",
-    "南砺市",
-    "井波",
-    "古着",
-    "セレクトショップ",
-    "85-Store",
-    "ハコストア",
-    "富山県",
-    "古着屋",
-    "セレクトショップ 富山",
-    "古着 井波",
-    "南砺市 古着",
-    "オーセンティック",
-    "ヴィンテージ",
-  ],
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "ja_JP",
     url: siteUrl,
-    siteName: "85-Store（ハコストア）",
-    title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
-    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
-    images: [
-      {
-        url: `${siteUrl}/logo.svg`,
-        width: 1200,
-        height: 630,
-        alt: "85-Store（ハコストア）",
-      },
-    ],
+    siteName: STORE.name,
+    title: TITLE,
+    description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "富山県南砺市井波の古着・セレクトショップ | 85-Store（ハコストア）",
-    description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。週末限定ストアとオンラインストアでお買い物をお楽しみください。",
-    images: [`${siteUrl}/logo.svg`],
+    title: TITLE,
+    description: DESCRIPTION,
   },
 };
 
+type HeroPhoto = { url: string; alt: string; href?: string };
+
+// microCMS の縦長バナーが足りないときに使う写真（先頭のバナーと同じ店内写真にならないよう、店長の写真を先に使う）
+const FALLBACK_HERO_PHOTOS: HeroPhoto[] = [
+  { url: "/images/snoo.jpg", alt: "店長のスヌー" },
+  { url: "/images/shop.jpg", alt: "85-Store の店内" },
+];
+
+const isPortrait = (banner: Banner) => (banner.image.height ?? 0) > (banner.image.width ?? 0);
+
 export default async function Home() {
-  // MicroCMSとnoteからデータを取得
-  const [blogPosts, featuredBlogPosts, featuredProducts, banners, noteArticles] = await Promise.all([
-    getBlogPosts(3),
-    getFeaturedBlogPosts(),
-    getFeaturedProducts(6),
+  const [banners, posts, noteArticles, products] = await Promise.all([
     getBanners(),
+    getBlogPosts(6),
     getNoteArticles(),
+    getLatestProducts(8),
   ]);
 
+  // 縦長のバナーはヒーローの写真、それ以外は Pick Up に並べる
+  const heroPhotos: HeroPhoto[] = [
+    ...banners.filter(isPortrait).map((banner) => ({ url: banner.image.url, alt: banner.title ?? "", href: banner.detailButtonUrl })),
+    ...FALLBACK_HERO_PHOTOS,
+  ].slice(0, 2);
+  const pickUps = banners.filter((banner) => !isPortrait(banner));
+
   return (
-    <div className="section-bg-gradient">
-      <HeroSection banners={banners} />
+    <div className="wrap">
+      <p className="wordmark pt-6 pb-4 text-display" aria-hidden="true">85-Store</p>
 
-      {/* Featuredブログ記事 */}
-      <FeaturedBlogPosts posts={featuredBlogPosts} />
+      {/* ヒーロー: 写真2枚 + ブランドメッセージ + 営業情報 */}
+      <div className="grid-lines grid-cols-12">
+        {heroPhotos.map((photo, index) => {
+          const image = (
+            <Image
+              src={photo.url}
+              alt={photo.alt}
+              fill
+              priority={index === 0}
+              sizes="(max-width: 1000px) 50vw, 33vw"
+              className="object-cover"
+            />
+          );
+          return (
+            <figure key={photo.url} className="relative col-span-4 min-h-[clamp(420px,44vw,680px)] overflow-hidden bg-surface max-[1000px]:col-span-6 max-[1000px]:aspect-[3/4] max-[1000px]:min-h-0">
+              {photo.href ? <a href={photo.href} aria-label={photo.alt || "詳しく見る"}>{image}</a> : image}
+            </figure>
+          );
+        })}
 
-      {/* 最新のブログ記事 */}
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-secondary mb-4 ">
-              Latest Posts
-            </h2>
-            <p className="text-sm text-gray-600">富山県南砺市井波の古着・セレクトショップ「85-Store」からのスタイリング情報とトレンドをお届けします</p>
+        <div className="col-span-4 grid grid-rows-[auto_1fr] gap-px bg-rule max-[1000px]:order-first max-[1000px]:col-span-12 max-[1000px]:grid-cols-2 max-[1000px]:grid-rows-none max-[640px]:grid-cols-1">
+          <div className="bg-orange p-[clamp(20px,2.5vw,36px)] text-ink">
+            <h1 className="text-2xl font-bold tracking-tight">もう一度、洋服を好きになれる場所</h1>
+            <p className="mt-4 max-w-[26em]">
+              富山県南砺市のセレクトショップ、85-Store（ハコストア）です。今好きな服と、ずっと着られる服を。
+            </p>
           </div>
-
-          {blogPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post: Blog) => (
-                <BlogCard key={post.id} post={post} />
-              ))}
+          <div className="grid content-between gap-6 bg-bg p-[clamp(20px,2.5vw,36px)]">
+            <div>
+              <p className="mb-4"><StoreStatus /></p>
+              <dl className="facts">
+                <div><dt>営業時間</dt><dd className="num text-xl font-semibold">{STORE.hours.label}</dd></div>
+                <div><dt>定休日</dt><dd>木曜日</dd></div>
+                <div><dt>住所</dt><dd>{STORE.address.region}{STORE.address.locality}{STORE.address.street}</dd></div>
+              </dl>
             </div>
-          ) : (
-            <div className="card-acrylic p-12 text-center max-w-2xl mx-auto rounded-xl">
-              <p className="text-gray-500 font-medium tracking-wide">ただいま記事を準備中です</p>
-            </div>
-          )}
-
-          <div className="text-center mt-8">
-            <Link href="/blog" className="btn-primary">
-              See All Posts
-            </Link>
+            <StoreActions />
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* note記事セクション */}
-      {noteArticles.length > 0 && (
-        <section className="py-16">
-          <div className="section-padding max-container">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-secondary mb-4 ">
-                note
-              </h2>
-              <p className="text-sm text-gray-600 mb-4">
-                85-Storeの仕入れ担当（Hayato）の洋服、哲学、日常に関するエッセイ。
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {noteArticles.slice(0, 3).map((article) => (
-                <NoteCard key={article.id} article={article} />
-              ))}
-            </div>
-            <div className="text-center mt-8">
-              <a
-                href="https://note.com/85_store"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                See All Posts
-              </a>
-            </div>
-          </div>
+      {pickUps.length > 0 && (
+        <section className="section" aria-labelledby="pickup-heading">
+          <SectionHeading id="pickup-heading" title="Pick Up" description="いまのおすすめ" />
+          <ul className="grid-lines grid-cols-3 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1">
+            {pickUps.map((banner) => {
+              const body = (
+                <>
+                  <div className="media-frame aspect-[4/3]">
+                    <Image src={banner.image.url} alt="" fill sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw" />
+                  </div>
+                  {(banner.title || banner.subtitle) && (
+                    <div className="p-4">
+                      {banner.title && <p className="font-semibold">{banner.title}</p>}
+                      {banner.subtitle && <p className="text-sm text-muted">{banner.subtitle}</p>}
+                    </div>
+                  )}
+                </>
+              );
+              return (
+                <li key={banner.id}>
+                  {banner.detailButtonUrl ? <a href={banner.detailButtonUrl} className="group block">{body}</a> : body}
+                </li>
+              );
+            })}
+          </ul>
         </section>
       )}
 
-      {/* Podcastセクション */}
-      <section className="py-16">
-        <div className="section-padding max-container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-secondary mb-4">Podcast</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              85-Storeが配信するポッドキャスト。古着・ファッション・日常についてゆるく話しています。
-            </p>
-            <a
-              href="https://open.spotify.com/show/6tA2ppEmxZEzvraua6zLFV?si=xammDwf7SZ2p_ZBGOdbgdg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#1DB954] hover:bg-[#1aa34a] text-white font-semibold px-6 py-3 rounded-full transition-colors"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-              </svg>
-              Spotifyで聴く
-            </a>
-          </div>
-          <div className="max-w-2xl mx-auto">
-            <iframe
-              src="https://open.spotify.com/embed/show/6tA2ppEmxZEzvraua6zLFV"
-              width="100%"
-              height="352"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              className="rounded-xl"
-            />
-          </div>
-        </div>
+      {products.length > 0 && (
+        <section className="section" aria-labelledby="arrivals-heading">
+          <SectionHeading
+            id="arrivals-heading"
+            title="New Arrivals"
+            description="オンラインストアの新着アイテム"
+            link={{ href: STORE.onlineShopUrl, label: "すべて見る" }}
+          />
+          <ProductGrid products={products} />
+        </section>
+      )}
+
+      <section className="section" aria-labelledby="journal-heading">
+        <SectionHeading
+          id="journal-heading"
+          title="Journal"
+          description="入荷、イベント、営業日のお知らせ"
+          link={{ href: "/blog", label: "すべての記事" }}
+        />
+        {posts.length > 0 ? (
+          <BlogCardGrid>
+            {posts.map((post) => <BlogCard key={post.id} post={post} />)}
+          </BlogCardGrid>
+        ) : (
+          <p className="text-muted">ただいま記事を準備中です。</p>
+        )}
       </section>
 
-      {/* おすすめ商品セクション */}
-      <FeaturedProducts products={featuredProducts} />
+      {noteArticles.length > 0 && (
+        <section className="section" aria-labelledby="note-heading">
+          <SectionHeading
+            id="note-heading"
+            title="note"
+            description="仕入れ担当 はやと の、洋服と日常のエッセイ"
+            link={{ href: STORE.sns.note, label: "note で読む" }}
+          />
+          <BlogCardGrid>
+            {noteArticles.slice(0, 3).map((article) => <NoteCard key={article.id} article={article} />)}
+          </BlogCardGrid>
+        </section>
+      )}
+
+      <section className="section" aria-labelledby="podcast-heading">
+        <SectionHeading
+          id="podcast-heading"
+          title="Podcast"
+          description="古着・ファッション・日常について、ゆるく話しています"
+          link={{ href: STORE.sns.spotify, label: "Spotify で聴く" }}
+        />
+        <iframe
+          src="https://open.spotify.com/embed/show/6tA2ppEmxZEzvraua6zLFV"
+          title="85-Store の Podcast（Spotify）"
+          width="100%"
+          height="232"
+          allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          className="block border-0"
+        />
+      </section>
+
+      <StoreInfoSection />
     </div>
   );
 }

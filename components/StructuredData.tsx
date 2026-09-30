@@ -1,7 +1,7 @@
 import { STORE, STORE_OPEN_DAYS_SCHEMA } from "@/lib/store-info";
 
 interface StructuredDataProps {
-  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog';
+  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog' | 'BlogPosting' | 'BreadcrumbList';
   data?: Record<string, any>;
 }
 
@@ -87,6 +87,21 @@ function getStructuredData(type: StructuredDataProps['type']) {
         inLanguage: 'ja',
         description: '富山県南砺市井波の古着・セレクトショップ「85-Store」のブログ。スタイリング情報やトレンドをお届けします。',
         publisher: { '@id': `${baseUrl}/#organization` },
+      };
+
+    // 記事ごとの値は data で渡す
+    case 'BlogPosting':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        inLanguage: 'ja',
+        publisher: { '@id': `${baseUrl}/#organization` },
+      };
+
+    case 'BreadcrumbList':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
       };
   }
 }

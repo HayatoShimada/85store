@@ -1,10 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '85-UpStore（2F 共創スペース）',
+  description: '85-Store の2階にある共創スペース「85-UpStore」。ポップアップ、展示、ワークショップなど、井波で活動する事業者やクリエイターが使える場所です。',
+  alternates: { canonical: '/upstore' },
+};
 
 export default function UpStore() {
   return (
-    <div className="min-h-screen section-bg-gradient">
-      <div className="section-padding max-container py-16">
+    <div>
+      <div className="wrap pt-12">
         {/* ヒーローセクション */}
         <div className="text-center mb-16">
           <div className="flex justify-center mb-8">
@@ -19,22 +26,22 @@ export default function UpStore() {
               />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-secondary mb-4 ">
+          <h1 className="wordmark mb-4 text-[clamp(2.5rem,1rem+6vw,6rem)] leading-[0.9]">
             85-UpStore
           </h1>
-          <p className="text-base text-gray-600 mb-2">
+          <p className="text-base text-muted mb-2">
             2nd Floor Co-creation Space
           </p>
-          <p className="text-base text-gray-500">
+          <p className="text-base text-muted">
             共に創り、共に育てる、二階の余白
           </p>
         </div>
 
         {/* ステートメント */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="card-acrylic p-8 md:p-12">
-            <div className="text-center space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-3xl font-bold text-secondary mb-6">
+          <div className="border-t border-ink pt-8">
+            <div className="text-center space-y-6 text-ink-2 leading-relaxed">
+              <p className="mb-6 text-2xl font-bold">
                 一段ごとに、店を広くする。
               </p>
               <p className="text-base">
@@ -54,7 +61,7 @@ export default function UpStore() {
                 <br />
                 この場所は少しずつ、理想のイベントスペースへとアップデートされていきます。
               </p>
-              <p className="font-bold text-secondary">
+              <p className="font-bold">
                 使う人が、作る人になる。
                 <br />
                 来る人が、支える人になる。
@@ -70,14 +77,15 @@ export default function UpStore() {
 
         {/* 3つの柱 */}
         <div className="max-w-4xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-secondary mb-12 text-center ">
-            3つの柱
+          <h2 className="mb-12 font-display text-2xl font-bold text-center">
+            Three Pillars
+            <span className="mt-1 block font-sans text-sm font-normal text-muted">3つの柱</span>
           </h2>
           <div className="space-y-8">
             {/* Co-creation */}
-            <div className="card-acrylic p-6">
+            <div className="border-t border-rule pt-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden shrink-0">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-surface overflow-hidden shrink-0">
                   <Image
                     src="/images/upstore1.JPG"
                     alt="Co-creation"
@@ -87,13 +95,13 @@ export default function UpStore() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-secondary mb-2 ">
+                  <h3 className="mb-2 text-lg font-bold">
                     Co-creation
                   </h3>
-                  <p className="text-base text-gray-600 mb-4">
+                  <p className="text-base text-muted mb-4">
                     完璧な場所より、未完成な興奮を
                   </p>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-ink-2 leading-relaxed">
                     ここは、最初からすべてが揃ったレンタルスペースではありません。
                     「エアコンがないなら、どう涼むか？」「棚がないなら、どう見せるか？」
                     そんな不便さを逆手に取り、利用者とオーナー、そしてお客さまが知恵を出し合い、
@@ -104,9 +112,9 @@ export default function UpStore() {
             </div>
 
             {/* 2nd Floor */}
-            <div className="card-acrylic p-6">
+            <div className="border-t border-rule pt-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden shrink-0">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-surface overflow-hidden shrink-0">
                   <Image
                     src="/images/upstore2.JPG"
                     alt="2nd Floor"
@@ -116,13 +124,13 @@ export default function UpStore() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-secondary mb-2 ">
+                  <h3 className="mb-2 text-lg font-bold">
                     2nd Floor
                   </h3>
-                  <p className="text-base text-gray-600 mb-4">
+                  <p className="text-base text-muted mb-4">
                     街へ出る前の、一番近い「二歩目」
                   </p>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-ink-2 leading-relaxed">
                     1階の85-Storeが、街に開かれた「一歩目」の顔。
                     2階のこのスペースは、事業者が自身の夢やアイデアを初めて形にする「二歩目（2nd Floor）」の場所です。
                     店舗を持つ前のプレ・オープン、個展、実験的なワークショップ。
@@ -133,9 +141,9 @@ export default function UpStore() {
             </div>
 
             {/* Space */}
-            <div className="card-acrylic p-6">
+            <div className="border-t border-rule pt-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden shrink-0">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-surface overflow-hidden shrink-0">
                   <Image
                     src="/images/upstore3.JPG"
                     alt="Space"
@@ -145,13 +153,13 @@ export default function UpStore() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-3xl font-bold text-secondary mb-2 ">
+                  <h3 className="mb-2 text-lg font-bold">
                     Space
                   </h3>
-                  <p className="text-base text-gray-600 mb-4">
+                  <p className="text-base text-muted mb-4">
                     繋がりが「醸成」される場所
                   </p>
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-ink-2 leading-relaxed">
                     ここは多様な事業者の活動が混ざり合う場所です。
                     清掃や管理を利用者自らが行うことで、場所への愛着が生まれ、利用者同士のネットワークが自然と形成されます。
                     <strong>空間（Space）を共有するだけでなく、未来の井波を面白くする「企み」を共有するコミュニティ</strong>を目指します。
@@ -164,15 +172,16 @@ export default function UpStore() {
 
         {/* 利用ガイドライン */}
         <div className="max-w-4xl mx-auto mb-16">
-          <div className="card-acrylic p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-secondary mb-8 text-center ">
-              利用ガイドライン
-            </h2>
+          <div className="border-t border-ink pt-8">
+            <h2 className="mb-8 font-display text-2xl font-bold text-center">
+            Guidelines
+            <span className="mt-1 block font-sans text-sm font-normal text-muted">利用ガイドライン</span>
+          </h2>
 
-            <div className="space-y-8 text-gray-700">
+            <div className="space-y-8 text-ink-2">
               {/* 基本コンセプト */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   1. 基本コンセプト
                 </h3>
                 <p className="leading-relaxed">
@@ -182,7 +191,7 @@ export default function UpStore() {
 
               {/* 利用資格・目的 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   2. 利用資格・目的
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -194,7 +203,7 @@ export default function UpStore() {
 
               {/* 利用料金と設備協力金 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   3. 利用料金と「設備協力金」
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -208,7 +217,7 @@ export default function UpStore() {
 
               {/* 利用時間と予約 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   4. 利用時間と予約
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -220,7 +229,7 @@ export default function UpStore() {
 
               {/* 設備と管理 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   5. 設備と管理
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -233,7 +242,7 @@ export default function UpStore() {
 
               {/* 安全と防犯 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   6. 安全と防犯
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -251,7 +260,7 @@ export default function UpStore() {
 
               {/* 禁止事項 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   7. 禁止事項
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -263,7 +272,7 @@ export default function UpStore() {
 
               {/* ネットワークの形成 */}
               <section>
-                <h3 className="text-3xl font-bold text-secondary mb-4 ">
+                <h3 className="mb-4 text-lg font-bold">
                   8. ネットワークの形成
                 </h3>
                 <ul className="list-disc list-inside space-y-2 leading-relaxed ml-4">
@@ -277,14 +286,15 @@ export default function UpStore() {
 
         {/* お問い合わせ */}
         <div className="max-w-4xl mx-auto text-center">
-          <div className="card-acrylic p-8">
-            <h2 className="text-3xl font-bold text-secondary mb-6 ">
-              お問い合わせ・ご予約
-            </h2>
-            <p className="text-gray-700 mb-6 leading-relaxed">
+          <div className="border-t border-ink pt-8">
+            <h2 className="mb-6 font-display text-2xl font-bold">
+            Contact
+            <span className="mt-1 block font-sans text-sm font-normal text-muted">お問い合わせ・ご予約</span>
+          </h2>
+            <p className="text-ink-2 mb-6 leading-relaxed">
               85-UpStoreのご利用をご希望の方は、下記よりお問い合わせください。
             </p>
-            <Link href="/contact" className="btn-primary inline-block">
+            <Link href="/contact" className="btn btn-primary">
               お問い合わせフォームへ
             </Link>
           </div>

@@ -9,8 +9,8 @@ export const STORE = {
     locality: "南砺市",
     street: "本町4丁目100",
   },
-  // Google マップの埋め込みと同じ地点
-  geo: { latitude: 36.56575, longitude: 136.96788 },
+  // Google マップ上の「85-Store」の地点
+  geo: { latitude: 36.56575, longitude: 136.97045 },
   hours: {
     opens: "12:00",
     closes: "18:00",
@@ -21,6 +21,9 @@ export const STORE = {
     note: "事前予約で木曜と18:00〜20:00の延長営業が可能です。",
   },
   onlineShopUrl: "https://shop.85-store.com/",
+  mapUrl: "https://maps.app.goo.gl/ZfyGqHvE4fZJY7He7",
+  parkingUrl: "https://maps.app.goo.gl/tGRFs9VSyNqXdyfMA",
+  mapEmbedUrl: "https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1s36.5657509,136.9704516!6i18!3m1!1sja!5m1!1sja",
   sns: {
     instagram: "https://www.instagram.com/85store_inami/",
     facebook: "https://www.facebook.com/profile.php?id=61580629616145",
@@ -39,3 +42,20 @@ const SCHEMA_WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
 export const STORE_OPEN_DAYS_SCHEMA = SCHEMA_WEEKDAYS.filter(
   (_, day) => !(STORE.hours.closedWeekdays as readonly number[]).includes(day)
 );
+
+// 日本時間の現在時刻から営業状況を判定する（臨時休業は反映しない）
+export type StoreStatus = "open" | "before" | "after" | "closed";
+
+export function getStoreStatus(now: Date = new Date()): StoreStatus {
+  const jst = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+  if ((STORE.hours.closedWeekdays as readonly number[]).includes(jst.getDay())) return "closed";
+
+  const minutes = jst.getHours() * 60 + jst.getMinutes();
+  const toMinutes = (hhmm: string) => {
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+  };
+  if (minutes < toMinutes(STORE.hours.opens)) return "before";
+  if (minutes >= toMinutes(STORE.hours.closes)) return "after";
+  return "open";
+}

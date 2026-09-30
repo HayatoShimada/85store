@@ -26,7 +26,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 |------|------|
 | フレームワーク | Next.js 16（App Router / Turbopack / Cache Components） |
 | 言語 | TypeScript 5 / React 19.3 |
-| スタイル | Tailwind CSS v4（@tailwindcss/typography） |
+| スタイル | Tailwind CSS v4 |
 | CMS | microCMS（microcms-js-sdk） |
 | EC連携 | Shopify Storefront API（@shopify/storefront-api-client） |
 | メール送信 | nodemailer |
@@ -195,9 +195,14 @@ npx eslint .     # ESLint
    - シークレット値: 1 と同じ文字列
 3. 従来の Vercel Deploy Hook による再ビルドは不要になります（残しても動作に問題はありません）
 
-## 🎨 カスタマイズ
+## 🎨 デザイン
 
-デザイントークン（色・フォントなど）は `app/globals.css` の `@theme` で定義しています（Tailwind CSS v4）。
+デザインシステム「モダングリッド」（白地の罫線グリッド、墨・オレンジ・深緑）。トークンと共通部品は `app/globals.css` にあり、使い方は `CLAUDE.md` の「デザインシステム」にまとめています。
+
+- **トップのヒーロー写真**: microCMS のバナーのうち、縦長の画像が先頭から2枚使われます。横長・正方形のバナーは「Pick Up」に並びます。
+- **新着アイテム**: Shopify の新着・在庫ありの商品が自動で表示されます。
+- **配送・返品・利用規約・プライバシーポリシー**: Shopify 管理画面のポリシーがそのまま表示されます。
+- **店舗情報**（営業時間・住所・地図・駐車場）: `lib/store-info.ts` で一元管理しています。
 
 ## 🔗 関連リンク
 

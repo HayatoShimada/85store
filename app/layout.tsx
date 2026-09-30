@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Noto_Sans_JP } from "next/font/google";
+import { Archivo, IBM_Plex_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,19 +8,19 @@ import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css";
 
-// 英字フォント: DM Sans
-const dmSans = DM_Sans({
-  weight: ["400", "500", "700"],
+// 英字・数字: Archivo（幅の可変軸でロゴタイプを横に広げる）
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  axes: ["wdth"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
-// 日本語フォント: Noto Sans JP
-const notoSansJP = Noto_Sans_JP({
-  weight: ["300", "400", "500", "700"],
+// 和文・本文: IBM Plex Sans JP（和文は unicode-range で必要な分だけ読み込まれる）
+const plexJP = IBM_Plex_Sans_JP({
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-noto-sans-jp",
+  variable: "--font-plex-jp",
   display: "swap",
 });
 
@@ -59,20 +59,11 @@ export const metadata: Metadata = {
     siteName: "85-Store（ハコストア）",
     title: "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ",
     description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。",
-    images: [
-      {
-        url: `${siteUrl}/logo.svg`,
-        width: 1200,
-        height: 630,
-        alt: "85-Store（ハコストア）",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ",
     description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とニューアイテムを提案するセレクトショップです。",
-    images: [`${siteUrl}/logo.svg`],
   },
   robots: {
     index: true,
@@ -119,7 +110,7 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
   return (
-    <html lang="ja" className={`${dmSans.variable} ${notoSansJP.variable}`}>
+    <html lang="ja" className={`${archivo.variable} ${plexJP.variable}`}>
       <head>
         {gaId && (
           <>
@@ -143,7 +134,7 @@ export default function RootLayout({
         <StructuredData type="LocalBusiness" />
         <StructuredData type="WebSite" />
         <Header />
-        <main className="min-h-screen pt-16">
+        <main id="main" className="min-h-[60vh]">
           {children}
         </main>
         <Footer />

@@ -14,6 +14,8 @@ const STATIC_PAGES: { path: string; changeFrequency: MetadataRoute.Sitemap[numbe
   { path: "/hakoneko", changeFrequency: "monthly", priority: 0.5 },
   { path: "/shipping", changeFrequency: "yearly", priority: 0.3 },
   { path: "/returns", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/privacy", changeFrequency: "yearly", priority: 0.2 },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

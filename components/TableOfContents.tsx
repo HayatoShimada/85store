@@ -58,28 +58,24 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   };
 
   return (
-    <nav className="bg-gray-50 rounded-lg p-4 md:p-6 mb-8">
-      <h2 className="text-3xl font-bold text-secondary mb-4">目次</h2>
-      <ul className="space-y-2">
+    <nav aria-labelledby="toc-heading" className="mb-12 border-t border-ink pt-4">
+      <h2 id="toc-heading" className="mb-3 font-display text-sm font-semibold tracking-wide">
+        Contents<span className="ml-2 font-sans font-normal text-muted">目次</span>
+      </h2>
+      <ol className="grid gap-2 border-b border-rule pb-4">
         {headings.map((heading) => (
-          <li
-            key={heading.id}
-            className={heading.level === 3 ? 'pl-4' : ''}
-          >
+          <li key={heading.id} className={heading.level === 3 ? "pl-4" : undefined}>
             <a
               href={`#${heading.id}`}
               onClick={(e) => handleClick(e, heading.id)}
-              className={`block text-sm transition-colors hover:text-primary ${
-                activeId === heading.id
-                  ? 'text-primary font-semibold'
-                  : 'text-gray-600'
-              }`}
+              aria-current={activeId === heading.id ? "location" : undefined}
+              className="block text-sm leading-relaxed text-ink-2 hover:underline hover:underline-offset-4 aria-[current=location]:font-semibold aria-[current=location]:text-ink"
             >
               {heading.text}
             </a>
           </li>
         ))}
-      </ul>
+      </ol>
     </nav>
   );
 }

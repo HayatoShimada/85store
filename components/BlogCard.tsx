@@ -9,70 +9,44 @@ interface BlogCardProps {
 }
 
 // サーバーコンポーネント: 記事本文（content）をクライアントへ送らないため
+// 画像は4:5の枠に比率を保ったまま収める（縦長は幅を狭めて中央に置く）
 export default function BlogCard({ post }: BlogCardProps) {
-  // description > excerpt > content から説明文を取得
-  const displayDescription = post.description || post.excerpt || extractExcerpt(post.content);
-
-  // カテゴリ（配列の最初の要素を使用）
-  const primaryCategory = post.category?.[0] || null;
+  const primaryCategory = post.category?.[0];
   const publishedAt = post.publishedAt || post.createdAt;
 
   return (
-    <article className="card-acrylic group">
-      <Link href={getBlogPostPath(post)}>
-        <div className="relative h-48 sm:h-52 md:h-48 w-full overflow-hidden bg-gray-100 rounded-t-lg">
+    <li>
+      <Link
+        href={getBlogPostPath(post)}
+        className="group grid gap-3 max-[560px]:grid-cols-[112px_minmax(0,1fr)] max-[560px]:items-start max-[560px]:gap-4"
+      >
+        <div className="media-frame aspect-[4/5]">
           <FallbackImage
             src={post.eyecatch?.url}
-            alt={post.title}
+            alt=""
             fill
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-200"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, (max-width: 1024px) 80vw, 70vw"
-            priority={false}
-            quality={75}
+            sizes="(max-width: 560px) 112px, (max-width: 900px) 50vw, 33vw"
           />
         </div>
-        <div className="p-6 pb-2">
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
-            {primaryCategory && (
-              <span className="px-2 py-1 rounded-full text-sm font-semibold border bg-gray-100 text-gray-700 border-gray-300">
-                {primaryCategory}
-              </span>
-            )}
-            <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
-            {post.author && (
-              <span className="text-gray-600">by {post.author}</span>
-            )}
-          </div>
-          <h3 className="text-sm font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
+        <div>
+          <p className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted">
+            <time dateTime={publishedAt} className="num">{formatDate(publishedAt)}</time>
+            {primaryCategory && <span className="chip">{primaryCategory}</span>}
+          </p>
+          <h3 className="text-lg leading-normal group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px] max-[560px]:text-base">
             {post.title}
           </h3>
-          <p className="text-sm text-gray-600 line-clamp-2">{displayDescription}</p>
         </div>
       </Link>
-      {post.tags && post.tags.length > 0 && (
-        <div className="px-6 pb-4 flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <Link
-              key={tag}
-              href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="text-sm px-2 py-1 rounded-sm bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
-            >
-              #{tag}
-            </Link>
-          ))}
-        </div>
-      )}
-    </article>
+    </li>
   );
 }
 
-function extractExcerpt(html: string, maxLength: number = 100): string {
-  const text = html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + "...";
+// カードを並べるグリッド（3列 → 2列 → スマホは横並びの1列）
+export function BlogCardGrid({ children }: { children: React.ReactNode }) {
+  return (
+    <ul className="grid grid-cols-3 gap-x-6 gap-y-12 max-[900px]:grid-cols-2 max-[560px]:grid-cols-1 max-[560px]:gap-6">
+      {children}
+    </ul>
+  );
 }
