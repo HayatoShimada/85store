@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
@@ -75,11 +76,11 @@ export default function HakonekoPage() {
         <div className="flex flex-wrap justify-center gap-6 md:gap-10 mb-24 opacity-90">
           <div className="rounded-2xl overflow-hidden border border-[#ff8d1f]/20 shadow-[0_0_25px_rgba(255,141,31,0.15)] relative group transition-transform duration-500 hover:scale-105">
             <div className="absolute inset-0 bg-[#ff8d1f]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
-            <img src="/images/1.png" alt="Cosmic Cat" className="w-[160px] h-[160px] md:w-[240px] md:h-[240px] object-cover" />
+            <Image src="/images/1.png" alt="Cosmic Cat" width={240} height={240} className="w-[160px] h-[160px] md:w-[240px] md:h-[240px] object-cover" />
           </div>
           <div className="rounded-2xl overflow-hidden border border-[#ff8d1f]/20 shadow-[0_0_25px_rgba(255,141,31,0.15)] relative group transition-transform duration-500 hover:scale-105 hidden sm:block">
             <div className="absolute inset-0 bg-[#ff8d1f]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
-            <img src="/images/2.png" alt="Cosmic Cat" className="w-[160px] h-[160px] md:w-[240px] md:h-[240px] object-cover" />
+            <Image src="/images/2.png" alt="Cosmic Cat" width={240} height={240} className="w-[160px] h-[160px] md:w-[240px] md:h-[240px] object-cover" />
           </div>
         </div>
 

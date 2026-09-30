@@ -43,6 +43,7 @@ export default function ImageSlider({
             src={image}
             alt={`${alt} ${index + 1}`}
             fill
+            sizes="(max-width: 1024px) 100vw, 576px"
             className="object-cover"
             priority={index === 0}
           />
