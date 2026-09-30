@@ -2,12 +2,18 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import BlogCard from "@/components/BlogCard";
-import { getBlogPostsByTag } from "@/lib/microcms";
+import { getAllTags, getBlogPostsByTag } from "@/lib/microcms";
+import { nonEmptyParams } from "@/utils/static-params";
 
 interface TagPageProps {
   params: Promise<{
     tag: string;
   }>;
+}
+
+export async function generateStaticParams() {
+  // エンコードせずに返す（Next.jsが自動でエンコードする）
+  return nonEmptyParams("tag", await getAllTags());
 }
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {

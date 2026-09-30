@@ -1,13 +1,15 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getBlogPost, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
+import { getBlogPostByPath, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import { TableOfContents } from "@/components/TableOfContents";
 import { buildTableOfContents } from "@/lib/toc";
 import { optimizeContentImages } from "@/lib/content-images";
 import { formatDate } from "@/utils/date";
+import { getBlogPostPath } from "@/utils/blog";
+import { nonEmptyParams } from "@/utils/static-params";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -16,20 +18,20 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  try {
-    const posts = await getAllBlogPosts();
-    return posts.map((post) => ({
-      slug: post.id,
-    }));
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return [];
-  }
+  const posts = await getAllBlogPosts("id,slug");
+  // エンコードせずに返す（Next.jsが自動でエンコードする）
+  return nonEmptyParams("slug", posts.map((post) => post.slug || post.id));
+}
+
+// URLのパラメータ（日本語はエンコードされて届く）から記事を取得
+async function getPost(params: BlogPostPageProps["params"]) {
+  const { slug } = await params;
+  const path = decodeURIComponent(slug);
+  return { path, post: await getBlogPostByPath(path) };
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const { post } = await getPost(params);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
   if (!post) {
@@ -45,8 +47,11 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const modifiedTime = post.updatedAt || post.publishedAt || post.createdAt;
 
   return {
-    title: `${post.title} - 85-Store Blog`,
+    title: post.title,
     description: description,
+    alternates: {
+      canonical: getBlogPostPath(post),
+    },
     keywords: [
       "富山",
       "南砺市",
@@ -63,7 +68,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     openGraph: {
       type: 'article',
       locale: "ja_JP",
-      url: `${siteUrl}/blog/${slug}`,
+      url: `${siteUrl}${getBlogPostPath(post)}`,
       siteName: "85-Store（ハコストア）",
       title: post.title,
       description: description,
@@ -93,11 +98,15 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params;
-  const post = await getBlogPost(slug);
+  const { path, post } = await getPost(params);
 
   if (!post) {
     notFound();
+  }
+
+  // 旧URL（コンテンツID）でアクセスされたら、スラッグのURLへ恒久リダイレクト
+  if (post.slug && path !== post.slug) {
+    permanentRedirect(getBlogPostPath(post));
   }
 
   // カテゴリ（配列の最初の要素を使用）

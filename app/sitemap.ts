@@ -1,10 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getAllBlogPosts } from "@/lib/microcms";
+import { getBlogPostPath } from "@/utils/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
-
-// 1時間ごとに再生成して新しい記事を反映する
-export const revalidate = 3600;
 
 const STATIC_PAGES: { path: string; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]; priority: number }[] = [
   { path: "", changeFrequency: "daily", priority: 1.0 },
@@ -19,7 +17,7 @@ const STATIC_PAGES: { path: string; changeFrequency: MetadataRoute.Sitemap[numbe
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllBlogPosts("id,publishedAt,updatedAt,createdAt,category");
+  const posts = await getAllBlogPosts("id,slug,publishedAt,updatedAt,createdAt,category");
   const lastModifiedOf = (post: (typeof posts)[number]) =>
     new Date(post.updatedAt || post.publishedAt || post.createdAt);
 
@@ -36,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${siteUrl}/blog/${post.id}`,
+    url: `${siteUrl}${getBlogPostPath(post)}`,
     lastModified: lastModifiedOf(post),
     changeFrequency: "monthly",
     priority: 0.7,

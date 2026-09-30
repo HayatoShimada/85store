@@ -4,7 +4,6 @@ import { ImageResponse } from 'next/og';
 // Latin-only text on purpose: the brand already uses the English tagline
 // "Haconeco is watching you", and Latin glyphs render reliably in Satori
 // without shipping a CJK font.
-export const runtime = 'edge';
 export const alt = 'Haconeco is watching you — a cute cosmic-horror cat merge puzzle';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';

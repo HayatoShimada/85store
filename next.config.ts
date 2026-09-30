@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // "use cache" + cacheTag によるキャッシュと Partial Prerendering を有効化
+  cacheComponents: true,
   images: {
     qualities: [75, 90, 100],
     remotePatterns: [
@@ -34,30 +36,10 @@ const nextConfig: NextConfig = {
       {
         pathname: '/images/**',
       },
-      {
-        pathname: '/map-images/**',
-      },
-      {
-        pathname: '/hero/**',
-      },
     ],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-  },
-  // OG画像APIのキャッシュ設定
-  async headers() {
-    return [
-      {
-        source: '/api/og-image/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=86400, max-age=86400, stale-while-revalidate=86400',
-          },
-        ],
-      },
-    ];
   },
 };
 

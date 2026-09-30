@@ -1,4 +1,5 @@
 // note.com RSSフィードから記事を取得
+import { cacheLife, cacheTag } from "next/cache";
 
 export interface NoteArticle {
   id: string;
@@ -9,21 +10,23 @@ export interface NoteArticle {
   excerpt?: string;
 }
 
+// RSSを取得してキャッシュする（1時間）。エラーはキャッシュさせずに投げる
+async function fetchNoteRss(): Promise<NoteArticle[]> {
+  "use cache";
+  cacheTag("note");
+  cacheLife("hours");
+
+  const response = await fetch("https://note.com/85_store/rss");
+  if (!response.ok) {
+    throw new Error(`Failed to fetch note RSS feed: ${response.status}`);
+  }
+  return parseRssFeed(await response.text());
+}
+
 // RSSフィードをパースして記事を取得
 export async function getNoteArticles(): Promise<NoteArticle[]> {
   try {
-    const response = await fetch("https://note.com/85_store/rss", {
-      next: { revalidate: 3600 }, // 1時間キャッシュ
-    });
-
-    if (!response.ok) {
-      console.error("Failed to fetch note RSS feed:", response.status);
-      return [];
-    }
-
-    const xml = await response.text();
-    const articles = parseRssFeed(xml);
-    return articles;
+    return await fetchNoteRss();
   } catch (error) {
     console.error("Error fetching note articles:", error);
     return [];

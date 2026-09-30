@@ -1,10 +1,16 @@
 import { Feed } from "feed";
+import { cacheLife, cacheTag } from "next/cache";
 import { getBlogPosts } from "@/lib/microcms";
+import { getBlogPostPath } from "@/utils/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
-// ブログのRSS / Atomフィードを生成する
-export async function buildBlogFeed(): Promise<Feed> {
+// ブログのRSS / Atomフィードを生成する（記事と同じ "blogs" タグで再検証される）
+export async function getBlogFeedXml(format: "rss" | "atom"): Promise<string> {
+  "use cache";
+  cacheTag("blogs");
+  cacheLife("days");
+
   const posts = await getBlogPosts(20);
   const dateOf = (post: (typeof posts)[number]) =>
     new Date(post.publishedAt || post.createdAt);
@@ -26,7 +32,7 @@ export async function buildBlogFeed(): Promise<Feed> {
   });
 
   for (const post of posts) {
-    const url = `${siteUrl}/blog/${post.id}`;
+    const url = `${siteUrl}${getBlogPostPath(post)}`;
     feed.addItem({
       title: post.title,
       id: url,
@@ -39,5 +45,5 @@ export async function buildBlogFeed(): Promise<Feed> {
     });
   }
 
-  return feed;
+  return format === "rss" ? feed.rss2() : feed.atom1();
 }
