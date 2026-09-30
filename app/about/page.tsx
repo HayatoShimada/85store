@@ -135,7 +135,7 @@ export default function About() {
         <ol className="relative space-y-10 border-l border-rule pl-8 md:pl-12">
           {history.map((item) => (
             <li key={item.date} className="relative">
-              <span className="absolute top-2 left-[-37px] h-2 w-2 rounded-full bg-orange md:left-[-53px]" />
+              <span className="absolute top-2 left-[-37px] h-2 w-2 rounded-full bg-accent-2 md:left-[-53px]" />
               <time className="num block text-sm text-muted">{item.date}</time>
               <p className="mt-2">{item.body}</p>
             </li>

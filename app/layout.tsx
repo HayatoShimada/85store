@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import StructuredData from "@/components/StructuredData";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 // 英字・数字: Archivo（幅の可変軸でロゴタイプを横に広げる）
@@ -110,8 +111,10 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
   return (
-    <html lang="ja" className={`${archivo.variable} ${plexJP.variable}`}>
+    // data-theme は描画前のスクリプトで設定するため、サーバーのHTMLと差が出る（警告を抑制）
+    <html lang="ja" className={`${archivo.variable} ${plexJP.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {gaId && (
           <>
             <Script

@@ -86,7 +86,7 @@ export default async function Home() {
         })}
 
         <div className="col-span-4 grid grid-rows-[auto_1fr] gap-px bg-rule max-[1000px]:order-first max-[1000px]:col-span-12 max-[1000px]:grid-cols-2 max-[1000px]:grid-rows-none max-[640px]:grid-cols-1">
-          <div className="bg-orange p-[clamp(20px,2.5vw,36px)] text-ink">
+          <div className="bg-accent p-[clamp(20px,2.5vw,36px)] text-on-accent">
             <h1 className="text-2xl font-bold tracking-tight">もう一度、洋服を好きになれる場所</h1>
             <p className="mt-4 max-w-[26em]">
               富山県南砺市のセレクトショップ、85-Store（ハコストア）です。今好きな服と、ずっと着られる服を。

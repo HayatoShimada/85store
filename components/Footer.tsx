@@ -34,11 +34,11 @@ const COLUMNS = [
 
 export default function Footer() {
   return (
-    <footer className="mt-[var(--section)] bg-ink pt-16 pb-8 text-bg">
+    <footer className="mt-[var(--section)] bg-footer pt-16 pb-8 text-on-footer">
       <div className="wrap">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div className="col-span-2 md:col-span-1">
-            <h2 className="mb-3 text-sm font-semibold text-[#b9bbbe]">{STORE.name}</h2>
+            <h2 className="mb-3 text-sm font-semibold text-footer-muted">{STORE.name}</h2>
             <p className="text-sm">
               {STORE_FULL_ADDRESS}
               <br />
@@ -47,7 +47,7 @@ export default function Footer() {
           </div>
           {COLUMNS.map((column) => (
             <div key={column.title}>
-              <h2 className="mb-3 text-sm font-semibold text-[#b9bbbe]">{column.title}</h2>
+              <h2 className="mb-3 text-sm font-semibold text-footer-muted">{column.title}</h2>
               <ul className="grid gap-2 text-sm">
                 {column.links.map((link) => (
                   <li key={link.href}>
@@ -64,7 +64,7 @@ export default function Footer() {
         <p className="wordmark mt-16 mb-4 text-[clamp(2.5rem,1rem+7vw,7rem)] leading-[0.85]" aria-hidden="true">
           85-Store
         </p>
-        <div className="flex flex-wrap justify-between gap-4 border-t border-[#333] pt-4 text-xs text-[#b9bbbe]">
+        <div className="flex flex-wrap justify-between gap-4 border-t border-on-footer/20 pt-4 text-xs text-footer-muted">
           <span>© 2025 85-Store</span>
           <ul className="flex flex-wrap gap-x-4 gap-y-1">
             <li><Link href="/terms" className="hover:underline">利用規約</Link></li>
