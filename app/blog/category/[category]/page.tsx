@@ -12,8 +12,9 @@ interface CategoryPageProps {
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
+  // エンコードせずに返す（エンコードすると二重エンコードになり、日本語カテゴリが404になる）
   return categories.map((category) => ({
-    category: encodeURIComponent(category),
+    category,
   }));
 }
 
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     openGraph: {
       type: "website",
       locale: "ja_JP",
-      url: `${siteUrl}/blog/category/${encodeURIComponent(category)}`,
+      url: `${siteUrl}/blog/category/${encodeURIComponent(categoryName)}`,
       siteName: "85-Store（ハコストア）",
       title: `${categoryName} - 85-Store Blog`,
       description: `85-Storeの${categoryName}に関する記事一覧`,

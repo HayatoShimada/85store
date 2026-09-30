@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { formatDate } from "@/utils/date";
 import type { NoteArticle } from "@/lib/note";
 
 interface NoteCardProps {
@@ -43,7 +44,7 @@ export default function NoteCard({ article }: NoteCardProps) {
             <span className="px-2 py-1 rounded-full text-sm font-semibold border bg-gray-100 text-gray-700 border-gray-300">
               note
             </span>
-            <span>{new Date(article.publishedAt).toLocaleDateString('ja-JP')}</span>
+            <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
           </div>
           <h3 className="text-sm font-semibold text-secondary mb-2 group-hover:text-primary transition-colors">
             {article.title}

@@ -58,7 +58,7 @@ function parseRssFeed(xml: string): NoteArticle[] {
         id: `note-${id}`,
         title: decodeHtmlEntities(title),
         url: link,
-        publishedAt: pubDate || new Date().toISOString(),
+        publishedAt: toIsoDate(pubDate),
         thumbnail,
         excerpt: description ? cleanDescription(description) : undefined,
       });
@@ -66,6 +66,12 @@ function parseRssFeed(xml: string): NoteArticle[] {
   }
 
   return articles;
+}
+
+// RSSの日付（RFC 822形式）をISO形式に変換する（パースできなければ現在時刻）
+function toIsoDate(pubDate: string | undefined): string {
+  const date = pubDate ? new Date(pubDate) : new Date();
+  return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
 }
 
 // XMLタグの内容を抽出

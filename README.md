@@ -16,7 +16,7 @@ Next.js 15（App Router）+ TypeScript + Tailwind CSS で構築し、コンテ�
 - 📅 **予約ページ**: Limited Store / 1st Floor(85-Store) / 2nd Floor(85-UpStore) の案内
 - 📧 **お問い合わせフォーム**: nodemailer による自動返信・管理者通知
 - 📈 **アクセス解析**: Vercel Analytics / Speed Insights
-- 🗺️ **SEO**: next-sitemap によるサイトマップ生成、動的OG画像、構造化データ
+- 🗺️ **SEO**: `app/sitemap.ts` / `app/robots.ts` によるサイトマップ・robots.txt 生成、RSS/Atom フィード、構造化データ
 - 📱 **レスポンシブ / ダークモード対応**
 
 ## 🛠️ 技術スタック

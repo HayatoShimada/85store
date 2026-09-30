@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import BlogCard from "@/components/BlogCard";
 import { getBlogPostsByTag } from "@/lib/microcms";
 
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
     openGraph: {
       type: "website",
       locale: "ja_JP",
-      url: `${siteUrl}/blog/tag/${encodeURIComponent(tag)}`,
+      url: `${siteUrl}/blog/tag/${encodeURIComponent(decodedTag)}`,
       siteName: "85-Store（ハコストア）",
       title: `#${decodedTag} - 85-Store Blog`,
       description: `85-Storeの${decodedTag}タグが付いた記事一覧`,
@@ -58,6 +59,10 @@ export default async function TagPage({ params }: TagPageProps) {
   const decodedTag = decodeURIComponent(tag);
 
   const blogPosts = await getBlogPostsByTag(decodedTag);
+
+  if (blogPosts.length === 0) {
+    notFound();
+  }
 
   return (
     <div className="min-h-screen section-bg-gradient">
@@ -86,17 +91,11 @@ export default async function TagPage({ params }: TagPageProps) {
           </div>
 
           {/* Posts Grid */}
-          {blogPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogPosts.map((post) => (
-                <BlogCard key={post.id} post={post} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-base">このタグの記事はまだありません。</p>
-            </div>
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogPosts.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
         </div>
       </section>
     </div>

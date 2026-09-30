@@ -33,7 +33,8 @@ export async function getBlogPosts(limit?: number): Promise<Blog[]> {
 }
 
 // すべてのブログ記事を取得（ページネーション対応、SSG用）
-export async function getAllBlogPosts(): Promise<Blog[]> {
+// fieldsを指定すると取得する項目を絞れる（例: "id,updatedAt"）
+export async function getAllBlogPosts(fields?: string): Promise<Blog[]> {
   if (!client) {
     console.warn("MicroCMS client is not initialized");
     return [];
@@ -51,6 +52,7 @@ export async function getAllBlogPosts(): Promise<Blog[]> {
           limit,
           offset,
           orders: "-publishedAt",
+          ...(fields && { fields }),
         },
       });
 
