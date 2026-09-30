@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { STORE } from "@/lib/store-info";
 
 const NAV_ITEMS = [
@@ -42,6 +43,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2 justify-self-end">
+          <ThemeSwitcher />
           <a href={STORE.onlineShopUrl} className="btn btn-primary hidden min-[900px]:inline-flex">
             Online Store
           </a>

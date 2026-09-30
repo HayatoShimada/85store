@@ -107,7 +107,7 @@ export default function ContactPage() {
 
           <div aria-live="polite">
             {submitStatus === 'success' && (
-              <div className="mb-6 border border-green bg-green p-4 text-bg">
+              <div className="mb-6 border border-accent-2 bg-accent-2 p-4 text-on-accent-2">
                 <p className="font-semibold">送信しました</p>
                 <p className="text-sm">お問い合わせを受け付けました。ありがとうございます。</p>
               </div>

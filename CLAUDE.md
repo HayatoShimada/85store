@@ -89,8 +89,12 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 
 白地に1pxの罫線グリッドで面を区切り、写真と大きなロゴタイプ（Archivo 幅125%）で見せる。トークンは `app/globals.css` の `@theme`、共通の部品は同ファイルの `@layer components`。
 
-- **色**: `bg`（白）/ `surface`（#F4F4F1 沈んだ面）/ `ink`（黒）/ `ink-2`（補助テキスト）/ `muted`（日付・キャプション）/ `rule`（罫線）/ `orange`・`green`（アクセント）
-  - **オレンジは面にだけ使い、上の文字は必ず黒**（オレンジの文字は白地でコントラスト不足）。深緑の面の文字は白。
+- **色**: `bg` / `surface`（沈んだ面）/ `ink`（文字）/ `ink-2`（補助テキスト）/ `muted`（日付・キャプション）/ `rule`（罫線）/ `accent`・`accent-2`（アクセント面）/ `footer`
+  - **アクセントは面にだけ使い、上の文字は `on-accent` / `on-accent-2`**（ライトではオレンジ×黒、深緑×白）。`orange` のような色名のクラスは使わない（テーマで色が変わるため）
+- **表示モード（テーマ）**: ライト / ダーク / 猫（店長スヌーの毛色）。`<html data-theme>` で切り替え、`app/globals.css` の `:root[data-theme='…']` で色トークンだけを上書きする
+  - ヘッダーの `ThemeSwitcher` で選び、`localStorage` に保存。未選択ならOSのダークモード設定に従う
+  - 最初の描画前に `lib/theme.ts` の `THEME_INIT_SCRIPT`（`<head>` のインラインスクリプト）で反映し、ちらつきを防ぐ
+  - 新しい色を足すときは、3テーマすべてでAA（4.5:1）を満たすか確認する
 - **書体**: 和文・本文は IBM Plex Sans JP（`font-sans`）、英字・数字・ロゴは Archivo（`font-display`、数字は `.num`）
 - **文字サイズ**: `text-xs`〜`text-2xl`、`text-display`（ロゴタイプ）。すべて `clamp()` で画面幅に応じて変わる
 - **形**: 角丸なし（営業状況とチップだけピル型）。影・すりガラス（backdrop-filter）は使わない

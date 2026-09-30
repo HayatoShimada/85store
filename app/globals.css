@@ -3,7 +3,8 @@
 /*
   デザインシステム「モダングリッド」
   白地に1pxの罫線グリッドで面を区切り、写真と大きなロゴタイプで見せる。
-  オレンジと深緑は面にだけ使い、オレンジの上の文字は必ず黒にする（コントラスト確保）。
+  アクセント色は面にだけ使い、その上の文字は on-accent / on-accent-2 を使う（コントラスト確保）。
+  テーマ（light / dark / cat）は <html data-theme> で切り替え、下の :root[data-theme] で色だけ上書きする。
 */
 
 @theme {
@@ -14,8 +15,13 @@
   --color-ink-2: #3d3f42;    /* 補助テキスト（白地で10.6:1） */
   --color-muted: #62656a;    /* 日付・キャプション（白地で5.9:1） */
   --color-rule: #e2e2de;     /* 細い罫線 */
-  --color-orange: #ff6b35;   /* アクセント面（文字は黒） */
-  --color-green: #1f5c45;    /* 店舗情報・営業中（文字は白） */
+  --color-accent: #ff6b35;       /* アクセント面（ヒーローのメッセージ） */
+  --color-on-accent: #000000;    /* アクセント面の上の文字 */
+  --color-accent-2: #1f5c45;     /* 第2アクセント面（店舗情報・営業中） */
+  --color-on-accent-2: #ffffff;  /* 第2アクセント面の上の文字 */
+  --color-footer: #000000;
+  --color-on-footer: #ffffff;
+  --color-footer-muted: #b9bbbe;
 
   /* 書体（next/font の変数を参照） */
   --font-sans: var(--font-plex-jp), 'Hiragino Sans', 'Noto Sans JP', sans-serif;
@@ -46,6 +52,36 @@
   --rule: 1px solid var(--color-rule);
   --rule-strong: 1px solid var(--color-ink);
   color-scheme: light;
+}
+
+/* ダーク: 黒に近い背景と生成りの文字。アクセントはそのまま */
+:root[data-theme='dark'] {
+  --color-bg: #121212;
+  --color-surface: #1e1e1d;
+  --color-ink: #f1f0ec;
+  --color-ink-2: #cfcdc7;
+  --color-muted: #a3a19b;
+  --color-rule: #2f2f2d;
+  --color-accent-2: #2a7a5c;
+  --color-on-footer: #f1f0ec;
+  --color-footer-muted: #a3a19b;
+  color-scheme: dark;
+}
+
+/* 猫: 店長スヌーの毛色（クリームの胸毛・縞の茶墨・グレーの毛並み・琥珀色の目） */
+:root[data-theme='cat'] {
+  --color-bg: #f7f2e8;
+  --color-surface: #ece4d5;
+  --color-ink: #352f2a;
+  --color-ink-2: #524a42;
+  --color-muted: #6b6259;
+  --color-rule: #dcd1bf;
+  --color-accent: #c8c1b5;
+  --color-on-accent: #352f2a;
+  --color-accent-2: #7a5a1c;
+  --color-footer: #3a3531;
+  --color-on-footer: #f7f2e8;
+  --color-footer-muted: #cfc6b8;
 }
 
 @layer base {
@@ -143,15 +179,15 @@
     background: var(--color-ink);
     color: var(--color-bg);
   }
-  /* 深緑の面の上で使う */
+  /* 第2アクセント面（深緑）や暗い背景の上で使う */
   .btn-inverse {
-    background: var(--color-bg);
-    color: var(--color-ink);
-    border-color: var(--color-bg);
+    background: var(--color-on-accent-2);
+    color: var(--color-accent-2);
+    border-color: var(--color-on-accent-2);
   }
   .btn-inverse:hover {
     background: transparent;
-    color: var(--color-bg);
+    color: var(--color-on-accent-2);
   }
   .btn[aria-disabled='true'] {
     color: var(--color-muted);
@@ -230,9 +266,9 @@
     background: currentColor;
   }
   .status.is-open {
-    background: var(--color-green);
-    color: var(--color-bg);
-    border-color: var(--color-green);
+    background: var(--color-accent-2);
+    color: var(--color-on-accent-2);
+    border-color: var(--color-accent-2);
   }
 
   /* 数字（時刻・日付・価格） */
