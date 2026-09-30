@@ -168,7 +168,7 @@ export default function About() {
                 </div>
               </dl>
 
-              <div className="mt-12 h-80 md:h-96 overflow-hidden rounded-sm">
+              <div className="mt-12 h-80 md:h-96 overflow-hidden rounded-xs">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3204.517088208854!2d136.96787667640913!3d36.56575518087919!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5ff82666c413bb03%3A0xc369092c6c56d4bf!2z44CSOTMyLTAyMTcg5a-M5bGx55yM5Y2X56C65biC5pys55S677yU5LiB55uu77yR77yQ77yQ!5e0!3m2!1sja!2sjp!4v1757503685113!5m2!1sja!2sjp"
                   width="100%"
@@ -194,7 +194,7 @@ export default function About() {
             <ol className="relative border-l border-gray-200 pl-8 md:pl-12 space-y-12">
               {history.map((item) => (
                 <li key={item.date} className="relative">
-                  <span className="absolute -left-[37px] md:-left-[53px] top-2 w-2 h-2 rounded-full bg-primary" />
+                  <span className="absolute left-[-37px] md:left-[-53px] top-2 w-2 h-2 rounded-full bg-primary" />
                   <time className="block text-sm tracking-[0.15em] text-gray-400">
                     {item.date}
                   </time>

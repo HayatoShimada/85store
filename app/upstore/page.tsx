@@ -77,7 +77,7 @@ export default function UpStore() {
             {/* Co-creation */}
             <div className="card-acrylic p-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                   <Image
                     src="/images/upstore1.JPG"
                     alt="Co-creation"
@@ -106,7 +106,7 @@ export default function UpStore() {
             {/* 2nd Floor */}
             <div className="card-acrylic p-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                   <Image
                     src="/images/upstore2.JPG"
                     alt="2nd Floor"
@@ -135,7 +135,7 @@ export default function UpStore() {
             {/* Space */}
             <div className="card-acrylic p-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="relative w-full md:w-64 h-48 md:h-48 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                   <Image
                     src="/images/upstore3.JPG"
                     alt="Space"

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function HakonekoPrivacyPage() {
   return (
     <div className="w-full bg-[#11131a] text-[#eaeaea] flex flex-col min-h-[calc(100vh-4rem)] font-sans">
-      <div className="max-w-[760px] w-full mx-auto px-5 pt-8 pb-20 flex-grow">
+      <div className="max-w-[760px] w-full mx-auto px-5 pt-8 pb-20 grow">
         <h1 className="text-[#ff8d1f] text-[26px] font-bold mb-1">プライバシーポリシー</h1>
         <div className="text-[#9aa0aa] text-[13px] mb-6">ゲーム「ハコネコはこちらを見ている」（提供：85-Store）</div>
 

@@ -1,5 +1,6 @@
-import { createClient } from "microcms-js-sdk";
-import type { Blog, Product, Category, Banner } from "@/types/microcms";
+import { createClient, type MicroCMSQueries } from "microcms-js-sdk";
+import { cacheLife, cacheTag } from "next/cache";
+import type { Blog, Product, Banner } from "@/types/microcms";
 
 // MicroCMSクライアントの作成
 const serviceDomain = process.env.MICROCMS_SERVICE_DOMAIN || "";
@@ -10,319 +11,191 @@ export const client = serviceDomain && apiKey ? createClient({
   apiKey,
 }) : null;
 
-// ブログ記事一覧を取得
-export async function getBlogPosts(limit?: number): Promise<Blog[]> {
+// ブログ一覧の1ページあたりの件数
+export const BLOG_PER_PAGE = 12;
+
+type Endpoint = "blogs" | "products" | "banners";
+
+// ---------------------------------------------------------------------------
+// キャッシュ層
+// 取得結果は "use cache" でキャッシュし、microCMSのWebhook（app/api/revalidate）から
+// エンドポイント名のタグ（blogs / products / banners）単位で再検証する。
+// cacheLife("days") はWebhookが届かなかった場合の保険。
+//
+// APIエラーはあえて握りつぶさない。空の結果や404をキャッシュしてしまうより、
+// ビルド失敗（直前のデプロイが残る）や再生成失敗（古いページが配信され続ける）の方が安全なため。
+// ---------------------------------------------------------------------------
+
+async function cachedGetList<T>(endpoint: Endpoint, queries: MicroCMSQueries) {
+  "use cache";
+  cacheTag(endpoint);
+  cacheLife("days");
+
+  if (!client) return { contents: [] as T[], totalCount: 0 };
+  const { contents, totalCount } = await client.getList<T>({ endpoint, queries });
+  return { contents, totalCount };
+}
+
+async function cachedGet<T>(endpoint: Endpoint, contentId: string): Promise<T | null> {
+  "use cache";
+  cacheTag(endpoint);
+  cacheLife("days");
+
+  if (!client) return null;
+  try {
+    return await client.get<T>({ endpoint, contentId });
+  } catch (error) {
+    // 存在しないIDは正常系（スラッグでの再検索やnotFoundにつなげる）
+    if (error instanceof Error && error.message.includes("response status: 404")) return null;
+    throw error;
+  }
+}
+
+// 環境変数が未設定（ローカルなど）の場合は空の結果を返す
+async function getList<T>(endpoint: Endpoint, queries: MicroCMSQueries) {
   if (!client) {
     console.warn("MicroCMS client is not initialized");
-    return [];
+    return { contents: [] as T[], totalCount: 0 };
   }
-  try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: limit || 100,
-        orders: "-publishedAt",
-      },
-    });
+  return cachedGetList<T>(endpoint, queries);
+}
 
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching blog posts:", error);
-    return [];
-  }
+// ---------------------------------------------------------------------------
+// ブログ
+// ---------------------------------------------------------------------------
+
+// ブログ記事一覧を取得
+export async function getBlogPosts(limit?: number): Promise<Blog[]> {
+  const { contents } = await getList<Blog>("blogs", {
+    limit: limit || 100,
+    orders: "-publishedAt",
+  });
+  return contents;
+}
+
+// ブログ記事一覧をページ単位で取得（1始まり）
+export async function getBlogPostsPage(page: number): Promise<{ posts: Blog[]; totalPages: number }> {
+  const { contents, totalCount } = await getList<Blog>("blogs", {
+    limit: BLOG_PER_PAGE,
+    offset: (page - 1) * BLOG_PER_PAGE,
+    orders: "-publishedAt",
+  });
+  return { posts: contents, totalPages: Math.max(1, Math.ceil(totalCount / BLOG_PER_PAGE)) };
 }
 
 // すべてのブログ記事を取得（ページネーション対応、SSG用）
 // fieldsを指定すると取得する項目を絞れる（例: "id,updatedAt"）
 export async function getAllBlogPosts(fields?: string): Promise<Blog[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
+  const allPosts: Blog[] = [];
+  const limit = 100;
+  let offset = 0;
+  let totalCount = Infinity;
+
+  while (offset < totalCount) {
+    const response = await getList<Blog>("blogs", {
+      limit,
+      offset,
+      orders: "-publishedAt",
+      ...(fields && { fields }),
+    });
+    if (response.contents.length === 0) break;
+
+    allPosts.push(...response.contents);
+    totalCount = response.totalCount;
+    offset += limit;
   }
-  try {
-    const allPosts: Blog[] = [];
-    let offset = 0;
-    const limit = 100;
-    let hasMore = true;
 
-    while (hasMore) {
-      const response = await client.getList<Blog>({
-        endpoint: "blogs",
-        queries: {
-          limit,
-          offset,
-          orders: "-publishedAt",
-          ...(fields && { fields }),
-        },
-      });
-
-      allPosts.push(...response.contents);
-      
-      // 次のページがあるかチェック
-      hasMore = response.contents.length === limit;
-      offset += limit;
-    }
-
-    return allPosts;
-  } catch (error) {
-    console.error("Error fetching all blog posts:", error);
-    return [];
-  }
+  return allPosts;
 }
 
-// 単一のブログ記事を取得（idで取得）
-export async function getBlogPost(id: string): Promise<Blog | null> {
+// URLのパス（スラッグまたはコンテンツID）から記事を取得
+// 旧URL（コンテンツID）でもたどり着けるよう、IDで見つからなければスラッグで探す
+export async function getBlogPostByPath(path: string): Promise<Blog | null> {
   if (!client) {
     console.warn("MicroCMS client is not initialized");
     return null;
   }
-  try {
-    const blog = await client.get<Blog>({
-      endpoint: "blogs",
-      contentId: id,
-    });
+  const byId = await cachedGet<Blog>("blogs", path);
+  if (byId) return byId;
 
-    return blog;
-  } catch (error) {
-    console.error("Error fetching blog post:", error);
-    return null;
-  }
+  const { contents } = await cachedGetList<Blog>("blogs", {
+    limit: 1,
+    filters: `slug[equals]${path}`,
+  });
+  return contents[0] ?? null;
 }
 
 // カテゴリ別のブログ記事を取得
 export async function getBlogPostsByCategory(categoryName: string, limit?: number): Promise<Blog[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: limit || 100,
-        orders: "-publishedAt",
-        filters: `category[contains]${categoryName}`,
-      },
-    });
-
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching blog posts by category:", error);
-    return [];
-  }
+  const { contents } = await getList<Blog>("blogs", {
+    limit: limit || 100,
+    orders: "-publishedAt",
+    filters: `category[contains]${categoryName}`,
+  });
+  return contents;
 }
 
 // タグ別のブログ記事を取得
 export async function getBlogPostsByTag(tag: string, limit?: number): Promise<Blog[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: limit || 100,
-        orders: "-publishedAt",
-        filters: `tags[contains]${tag}`,
-      },
-    });
-
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching blog posts by tag:", error);
-    return [];
-  }
+  const { contents } = await getList<Blog>("blogs", {
+    limit: limit || 100,
+    orders: "-publishedAt",
+    filters: `tags[contains]${tag}`,
+  });
+  return contents;
 }
 
 // すべてのカテゴリを取得（ブログ記事から抽出）
 export async function getAllCategories(): Promise<string[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: 100,
-        fields: "category",
-      },
-    });
-
-    // 全記事のカテゴリを収集してユニークな値を返す
-    const categories = new Set<string>();
-    response.contents.forEach((blog) => {
-      blog.category?.forEach((cat) => categories.add(cat));
-    });
-
-    return Array.from(categories);
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
+  const posts = await getAllBlogPosts("category");
+  return Array.from(new Set(posts.flatMap((post) => post.category ?? [])));
 }
 
 // すべてのタグを取得（ブログ記事から抽出）
 export async function getAllTags(): Promise<string[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: 100,
-        fields: "tags",
-      },
-    });
-
-    // 全記事のタグを収集してユニークな値を返す
-    const tags = new Set<string>();
-    response.contents.forEach((blog) => {
-      blog.tags?.forEach((tag) => tags.add(tag));
-    });
-
-    return Array.from(tags);
-  } catch (error) {
-    console.error("Error fetching tags:", error);
-    return [];
-  }
+  const posts = await getAllBlogPosts("tags");
+  return Array.from(new Set(posts.flatMap((post) => post.tags ?? [])));
 }
 
 // 関連記事を取得
 export async function getRelatedPosts(currentPostId: string, category?: string | null, limit: number = 3): Promise<Blog[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const queries: Record<string, unknown> = {
-      limit: limit + 1,
-      orders: "-publishedAt",
-    };
-
-    if (category) {
-      queries.filters = `category[contains]${category}`;
-    }
-
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries,
-    });
-
-    return response.contents
-      .filter((blog) => blog.id !== currentPostId)
-      .slice(0, limit);
-  } catch (error) {
-    console.error("Error fetching related posts:", error);
-    return [];
-  }
+  const { contents } = await getList<Blog>("blogs", {
+    limit: limit + 1,
+    orders: "-publishedAt",
+    ...(category && { filters: `category[contains]${category}` }),
+  });
+  return contents.filter((blog) => blog.id !== currentPostId).slice(0, limit);
 }
 
 // おすすめブログ記事を取得
 export async function getFeaturedBlogPosts(limit?: number): Promise<Blog[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: limit || 100,
-        orders: "-publishedAt",
-        filters: "featured[equals]true",
-      },
-    });
-
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching featured blog posts:", error);
-    return [];
-  }
+  const { contents } = await getList<Blog>("blogs", {
+    limit: limit || 100,
+    orders: "-publishedAt",
+    filters: "featured[equals]true",
+  });
+  return contents;
 }
 
-// 商品一覧を取得
-export async function getProducts(options?: { featured?: boolean; limit?: number }): Promise<Product[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const queries: Record<string, unknown> = {
-      limit: options?.limit || 100,
-      orders: "-createdAt",
-    };
-
-    if (options?.featured) {
-      queries.filters = "featured[equals]true";
-    }
-
-    const response = await client.getList<Product>({
-      endpoint: "products",
-      queries,
-    });
-
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
-}
+// ---------------------------------------------------------------------------
+// 商品・バナー
+// ---------------------------------------------------------------------------
 
 // おすすめ商品を取得
 export async function getFeaturedProducts(limit: number = 4): Promise<Product[]> {
-  return getProducts({ featured: true, limit });
-}
-
-// 最新商品を取得
-export async function getLatestProducts(limit: number = 4): Promise<Product[]> {
-  return getProducts({ limit });
-}
-
-// おすすめ商品のメタデータを取得（Shopify連携用）
-export async function getFeaturedProductMeta(limit: number = 6): Promise<Product[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Product>({
-      endpoint: "products",
-      queries: {
-        limit,
-        orders: "-createdAt",
-        filters: "featured[equals]true",
-      },
-    });
-
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching featured product meta:", error);
-    return [];
-  }
+  const { contents } = await getList<Product>("products", {
+    limit,
+    orders: "-createdAt",
+    filters: "featured[equals]true",
+  });
+  return contents;
 }
 
 // バナー一覧を取得
 export async function getBanners(): Promise<Banner[]> {
-  if (!client) {
-    console.warn("MicroCMS client is not initialized");
-    return [];
-  }
-  try {
-    const response = await client.getList<Banner>({
-      endpoint: "banners",
-      queries: {
-        limit: 10,
-        orders: "order",
-      },
-    });
-
-    return response.contents;
-  } catch (error) {
-    console.error("Error fetching banners:", error);
-    return [];
-  }
+  const { contents } = await getList<Banner>("banners", {
+    limit: 10,
+    orders: "order",
+  });
+  return contents;
 }

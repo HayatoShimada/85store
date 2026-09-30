@@ -4,13 +4,17 @@ import NoteCard from "@/components/NoteCard";
 import { CategorySection } from "@/components/CategorySection";
 import { TagSection } from "@/components/TagSection";
 import StructuredData from "@/components/StructuredData";
-import { getBlogPosts, getAllCategories, getAllTags } from "@/lib/microcms";
+import Pagination from "@/components/Pagination";
+import { getBlogPostsPage, getAllCategories, getAllTags } from "@/lib/microcms";
 import { getNoteArticles } from "@/lib/note";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 export const metadata: Metadata = {
   title: "Blog | 富山県南砺市井波の古着・セレクトショップ 85-Store",
+  alternates: {
+    canonical: "/blog",
+  },
   description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ。スタイリング情報やトレンド、古着の楽しみ方などをお届けします。",
   keywords: [
     "富山",
@@ -51,8 +55,8 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const [blogPosts, categories, tags, noteArticles] = await Promise.all([
-    getBlogPosts(),
+  const [{ posts: blogPosts, totalPages }, categories, tags, noteArticles] = await Promise.all([
+    getBlogPostsPage(1),
     getAllCategories(),
     getAllTags(),
     getNoteArticles()
@@ -100,6 +104,8 @@ export default async function BlogPage() {
               </p>
             </div>
           )}
+
+          <Pagination currentPage={1} totalPages={totalPages} />
         </div>
       </section>
 

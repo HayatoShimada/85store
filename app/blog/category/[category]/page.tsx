@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
 import { getBlogPostsByCategory, getAllCategories } from "@/lib/microcms";
+import { nonEmptyParams } from "@/utils/static-params";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -13,9 +14,7 @@ interface CategoryPageProps {
 export async function generateStaticParams() {
   const categories = await getAllCategories();
   // エンコードせずに返す（エンコードすると二重エンコードになり、日本語カテゴリが404になる）
-  return categories.map((category) => ({
-    category,
-  }));
+  return nonEmptyParams("category", categories);
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {

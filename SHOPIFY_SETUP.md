@@ -83,9 +83,9 @@ DOTENV_CONFIG_PATH=.env.local node test-shopify-handle.js
 
 正しく設定されていれば、商品リストが表示されます。
 
-## NotionのShopifyHandle設定
+## microCMSの shopifyHandle 設定
 
-NotionのProductsデータベースで、ShopifyHandleフィールドに以下のいずれかを設定できます：
+microCMSの商品（products）APIで、`shopifyHandle` フィールドに以下のいずれかを設定できます：
 
 1. **商品ハンドル**（推奨）
    - 例: `a1ジャケット`、`mens-winter-jacket`
@@ -108,7 +108,7 @@ NotionのProductsデータベースで、ShopifyHandleフィールドに以下�
 
 ### 特定の商品だけ取得できない
 
-1. NotionのShopifyHandleが正しいか確認
+1. microCMSの `shopifyHandle` が正しいか確認
 2. Shopifyで商品が存在するか確認
 3. 商品が「オンラインストア」で公開されているか確認
 

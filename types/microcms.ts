@@ -8,6 +8,7 @@ export interface Category extends MicroCMSContentId, MicroCMSDate {
 // MicroCMS ブログ記事
 export interface Blog extends MicroCMSContentId, MicroCMSDate {
   title: string;
+  slug?: string; // URL用の識別子（未設定ならコンテンツIDを使う）
   content: string; // HTML形式のリッチエディタコンテンツ
   eyecatch?: MicroCMSImage;
   published?: boolean;

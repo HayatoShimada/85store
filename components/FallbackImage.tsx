@@ -10,12 +10,13 @@ interface FallbackImageProps extends Omit<ImageProps, "src" | "onError"> {
 }
 
 // 画像の読み込みに失敗したらプレースホルダーに差し替える
-export default function FallbackImage({ src, ...props }: FallbackImageProps) {
+export default function FallbackImage({ src, alt, ...props }: FallbackImageProps) {
   const [hasError, setHasError] = useState(false);
 
   return (
     <Image
       {...props}
+      alt={alt}
       src={!hasError && src ? src : PLACEHOLDER}
       onError={() => setHasError(true)}
     />

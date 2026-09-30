@@ -1,6 +1,7 @@
 import Link from "next/link";
 import FallbackImage from "@/components/FallbackImage";
 import { formatDate } from "@/utils/date";
+import { getBlogPostPath } from "@/utils/blog";
 import type { Blog } from "@/types/microcms";
 
 interface BlogCardProps {
@@ -18,7 +19,7 @@ export default function BlogCard({ post }: BlogCardProps) {
 
   return (
     <article className="card-acrylic group">
-      <Link href={`/blog/${post.id}`}>
+      <Link href={getBlogPostPath(post)}>
         <div className="relative h-48 sm:h-52 md:h-48 w-full overflow-hidden bg-gray-100 rounded-t-lg">
           <FallbackImage
             src={post.eyecatch?.url}
@@ -54,7 +55,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="text-sm px-2 py-1 rounded bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
+              className="text-sm px-2 py-1 rounded-sm bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
             >
               #{tag}
             </Link>

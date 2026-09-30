@@ -1,14 +1,15 @@
 # 85-Store
 
 富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイトです。
-Next.js 15（App Router）+ TypeScript + Tailwind CSS で構築し、コンテンツ管理に microCMS、商品連携に Shopify を利用しています。
+Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で構築し、コンテンツ管理に microCMS、商品連携に Shopify を利用しています。
 
 - 本番サイト: https://85-store.com
 - オンラインストア: https://shop.85-store.com
 
 ## ✨ 主な機能
 
-- 📝 **ブログ**: microCMS で記事を管理（カテゴリ・タグ・注目記事に対応）
+- 📝 **ブログ**: microCMS で記事を管理（カテゴリ・タグ・注目記事・スラッグ・ページネーションに対応）
+- ⚡ **キャッシュと即時反映**: `use cache` でキャッシュし、microCMS の Webhook で更新された API だけを再検証
 - 🛍️ **商品表示**: microCMS の商品データ + Shopify Storefront API による在庫状況の取得とオンラインストアへの導線
 - 🖼️ **バナー管理**: トップページのヒーローバナーを microCMS から動的に取得
 - ✍️ **note連携**: note.com の記事をトップページに表示
@@ -17,15 +18,15 @@ Next.js 15（App Router）+ TypeScript + Tailwind CSS で構築し、コンテ�
 - 📧 **お問い合わせフォーム**: nodemailer による自動返信・管理者通知
 - 📈 **アクセス解析**: Vercel Analytics / Speed Insights
 - 🗺️ **SEO**: `app/sitemap.ts` / `app/robots.ts` によるサイトマップ・robots.txt 生成、RSS/Atom フィード、構造化データ
-- 📱 **レスポンシブ / ダークモード対応**
+- 📱 **レスポンシブ対応**
 
 ## 🛠️ 技術スタック
 
 | 分類 | 技術 |
 |------|------|
-| フレームワーク | Next.js 15（App Router / Turbopack） |
-| 言語 | TypeScript 5 / React 19 |
-| スタイル | Tailwind CSS 3.4（@tailwindcss/typography） |
+| フレームワーク | Next.js 16（App Router / Turbopack / Cache Components） |
+| 言語 | TypeScript 5 / React 19.3 |
+| スタイル | Tailwind CSS v4（@tailwindcss/typography） |
 | CMS | microCMS（microcms-js-sdk） |
 | EC連携 | Shopify Storefront API（@shopify/storefront-api-client） |
 | メール送信 | nodemailer |
@@ -35,7 +36,7 @@ Next.js 15（App Router）+ TypeScript + Tailwind CSS で構築し、コンテ�
 
 ### 前提条件
 
-- Node.js 18.0 以上
+- Node.js 20.9 以上
 - microCMS アカウント
 - Shopify ストア（オプション：商品連携を使う場合）
 
@@ -69,6 +70,7 @@ npm run dev
 |------|------|
 | `MICROCMS_SERVICE_DOMAIN` | microCMS のサービスドメイン（`xxx.microcms.io` の `xxx` 部分） |
 | `MICROCMS_API_KEY` | microCMS の API キー |
+| `MICROCMS_WEBHOOK_SECRET` | Webhook の署名検証用シークレット（下記「更新の反映」参照） |
 | `NEXT_PUBLIC_SITE_URL` | サイトURL（本番では `https://85-store.com`） |
 
 ### オプション
@@ -90,6 +92,7 @@ npm run dev
 | フィールド | 型 | 説明 |
 |-----------|-----|------|
 | `title` | テキスト | 記事タイトル |
+| `slug` | テキスト | URL用の識別子（任意。半角英数とハイフン推奨。未設定ならコンテンツID） |
 | `content` | リッチエディタ | 本文（HTML） |
 | `eyecatch` | 画像 | アイキャッチ画像 |
 | `published` | 真偽値 | 公開フラグ |
@@ -134,14 +137,19 @@ app/
 ├── hakoneko/          # ハコネコ（ミニコンテンツ）
 ├── returns/           # 返品ポリシー
 ├── shipping/          # 配送について
+├── sitemap.ts / robots.ts / feed.xml / atom.xml  # SEO・フィード
 └── api/
     ├── contact/       # お問い合わせフォーム送信
+    ├── revalidate/    # microCMS Webhook によるキャッシュ再検証
     └── shopify/       # Shopify 商品情報の取得
 
 components/            # UIコンポーネント
 lib/
-├── microcms.ts        # microCMS API クライアント・データ取得
+├── microcms.ts        # microCMS API クライアント・データ取得（use cache）
 ├── note.ts            # note.com 記事の取得
+├── content-images.ts  # 記事本文の画像最適化
+├── toc.ts             # 目次の生成
+├── feed.ts            # RSS / Atom フィード
 └── shopify.ts         # Shopify Storefront API 連携
 
 types/                 # 型定義（microCMS / Shopify）
@@ -154,7 +162,7 @@ utils/                 # ユーティリティ
 npm run dev      # 開発サーバー（Turbopack）
 npm run build    # 本番ビルド
 npm run start    # 本番サーバー
-npm run lint     # ESLint
+npx eslint .     # ESLint
 ```
 
 ## 🛍️ Shopify 連携について
@@ -177,17 +185,19 @@ npm run lint     # ESLint
 2. ダッシュボードで環境変数を設定（上記「環境変数」参照）
 3. `main` ブランチへの push で自動デプロイ
 
+### 更新の反映（microCMS Webhook）
+
+記事・商品・バナーを更新したときは、再ビルドせずに該当データのキャッシュだけを破棄します。
+
+1. Vercel の環境変数に `MICROCMS_WEBHOOK_SECRET` を設定（任意のランダムな文字列）
+2. microCMS 管理画面 > 各API（blogs / products / banners）> API設定 > Webhook > **カスタム通知** を追加
+   - URL: `https://85-store.com/api/revalidate`
+   - シークレット値: 1 と同じ文字列
+3. 従来の Vercel Deploy Hook による再ビルドは不要になります（残しても動作に問題はありません）
+
 ## 🎨 カスタマイズ
 
-カラーテーマは `tailwind.config.ts` で変更できます。
-
-```ts
-colors: {
-  primary: '#FF6B35',   // オレンジ
-  secondary: '#2C3E50', // チャコールグレー
-  navy: '#1E3A5F',      // ネイビー
-}
-```
+デザイントークン（色・フォントなど）は `app/globals.css` の `@theme` で定義しています（Tailwind CSS v4）。
 
 ## 🔗 関連リンク
 

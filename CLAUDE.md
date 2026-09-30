@@ -1,195 +1,109 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このリポジトリで作業する Claude Code 向けのガイドです。
 
-## Project Overview
+## プロジェクト概要
 
-85-Store is a modern select shop website built with Next.js 15, TypeScript, and Tailwind CSS. It uses Notion as a headless CMS for blog content management and optionally integrates with Shopify for e-commerce functionality.
+富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイト（https://85-store.com）。
+ブログ・商品・バナーは **microCMS** で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
 
-**Key Technologies:**
-- Next.js 15.5 with App Router
-- TypeScript 5
-- Tailwind CSS 3.4
-- Notion API (`@notionhq/client`)
-- Shopify Storefront API (`@shopify/storefront-api-client`)
-- Sharp for image processing
+- Next.js 16（App Router / Turbopack / **Cache Components**）
+- React 19 / TypeScript 5
+- Tailwind CSS v4（CSSファーストの設定。`tailwind.config.ts` は無い）+ `@tailwindcss/typography`
+- microCMS（`microcms-js-sdk`）、note.com RSS、Shopify Storefront API
+- Vercel にデプロイ
 
-## Development Commands
+## コマンド
 
 ```bash
-# Development server with Turbopack
-npm run dev
-
-# Production build (includes image download from Notion)
-npm run build
-
-# Production server
-npm run start
-
-# Lint
-npm run lint
-
-# Download Notion images (runs automatically during build)
-npm run download-images
+npm run dev      # 開発サーバー（Turbopack）
+npm run build    # 本番ビルド
+npm run start    # 本番サーバー
+npx eslint .     # Lint（next lint は Next 16 で廃止）
+npx tsc --noEmit # 型チェック
 ```
 
-## Architecture
+環境変数は `.env.local`（`.env.example` 参照）。microCMS の値が無くてもビルドは通る（記事0件として扱う）。
 
-### Content Management Flow
+## アーキテクチャ
 
-**Notion → Next.js Pipeline:**
-1. Blog posts and products are stored in separate Notion databases
-2. Content is fetched via `/lib/notion.ts` using the Notion API
-3. Images are downloaded at build time to `/public/notion-images/` via `scripts/download-notion-images.ts`
-4. Image URL mapping is stored in `/lib/notion-image-mapping.json` to handle Notion's S3 URL expiration
-5. Blog content is rendered using the `NotionRenderer` component which supports 20+ Notion block types
+### データ取得とキャッシュ（`lib/microcms.ts` / `lib/note.ts`）
 
-### Data Layer
+- `next.config.ts` で `cacheComponents: true`。データ取得は `"use cache"` + `cacheTag` + `cacheLife` でキャッシュする。
+- microCMS はエンドポイント名をタグにする（`blogs` / `products` / `banners`）。`cacheLife("days")` はWebhookが届かなかったときの保険。
+- **microCMS のAPIエラーは握りつぶさない。** 空配列や404をキャッシュすると数日間壊れたページが残るため。ビルド失敗なら直前のデプロイが残り、再生成失敗なら古いページが配信され続ける。
+- note は補助コンテンツなので、失敗時は空配列を `cacheLife("minutes")` で短くキャッシュして止めない。
+- 新しい取得関数を足すときは、キャッシュ層（`cachedGetList` / `cachedGet`）を経由させる。
 
-**Key Files:**
-- `/lib/notion.ts` - Notion API integration, blog post and product fetching
-- `/lib/shopify.ts` - Shopify Storefront API integration
-- `/lib/notion-images.ts` - Image URL mapping and processing
-- `/types/notion.ts` - TypeScript interfaces for BlogPost and Product
+### 更新の反映（`app/api/revalidate/route.ts`）
 
-**Notion Database Schema:**
+microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び、署名（`x-microcms-signature`、HMAC-SHA256、`MICROCMS_WEBHOOK_SECRET`）を検証して `revalidateTag(api, { expire: 0 })` する。記事の公開・更新で全体を再ビルドする必要はない。
 
-Blog posts require these properties:
-- `Title` (title) - Article title
-- `Slug` (text) - URL identifier
-- `Excerpt` (text) - Article summary
-- `Date` (date) - Publication date
-- `Author` (multi-select) - Author names
-- `Category` (multi-select) - Categories
-- `Tags` (multi-select) - Tags
-- `Status` (multi-select) - Must be "Published" to appear
-- `Views` (number) - Auto-updated page view count
+### Cache Components の注意点
 
-Products require these properties:
-- `Name` (title) - Product name
-- `ShopifyHandle` (text) - Shopify product handle
-- `Category` (select) - Product category
-- `Price` (number) - Price in yen
-- `Images` (files) - Product images
-- `Description` (text) - Product description
-- `Featured` (checkbox) - Display as featured
-- `Status` (select) - Must be "Active" to appear
+- `export const runtime = 'edge'` と route segment の `export const revalidate` は使えない（キャッシュ期間は `cacheLife` で指定）。
+- `generateStaticParams` は空配列だとビルドエラーになる。`utils/static-params.ts` の `nonEmptyParams()` を使う（0件ならダミー値を返し、ページ側で `notFound()`）。
+- `generateStaticParams` は**エンコードしていない生の値**を返す。エンコードすると二重エンコードになり、日本語のカテゴリ等が404になる。ページで受け取る `params` は日本語がエンコードされて届くので `decodeURIComponent` する。
+- `new Date()` など実行ごとに変わる値は `"use cache"` の中で使う（例: `lib/feed.ts`）。
+- `'use cache'` の中で投げた例外は、呼び出し側で catch してもビルドを失敗させる。握りつぶしたいときはキャッシュ関数の中で catch する。
 
-### Notion Image Handling
+### ルーティング
 
-**Critical System:** Notion's S3 image URLs expire after ~1 hour. The system handles this via:
+| パス | 内容 |
+|---|---|
+| `/` | トップ（バナー・注目記事・最新記事・note・Podcast・おすすめ商品） |
+| `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
+| `/blog/[slug]` | 記事。`slug` フィールドがあればスラッグ、なければ microCMS のコンテンツID。IDでアクセスされスラッグがある場合は 308 リダイレクト |
+| `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
+| `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml` | `app/sitemap.ts` 等で動的生成 |
+| `/about`, `/reserve`, `/upstore`, `/contact`, `/shipping`, `/returns`, `/hakoneko` | 固定ページ |
 
-1. **Build-time Download:** `npm run download-images` downloads all Notion images to `/public/notion-images/`
-2. **URL Mapping:** Original URLs are mapped to local paths in `notion-image-mapping.json`
-3. **Runtime Fallback:** If an image URL expires, the system uses the image proxy API at `/app/api/image-proxy/route.ts`
-4. **Automatic Rotation:** The download script uses Sharp to auto-rotate images based on EXIF data
-5. **EXIF Stripping:** All EXIF metadata is removed for privacy and size reduction
+記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
 
-### Rendering System
+### 記事本文のレンダリング（`app/blog/[slug]/page.tsx`）
 
-**NotionRenderer Component** (`/components/NotionRenderer.tsx`):
-- Recursively renders Notion blocks with full type support
-- Groups consecutive list items for proper HTML structure
-- Handles nested blocks and column layouts
-- Supports code blocks with syntax highlighting
-- Renders embeds, bookmarks, and link previews
+microCMS のリッチエディタHTMLをサーバーで加工してから `dangerouslySetInnerHTML` で出力する。
 
-**Supported Block Types:**
-- Text: paragraph, headings (h1-h3), lists (bulleted, numbered, checkboxes), quotes, callouts
-- Media: images, videos, audio, files
-- Embeds: bookmarks, link previews, external embeds (YouTube, Twitter)
-- Code: code blocks with language specification
-- Layout: dividers, table of contents, columns, toggles
+1. `lib/content-images.ts` — microCMS画像を `<picture>`（AVIF優先・WebP、srcset、`loading="lazy"`）に変換
+2. `lib/toc.ts` — h2/h3 にIDを付け、目次データを抽出（目次をSSRしてCLSを防ぐ）
 
-### View Tracking
+### サーバー / クライアントコンポーネント
 
-**Implementation:**
-- Client-side tracking via `ViewTracker` component (loaded on blog post pages)
-- API endpoint at `/app/api/views/[slug]/route.ts`
-- Updates Notion database `Views` property in real-time
-- Prevents duplicate counts within same session
+- 基本はサーバーコンポーネント。記事データ（特に `content`）をクライアントコンポーネントの props に渡さない（RSCペイロードに本文HTMLが載る）。
+- 画像の読み込み失敗時の差し替えは `components/FallbackImage.tsx`（小さなクライアントコンポーネント）を使う。
+- 日付は `utils/date.ts` の `formatDate()`（Asia/Tokyo固定）で表示し、`<time dateTime>` で囲む。サーバーはUTCなので `toLocaleDateString` を直接使わない。
 
-### Shopify Integration
+### 画像
 
-**Optional Feature:** The site can integrate with Shopify for:
-- Product catalog display
-- Inventory status
-- Direct links to Shopify online store at `shop.85-store.com`
+- `next/image` で `fill` を使うときは必ず `sizes` を指定する（未指定だと100vw扱いで過大な画像を取得する）。
+- `public/` の写真は長辺1600px程度・EXIF削除済みで置く。
+- リモート画像は `next.config.ts` の `images.remotePatterns` に登録されたホストのみ。
 
-**Note:** Currently configured to link to Shopify rather than implement a full checkout flow.
+### SEO
 
-## Environment Variables
+- 各ページで `alternates.canonical` を指定する。タイトルは `app/layout.tsx` のテンプレート（`%s | 85-Store（ハコストア）`）に任せ、ページ側で店名を重ねない。
+- 構造化データは `components/StructuredData.tsx`。
 
-Required variables are defined in `.env.example`:
+## microCMS のコンテンツモデル
 
-**Essential:**
-- `NOTION_API_KEY` - Notion integration token
-- `NOTION_BLOG_DATABASE_ID` - Blog database ID
-- `NEXT_PUBLIC_SITE_URL` - Site URL
+- **blogs**: `title`, `slug`（任意。半角英数とハイフン推奨）, `content`（リッチエディタ）, `eyecatch`, `featured`, `category`（複数）, `tags`（複数）, `author`, `excerpt`, `description`
+- **products**: `name`, `shopifyHandle`, `category`, `price`, `images`, `description`, `featured`
+- **banners**: `image`, `title`, `subtitle`, `show*Button`, `detailButtonUrl`, `detailButtonText`, `order`
 
-**Optional:**
-- `NOTION_PRODUCTS_DATABASE_ID` - Products database (for e-commerce)
-- `SHOPIFY_STORE_DOMAIN` - Shopify store domain
-- `SHOPIFY_STOREFRONT_ACCESS_TOKEN` - Shopify API token
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` - Email configuration
-- `CONTACT_EMAIL` - Admin email for contact form
+型は `types/microcms.ts`。
 
-## Important Patterns
+## プロジェクト固有のルール
 
-### Image Optimization
+- 日本語サイト。UI文言・コンテンツ・ドキュメントは日本語（コードや技術設定に関するものを除く）。
+- コメントは日本語で、周囲のコード量に合わせて簡潔に。
 
-All images use Next.js `<Image>` component with:
-- Automatic WebP conversion
-- Responsive sizing
-- Lazy loading
-- Remote patterns configured in `next.config.ts` for Shopify, Notion, and S3 domains
+## トラブルシューティング
 
-### Color System
+### ローカルで microCMS / note への fetch が `ECONNRESET` / `Network Error` になる
 
-Notion's multi-select colors are mapped to Tailwind classes via `/utils/notionColors.ts`:
-- `getCategoryStyleClasses(color)` - Returns category badge styles
-- `getTagStyleClasses(color)` - Returns tag badge styles
+一部のネットワーク環境では、Node 24（OpenSSL 3.5）の耐量子TLS鍵交換（X25519MLKEM768）でClientHelloが大きくなり、CloudFront宛の接続がリセットされる（curlでは再現しない）。Vercel上では発生しない。ローカルでは鍵交換グループを固定するプリロードを使う:
 
-### Static Generation
-
-Blog posts use `generateStaticParams()` for static generation at build time. All blog routes are pre-rendered for optimal performance.
-
-### API Routes Structure
-
-- `/app/api/blocks/[blockId]/route.ts` - Fetch individual Notion blocks
-- `/app/api/views/[slug]/route.ts` - View count tracking
-- `/app/api/image-proxy/route.ts` - Proxy for expired Notion images
-- `/app/api/og-image/[slug]/route.ts` - Dynamic OG images for sharing
-- `/app/api/contact/route.ts` - Contact form submission
-
-## Project-Specific Notes
-
-### Japanese Language
-
-This is a Japanese language site. All UI text, content, and documentation should be in Japanese unless specifically related to code/technical configuration.
-
-### Blog vs Products
-
-The system supports two content types:
-1. **Blog posts** - Editorial content managed in Notion
-2. **Products** - E-commerce items managed in Notion with Shopify integration
-
-These are stored in separate Notion databases but share similar rendering pipelines.
-
-### Styling Approach
-
-- Tailwind CSS utility classes throughout
-- Dark mode support via system preferences
-- Mobile-first responsive design
-- Color palette: Orange (#FF6B35), Charcoal (#2C3E50), Navy (#1E3A5F)
-
-### Build Process
-
-**Important:** The build command runs `download-images` before building. This:
-1. Fetches all blog posts from Notion
-2. Downloads all images to `/public/notion-images/`
-3. Creates `/lib/notion-image-mapping.json` with URL mappings
-4. Processes images (rotation, EXIF removal)
-5. Then runs Next.js build
-
-Never skip the image download step in production builds.
+```bash
+echo "require('tls').DEFAULT_ECDH_CURVE = 'X25519:P-256:P-384';" > /tmp/tls-fix.cjs
+NODE_OPTIONS="--require /tmp/tls-fix.cjs" npm run build
+```
