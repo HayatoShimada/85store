@@ -374,6 +374,16 @@
   .article-body iframe {
     max-width: 100%;
   }
+
+  /* 画像の拡大表示ボタン（見た目は画像そのもの） */
+  .image-zoom {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

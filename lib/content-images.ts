@@ -2,6 +2,8 @@ const MICROCMS_IMAGE_HOST = "images.microcms-assets.io";
 const WIDTHS = [480, 800, 1200, 1600];
 // 記事本文カラムの表示幅（max-container内の余白を除いた幅）
 const SIZES = "(max-width: 1024px) 100vw, 1000px";
+// 拡大表示で読み込む画像の最大幅
+const ZOOM_WIDTH = 2000;
 
 // 記事本文のmicroCMS画像を最適化する
 // 原寸JPEG/PNGのまま配信されていたため、AVIF/WebP・srcset・遅延読み込みに置き換える
@@ -35,13 +37,16 @@ function convertImages(html: string): string {
       .replace(/\s(src|srcset|sizes|loading|decoding)=("[^"]*"|'[^']*')/gi, "")
       .trim();
 
-    return (
+    const picture =
       `<picture>` +
       `<source type="image/avif" srcset="${srcSetFor("avif")}" sizes="${SIZES}">` +
       `<img ${keptAttrs} src="${withParams(url, { fm: "webp", w: fallbackWidth })}" ` +
       `srcset="${srcSetFor("webp")}" sizes="${SIZES}" loading="lazy" decoding="async">` +
-      `</picture>`
-    );
+      `</picture>`;
+
+    // クリック・タップで拡大表示するためのボタン（components/ImageLightbox.tsx が処理する）
+    const zoomSrc = withParams(url, { fm: "webp", w: Math.min(originalWidth ?? ZOOM_WIDTH, ZOOM_WIDTH) });
+    return `<button type="button" class="image-zoom" data-zoom-src="${zoomSrc}" aria-label="画像を拡大表示">${picture}</button>`;
   });
 }
 
