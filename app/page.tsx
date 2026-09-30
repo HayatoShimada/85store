@@ -63,7 +63,7 @@ export default async function Home() {
 
   return (
     <div className="wrap">
-      <p className="wordmark pt-6 pb-4 text-display" aria-hidden="true">85-Store</p>
+      <p className="wordmark pt-6 pb-4 text-display" aria-hidden="true" data-snoo-trigger>85-Store</p>
 
       {/* ヒーロー: 写真2枚 + ブランドメッセージ + 営業情報 */}
       <div className="grid-lines grid-cols-12">

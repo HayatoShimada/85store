@@ -422,6 +422,19 @@
   }
 }
 
+/* イースターエッグ: スヌーが画面の下からのぞく */
+@keyframes snoo-peek {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.snoo-egg {
+  animation: snoo-peek 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

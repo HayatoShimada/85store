@@ -61,7 +61,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <p className="wordmark mt-16 mb-4 text-[clamp(2.5rem,1rem+7vw,7rem)] leading-[0.85]" aria-hidden="true">
+        <p className="wordmark mt-16 mb-4 text-[clamp(2.5rem,1rem+7vw,7rem)] leading-[0.85]" aria-hidden="true" data-snoo-trigger>
           85-Store
         </p>
         <div className="flex flex-wrap justify-between gap-4 border-t border-on-footer/20 pt-4 text-xs text-footer-muted">
