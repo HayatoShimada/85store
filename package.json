@@ -21,8 +21,7 @@
     "nodemailer": "^10.0.13",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "swr": "^2.3.6",
-    "vercel": "^61.1.0"
+    "swr": "^2.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
