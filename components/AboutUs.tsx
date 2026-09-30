@@ -28,7 +28,7 @@ export default function AboutUs() {
         </div>
       </div>
       <figure className="w-full max-w-md mx-auto lg:mx-0">
-        <div className="relative aspect-square overflow-hidden rounded-sm">
+        <div className="relative aspect-square overflow-hidden rounded-xs">
           <Image
             src="/images/shop.jpg"
             alt="85-Store 店内の様子"

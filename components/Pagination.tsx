@@ -14,7 +14,7 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
   if (totalPages <= 1) return null;
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  const linkClass = "min-w-10 h-10 px-3 inline-flex items-center justify-center rounded border text-sm transition-colors";
+  const linkClass = "min-w-10 h-10 px-3 inline-flex items-center justify-center rounded-sm border text-sm transition-colors";
 
   return (
     <nav aria-label="ページ送り" className="mt-12 flex flex-wrap items-center justify-center gap-2">

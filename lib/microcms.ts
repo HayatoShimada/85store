@@ -21,7 +21,9 @@ type Endpoint = "blogs" | "products" | "banners";
 // 取得結果は "use cache" でキャッシュし、microCMSのWebhook（app/api/revalidate）から
 // エンドポイント名のタグ（blogs / products / banners）単位で再検証する。
 // cacheLife("days") はWebhookが届かなかった場合の保険。
-// エラーは投げたままにしてキャッシュさせず、下の公開関数でフォールバックする。
+//
+// APIエラーはあえて握りつぶさない。空の結果や404をキャッシュしてしまうより、
+// ビルド失敗（直前のデプロイが残る）や再生成失敗（古いページが配信され続ける）の方が安全なため。
 // ---------------------------------------------------------------------------
 
 async function cachedGetList<T>(endpoint: Endpoint, queries: MicroCMSQueries) {
@@ -49,17 +51,13 @@ async function cachedGet<T>(endpoint: Endpoint, contentId: string): Promise<T | 
   }
 }
 
-async function getListOrEmpty<T>(endpoint: Endpoint, queries: MicroCMSQueries, label: string) {
+// 環境変数が未設定（ローカルなど）の場合は空の結果を返す
+async function getList<T>(endpoint: Endpoint, queries: MicroCMSQueries) {
   if (!client) {
     console.warn("MicroCMS client is not initialized");
     return { contents: [] as T[], totalCount: 0 };
   }
-  try {
-    return await cachedGetList<T>(endpoint, queries);
-  } catch (error) {
-    console.error(`Error fetching ${label}:`, error);
-    return { contents: [] as T[], totalCount: 0 };
-  }
+  return cachedGetList<T>(endpoint, queries);
 }
 
 // ---------------------------------------------------------------------------
@@ -68,20 +66,20 @@ async function getListOrEmpty<T>(endpoint: Endpoint, queries: MicroCMSQueries, l
 
 // ブログ記事一覧を取得
 export async function getBlogPosts(limit?: number): Promise<Blog[]> {
-  const { contents } = await getListOrEmpty<Blog>("blogs", {
+  const { contents } = await getList<Blog>("blogs", {
     limit: limit || 100,
     orders: "-publishedAt",
-  }, "blog posts");
+  });
   return contents;
 }
 
 // ブログ記事一覧をページ単位で取得（1始まり）
 export async function getBlogPostsPage(page: number): Promise<{ posts: Blog[]; totalPages: number }> {
-  const { contents, totalCount } = await getListOrEmpty<Blog>("blogs", {
+  const { contents, totalCount } = await getList<Blog>("blogs", {
     limit: BLOG_PER_PAGE,
     offset: (page - 1) * BLOG_PER_PAGE,
     orders: "-publishedAt",
-  }, "blog posts page");
+  });
   return { posts: contents, totalPages: Math.max(1, Math.ceil(totalCount / BLOG_PER_PAGE)) };
 }
 
@@ -94,12 +92,12 @@ export async function getAllBlogPosts(fields?: string): Promise<Blog[]> {
   let totalCount = Infinity;
 
   while (offset < totalCount) {
-    const response = await getListOrEmpty<Blog>("blogs", {
+    const response = await getList<Blog>("blogs", {
       limit,
       offset,
       orders: "-publishedAt",
       ...(fields && { fields }),
-    }, "all blog posts");
+    });
     if (response.contents.length === 0) break;
 
     allPosts.push(...response.contents);
@@ -117,38 +115,33 @@ export async function getBlogPostByPath(path: string): Promise<Blog | null> {
     console.warn("MicroCMS client is not initialized");
     return null;
   }
-  try {
-    const byId = await cachedGet<Blog>("blogs", path);
-    if (byId) return byId;
+  const byId = await cachedGet<Blog>("blogs", path);
+  if (byId) return byId;
 
-    const { contents } = await cachedGetList<Blog>("blogs", {
-      limit: 1,
-      filters: `slug[equals]${path}`,
-    });
-    return contents[0] ?? null;
-  } catch (error) {
-    console.error("Error fetching blog post:", error);
-    return null;
-  }
+  const { contents } = await cachedGetList<Blog>("blogs", {
+    limit: 1,
+    filters: `slug[equals]${path}`,
+  });
+  return contents[0] ?? null;
 }
 
 // カテゴリ別のブログ記事を取得
 export async function getBlogPostsByCategory(categoryName: string, limit?: number): Promise<Blog[]> {
-  const { contents } = await getListOrEmpty<Blog>("blogs", {
+  const { contents } = await getList<Blog>("blogs", {
     limit: limit || 100,
     orders: "-publishedAt",
     filters: `category[contains]${categoryName}`,
-  }, "blog posts by category");
+  });
   return contents;
 }
 
 // タグ別のブログ記事を取得
 export async function getBlogPostsByTag(tag: string, limit?: number): Promise<Blog[]> {
-  const { contents } = await getListOrEmpty<Blog>("blogs", {
+  const { contents } = await getList<Blog>("blogs", {
     limit: limit || 100,
     orders: "-publishedAt",
     filters: `tags[contains]${tag}`,
-  }, "blog posts by tag");
+  });
   return contents;
 }
 
@@ -166,21 +159,21 @@ export async function getAllTags(): Promise<string[]> {
 
 // 関連記事を取得
 export async function getRelatedPosts(currentPostId: string, category?: string | null, limit: number = 3): Promise<Blog[]> {
-  const { contents } = await getListOrEmpty<Blog>("blogs", {
+  const { contents } = await getList<Blog>("blogs", {
     limit: limit + 1,
     orders: "-publishedAt",
     ...(category && { filters: `category[contains]${category}` }),
-  }, "related posts");
+  });
   return contents.filter((blog) => blog.id !== currentPostId).slice(0, limit);
 }
 
 // おすすめブログ記事を取得
 export async function getFeaturedBlogPosts(limit?: number): Promise<Blog[]> {
-  const { contents } = await getListOrEmpty<Blog>("blogs", {
+  const { contents } = await getList<Blog>("blogs", {
     limit: limit || 100,
     orders: "-publishedAt",
     filters: "featured[equals]true",
-  }, "featured blog posts");
+  });
   return contents;
 }
 
@@ -190,19 +183,19 @@ export async function getFeaturedBlogPosts(limit?: number): Promise<Blog[]> {
 
 // おすすめ商品を取得
 export async function getFeaturedProducts(limit: number = 4): Promise<Product[]> {
-  const { contents } = await getListOrEmpty<Product>("products", {
+  const { contents } = await getList<Product>("products", {
     limit,
     orders: "-createdAt",
     filters: "featured[equals]true",
-  }, "featured products");
+  });
   return contents;
 }
 
 // バナー一覧を取得
 export async function getBanners(): Promise<Banner[]> {
-  const { contents } = await getListOrEmpty<Banner>("banners", {
+  const { contents } = await getList<Banner>("banners", {
     limit: 10,
     orders: "order",
-  }, "banners");
+  });
   return contents;
 }

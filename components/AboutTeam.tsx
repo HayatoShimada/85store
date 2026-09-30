@@ -49,7 +49,7 @@ export default function AboutTeam() {
             key={member.name}
             className="grid sm:grid-cols-[180px_1fr] gap-6 sm:gap-10"
           >
-            <div className="relative w-44 sm:w-full aspect-[4/5] overflow-hidden rounded-sm">
+            <div className="relative w-44 sm:w-full aspect-4/5 overflow-hidden rounded-xs">
               <Image
                 src={member.image}
                 alt={member.name}

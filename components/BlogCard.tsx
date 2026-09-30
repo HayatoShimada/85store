@@ -55,7 +55,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             <Link
               key={tag}
               href={`/blog/tag/${encodeURIComponent(tag)}`}
-              className="text-sm px-2 py-1 rounded bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
+              className="text-sm px-2 py-1 rounded-sm bg-gray-100 text-gray-600 hover:opacity-80 transition-opacity"
             >
               #{tag}
             </Link>
