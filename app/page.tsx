@@ -5,7 +5,6 @@ import BlogCard from "@/components/BlogCard";
 import NoteCard from "@/components/NoteCard";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import FeaturedBlogPosts from "@/components/FeaturedBlogPosts";
-import StructuredData from "@/components/StructuredData";
 import { getBlogPosts, getFeaturedBlogPosts, getFeaturedProducts, getBanners } from "@/lib/microcms";
 import { getNoteArticles } from "@/lib/note";
 import type { Blog } from "@/types/microcms";
@@ -67,7 +66,6 @@ export default async function Home() {
 
   return (
     <div className="section-bg-gradient">
-      <StructuredData type="WebSite" />
       <HeroSection banners={banners} />
 
       {/* Featuredブログ記事 */}
