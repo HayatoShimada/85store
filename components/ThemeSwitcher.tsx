@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { THEMES, THEME_STORAGE_KEY, type Theme } from "@/lib/theme";
+import { THEMES, applyTheme, type Theme } from "@/lib/theme";
 
 function ThemeIcon({ theme }: { theme: Theme }) {
   const common = { width: 18, height: 18, viewBox: "0 0 24 24", "aria-hidden": true } as const;
@@ -42,15 +42,6 @@ function subscribe(onChange: () => void) {
 const getTheme = () => (document.documentElement.dataset.theme as Theme | undefined) ?? "light";
 // サーバーでは保存値がわからないので未選択として描画する
 const getServerTheme = () => null;
-
-function applyTheme(next: Theme) {
-  document.documentElement.dataset.theme = next;
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, next);
-  } catch {
-    // プライベートブラウズなどで保存できなくても、表示は切り替える
-  }
-}
 
 // ヘッダーの表示モード切り替え（ライト / ダーク / 猫）
 export default function ThemeSwitcher() {

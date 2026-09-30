@@ -3,6 +3,7 @@ import { Archivo, IBM_Plex_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SnooEasterEgg from "@/components/SnooEasterEgg";
 import StructuredData from "@/components/StructuredData";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -141,6 +142,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <SnooEasterEgg />
         <Analytics />
         <SpeedInsights />
       </body>
