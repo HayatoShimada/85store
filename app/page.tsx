@@ -203,7 +203,8 @@ export default async function Home() {
           height="232"
           allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
-          className="block border-0"
+          // ページ（ダーク・猫）と配色がずれると、ブラウザが iframe の下地を白で塗り、角丸の外側が白く見える
+          className="block border-0 [color-scheme:light]"
         />
       </section>
 
