@@ -416,6 +416,9 @@
   }
   .article-body iframe {
     max-width: 100%;
+    /* ページ（ダーク・猫）と配色がずれると、ブラウザが iframe の下地を白で塗り、
+       Spotify などの角丸の外側やプレーヤーの下の余白が白く見える */
+    color-scheme: light;
   }
 
   /* 画像の拡大表示ボタン（見た目は画像そのもの） */
