@@ -54,3 +54,8 @@ next-env.d.ts
 scripts/download-notion-images.ts
 .gitignore
 .env*.local
+
+# Cloudflare Worker（cloudflare/）
+cloudflare/**/node_modules/
+.wrangler/
+.dev.vars*

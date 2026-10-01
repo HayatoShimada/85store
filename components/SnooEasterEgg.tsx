@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyTheme } from "@/lib/theme";
-import { getStoreStatus } from "@/lib/store-info";
+import { getStatusAt } from "@/lib/business-calendar";
+import { getBusinessCalendar } from "@/components/useBusinessCalendar";
 
 // イースターエッグ「店長スヌーの見回り」
 // 呼び方: キーボードで「snoo」またはコナミコマンド / 「85-Store」のロゴタイプを素早く5回タップ
@@ -30,7 +31,7 @@ function greeting(): string {
   } catch {
     // 保存できなくても挨拶はする
   }
-  if (getStoreStatus() === "closed") return "今日は定休日にゃ。ぼくはお昼寝中……zzz";
+  if (getStatusAt(getBusinessCalendar(), new Date()).state === "closed") return "今日はお休みにゃ。ぼくはお昼寝中……zzz";
   return visited ? "また来たにゃ。見つけるのが上手だにゃ。" : "にゃ。店長のスヌーです。よく見つけたにゃ。";
 }
 

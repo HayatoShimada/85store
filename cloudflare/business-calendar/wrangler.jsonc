@@ -1,0 +1,30 @@
+{
+  // 営業日カレンダー: 管理画面（Cloudflare Access で保護）と公開の読み取りAPI
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "85store-business-calendar",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "routes": [
+    { "pattern": "calendar-admin.85-store.com", "custom_domain": true },
+    { "pattern": "calendar.85-store.com", "custom_domain": true }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "85store-business-calendar",
+      "database_id": "9dcb74d4-5f9c-4ba7-bcd5-cc21df8f4976",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    // 管理画面のホスト名（これ以外のホストでは管理画面・書き込みAPIを出さない）
+    "ADMIN_HOST": "calendar-admin.85-store.com",
+    // Cloudflare Zero Trust のチームドメイン（例: 85store.cloudflareaccess.com）
+    "ACCESS_TEAM_DOMAIN": "calm-tree-fa3c.cloudflareaccess.com",
+    // Access アプリの Application Audience (AUD) タグ
+    "ACCESS_AUD": "354757d5adfbf77391bb6f6c5629aa3d0c853950e8f91a7a54b424f67ab18d7d",
+    // 管理画面を使えるメールアドレス（カンマ区切り）
+    "ADMIN_EMAILS": "info@85-store.com"
+  },
+  "observability": { "enabled": true }
+}

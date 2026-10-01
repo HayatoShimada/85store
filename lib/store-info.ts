@@ -11,6 +11,8 @@ export const STORE = {
   },
   // Google マップ上の「85-Store」の地点
   geo: { latitude: 36.56575, longitude: 136.97045 },
+  // 通常の営業時間（営業日カレンダーのAPIが使えないときの既定値・構造化データ・静的な文言に使う。
+  // 実際の休業日や時間変更は管理画面で設定する: lib/business-calendar.ts）
   hours: {
     opens: "12:00",
     closes: "18:00",
@@ -45,20 +47,3 @@ const SCHEMA_WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
 export const STORE_OPEN_DAYS_SCHEMA = SCHEMA_WEEKDAYS.filter(
   (_, day) => !(STORE.hours.closedWeekdays as readonly number[]).includes(day)
 );
-
-// 日本時間の現在時刻から営業状況を判定する（不定休は反映しない。Instagramでお知らせしている）
-export type StoreStatus = "open" | "before" | "after" | "closed";
-
-export function getStoreStatus(now: Date = new Date()): StoreStatus {
-  const jst = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
-  if ((STORE.hours.closedWeekdays as readonly number[]).includes(jst.getDay())) return "closed";
-
-  const minutes = jst.getHours() * 60 + jst.getMinutes();
-  const toMinutes = (hhmm: string) => {
-    const [h, m] = hhmm.split(":").map(Number);
-    return h * 60 + m;
-  };
-  if (minutes < toMinutes(STORE.hours.opens)) return "before";
-  if (minutes >= toMinutes(STORE.hours.closes)) return "after";
-  return "open";
-}
