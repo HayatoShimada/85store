@@ -12,8 +12,7 @@
     {
       "binding": "DB",
       "database_name": "85store-business-calendar",
-      // `npx wrangler d1 create 85store-business-calendar` で表示されたIDに置き換える
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "9dcb74d4-5f9c-4ba7-bcd5-cc21df8f4976",
       "migrations_dir": "migrations"
     }
   ],
