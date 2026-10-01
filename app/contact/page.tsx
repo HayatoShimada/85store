@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import SectionHeading from "@/components/SectionHeading";
 import StoreActions from "@/components/StoreActions";
 import { STORE, STORE_FULL_ADDRESS } from "@/lib/store-info";
@@ -87,6 +88,7 @@ export default function ContactPage() {
                   <dt>営業時間</dt>
                   <dd>
                     <span className="num">{STORE.hours.label}</span>（{STORE.hours.closedLabel}）
+                    <IrregularHolidayNote className="text-muted" />
                     {floor.extra && (
                       <span className="block text-sm text-muted">
                         {floor.extra}

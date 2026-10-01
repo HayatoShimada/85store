@@ -7,6 +7,7 @@ import SectionHeading from "@/components/SectionHeading";
 import StoreActions from "@/components/StoreActions";
 import StoreInfoSection from "@/components/StoreInfoSection";
 import StoreStatus from "@/components/StoreStatus";
+import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import { getBanners, getBlogPosts } from "@/lib/microcms";
 import { getNoteArticles } from "@/lib/note";
 import { getLatestProducts } from "@/lib/shopify-storefront";
@@ -97,7 +98,7 @@ export default async function Home() {
               <p className="mb-4"><StoreStatus /></p>
               <dl className="facts">
                 <div><dt>営業時間</dt><dd className="num text-xl font-semibold">{STORE.hours.label}</dd></div>
-                <div><dt>定休日</dt><dd>木曜日</dd></div>
+                <div><dt>定休日</dt><dd>{STORE.hours.closedDays}<IrregularHolidayNote className="text-muted" /></dd></div>
                 <div><dt>住所</dt><dd>{STORE.address.region}{STORE.address.locality}{STORE.address.street}</dd></div>
               </dl>
             </div>
