@@ -5,7 +5,7 @@
 #   ./deploy.sh push-db    ローカルの data/payload.db を 85pi に送る（初回の移行だけ。CMS を止めて上書きする）
 set -euo pipefail
 cd "$(dirname "$0")"
-HOST="${CMS_HOST:-hacopi@85pi}"
+HOST="${CMS_HOST:-hacopi@85pi.taila713c8.ts.net}"
 DIR="${CMS_DIR:-85store-cms}"
 
 case "${1:-deploy}" in

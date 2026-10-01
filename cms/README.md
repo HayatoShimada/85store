@@ -78,7 +78,7 @@
 ```bash
 cd cms
 # 85pi の .env から R2 の値を読み込んで実行（値は表示されない）
-set -a; eval "$(ssh hacopi@85pi 'grep -E "^(R2_|MEDIA_PUBLIC_URL)" ~/85store-cms/.env')"; set +a
+set -a; eval "$(ssh hacopi@85pi.taila713c8.ts.net 'grep -E "^(R2_|MEDIA_PUBLIC_URL)" ~/85store-cms/.env')"; set +a
 rm -f data/payload.db && npm run migrate:microcms
 ./deploy.sh push-db
 ```
