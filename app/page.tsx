@@ -95,7 +95,19 @@ export default async function Home() {
           </div>
           <div className="grid content-between gap-6 bg-bg p-[clamp(20px,2.5vw,36px)]">
             <div>
-              <p className="mb-4"><StoreStatus /></p>
+              <div className="mb-4">
+                <StoreStatus
+                  action={
+                    <a href="#calendar" className="btn btn-secondary px-3">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
+                        <rect x="3.5" y="5" width="17" height="15" />
+                        <path d="M3.5 10h17M8 3v4M16 3v4" />
+                      </svg>
+                      営業日カレンダー
+                    </a>
+                  }
+                />
+              </div>
               <dl className="facts">
                 <div><dt>営業時間</dt><dd className="num text-xl font-semibold">{STORE.hours.label}</dd></div>
                 <div><dt>定休日</dt><dd>{STORE.hours.closedDays}<IrregularHolidayNote className="text-muted" /></dd></div>

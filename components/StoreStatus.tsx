@@ -18,17 +18,19 @@ function labelOf(status: StoreStatusInfo): string {
 }
 
 // 営業状況は閲覧時刻と営業日カレンダーで変わるため、静的HTMLには営業時間だけを出してブラウザで更新する
-export default function StoreStatus() {
+// action には営業状況の横に並べるボタンなどを渡す
+export default function StoreStatus({ action }: { action?: React.ReactNode }) {
   const { data } = useBusinessCalendar();
   const now = useNow();
   const status = now ? getStatusAt(data, now) : null;
 
   return (
-    <>
+    <div className="flex flex-wrap items-center gap-2">
       <span className={`status${status?.state === "open" ? " is-open" : ""}`} aria-live="polite">
         {status ? labelOf(status) : `営業時間 ${STORE.hours.label}`}
       </span>
-      {status?.note && <span className="mt-2 block text-sm text-muted">{status.note}</span>}
-    </>
+      {action}
+      {status?.note && <span className="basis-full text-sm text-muted">{status.note}</span>}
+    </div>
   );
 }
