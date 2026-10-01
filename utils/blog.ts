@@ -1,6 +1,6 @@
-import type { Blog } from "@/types/microcms";
+import type { Blog } from "@/types/cms";
 
-// 記事のURLパス。スラッグがあればスラッグ、なければmicroCMSのコンテンツID
-export function getBlogPostPath(post: Pick<Blog, "id" | "slug">): string {
-  return `/blog/${encodeURIComponent(post.slug || post.id)}`;
+// 記事のURLパス（スラッグ。microCMS から移した記事は、そのコンテンツIDがスラッグになっている）
+export function getBlogPostPath(post: Pick<Blog, "slug">): string {
+  return `/blog/${encodeURIComponent(post.slug)}`;
 }

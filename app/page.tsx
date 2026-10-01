@@ -8,11 +8,11 @@ import StoreActions from "@/components/StoreActions";
 import StoreInfoSection from "@/components/StoreInfoSection";
 import StoreStatus from "@/components/StoreStatus";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
-import { getBanners, getBlogPosts } from "@/lib/microcms";
+import { getBanners, getBlogPosts } from "@/lib/cms";
 import { getNoteArticles } from "@/lib/note";
 import { getLatestProducts } from "@/lib/shopify-storefront";
 import { STORE } from "@/lib/store-info";
-import type { Banner } from "@/types/microcms";
+import type { Banner } from "@/types/cms";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 const TITLE = "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ";

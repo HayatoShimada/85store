@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import BlogListLayout from "@/components/BlogListLayout";
 import Pagination, { getBlogPagePath } from "@/components/Pagination";
-import { getAllCategories, getBlogPostsPage } from "@/lib/microcms";
+import { getAllCategories, getBlogPostsPage } from "@/lib/cms";
 
 interface BlogPageProps {
   params: Promise<{

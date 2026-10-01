@@ -1,6 +1,6 @@
 import { Feed } from "feed";
 import { cacheLife, cacheTag } from "next/cache";
-import { getBlogPosts } from "@/lib/microcms";
+import { getBlogPosts } from "@/lib/cms";
 import { getBlogPostPath } from "@/utils/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';

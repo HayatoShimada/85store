@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllBlogPosts } from "@/lib/microcms";
+import { getAllBlogPosts } from "@/lib/cms";
 import { getBlogPostPath } from "@/utils/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
@@ -19,7 +19,7 @@ const STATIC_PAGES: { path: string; changeFrequency: MetadataRoute.Sitemap[numbe
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllBlogPosts("id,slug,publishedAt,updatedAt,createdAt,category");
+  const posts = await getAllBlogPosts();
   const lastModifiedOf = (post: (typeof posts)[number]) =>
     new Date(post.updatedAt || post.publishedAt || post.createdAt);
 

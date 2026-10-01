@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getBlogPostByPath, getAllBlogPosts, getRelatedPosts } from "@/lib/microcms";
+import { getBlogPostByPath, getAllBlogPosts, getRelatedPosts } from "@/lib/cms";
 import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
 import ImageLightbox from "@/components/ImageLightbox";
 import SectionHeading from "@/components/SectionHeading";
@@ -10,6 +10,7 @@ import StructuredData from "@/components/StructuredData";
 import { TableOfContents } from "@/components/TableOfContents";
 import { buildTableOfContents } from "@/lib/toc";
 import { optimizeContentImages } from "@/lib/content-images";
+import { largestFromSrcset } from "@/lib/cms-image";
 import { formatDate } from "@/utils/date";
 import { getBlogPostPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
@@ -23,9 +24,9 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = await getAllBlogPosts("id,slug");
+  const posts = await getAllBlogPosts();
   // エンコードせずに返す（Next.jsが自動でエンコードする）
-  return nonEmptyParams("slug", posts.map((post) => post.slug || post.id));
+  return nonEmptyParams("slug", posts.map((post) => post.slug));
 }
 
 // URLのパラメータ（日本語はエンコードされて届く）から記事を取得
@@ -179,7 +180,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <button
                 type="button"
                 className="image-zoom grid place-items-center"
-                data-zoom-src={`${eyecatch.url}?fm=webp&w=${Math.min(eyecatch.width ?? 2000, 2000)}`}
+                data-zoom-src={largestFromSrcset(eyecatch.webp) ?? eyecatch.url}
                 aria-label="アイキャッチ画像を拡大表示"
               >
                 <Image

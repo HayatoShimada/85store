@@ -5,7 +5,7 @@ import BusinessCalendar from "@/components/BusinessCalendar";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import SectionHeading from "@/components/SectionHeading";
 import { STORE } from "@/lib/store-info";
-import { getBlogPostsByCategory } from "@/lib/microcms";
+import { getBlogPostsByCategory } from "@/lib/cms";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 

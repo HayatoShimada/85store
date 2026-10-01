@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 
+// ローカルで CMS（cms/、http://localhost:3001）と組み合わせて確かめるときだけ、その画像を許可する
+const localCms = process.env.CMS_CONTENT_URL?.startsWith('http://localhost:3001');
+
 const nextConfig: NextConfig = {
   // "use cache" + cacheTag によるキャッシュと Partial Prerendering を有効化
   cacheComponents: true,
@@ -11,8 +14,9 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.shopify.com',
       },
       {
+        // CMS の画像（R2）
         protocol: 'https',
-        hostname: 'images.microcms-assets.io',
+        hostname: 'media.85-store.com',
       },
       {
         protocol: 'https',
@@ -22,6 +26,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'assets.st-note.com',
       },
+      ...(localCms ? [{ protocol: 'http' as const, hostname: 'localhost', port: '3001' }] : []),
     ],
     localPatterns: [
       {
@@ -37,6 +42,7 @@ const nextConfig: NextConfig = {
         pathname: '/images/**',
       },
     ],
+    ...(localCms && { dangerouslyAllowLocalIP: true }),
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

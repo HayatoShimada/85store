@@ -5,12 +5,12 @@
 ## プロジェクト概要
 
 富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイト（https://85-store.com）。
-ブログ・商品・バナーは **microCMS** で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
+ブログ・バナーは自前の CMS（**Payload**、`cms/`、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
 
 - Next.js 16（App Router / Turbopack / **Cache Components**）
 - React 19 / TypeScript 5
 - Tailwind CSS v4（CSSファーストの設定。`tailwind.config.ts` は無い）
-- microCMS（`microcms-js-sdk`）、note.com RSS、Shopify Storefront API（新着商品・ポリシー）
+- CMS（Payload。サイトは R2 に書き出された JSON を読む）、note.com RSS、Shopify Storefront API（新着商品・ポリシー）
 - Vercel にデプロイ
 
 ## コマンド
@@ -23,21 +23,21 @@ npx eslint .     # Lint（next lint は Next 16 で廃止）
 npx tsc --noEmit # 型チェック
 ```
 
-環境変数は `.env.local`（`.env.example` 参照）。microCMS の値が無くてもビルドは通る（記事0件として扱う）。
+環境変数は `.env.local`（`.env.example` 参照）。記事・バナーは本番の R2（`https://media.85-store.com/content`）を読むので、ローカルでも設定なしで表示できる。
 
 ## アーキテクチャ
 
-### データ取得とキャッシュ（`lib/microcms.ts` / `lib/note.ts`）
+### データ取得とキャッシュ（`lib/cms.ts` / `lib/note.ts`）
 
 - `next.config.ts` で `cacheComponents: true`。データ取得は `"use cache"` + `cacheTag` + `cacheLife` でキャッシュする。
-- microCMS はエンドポイント名をタグにする（`blogs` / `products` / `banners`）。`cacheLife("days")` はWebhookが届かなかったときの保険。
-- **microCMS のAPIエラーは握りつぶさない。** 空配列や404をキャッシュすると数日間壊れたページが残るため。ビルド失敗なら直前のデプロイが残り、再生成失敗なら古いページが配信され続ける。
+- 記事・バナーは CMS が R2 に書き出した JSON（`posts/index.json`・`posts/<slug>.json`・`banners.json`）を読み、タグ `blogs` / `banners` でキャッシュする。絞り込み・並べ替え・ページ分けはサイト側で行う。`cacheLife("days")` は通知が届かなかったときの保険。
+- **CMS の取得エラーは握りつぶさない。** 空配列や404をキャッシュすると数日間壊れたページが残るため。ビルド失敗なら直前のデプロイが残り、再生成失敗なら古いページが配信され続ける。
 - note は補助コンテンツなので、失敗時は空配列を `cacheLife("minutes")` で短くキャッシュして止めない。
-- 新しい取得関数を足すときは、キャッシュ層（`cachedGetList` / `cachedGet`）を経由させる。
+- 新しい取得関数を足すときは、キャッシュ層（`loadIndex` / `loadPost` / `loadBanners`）を経由させる。
 
 ### 更新の反映（`app/api/revalidate/route.ts`）
 
-microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び、署名（`x-microcms-signature`、HMAC-SHA256、`MICROCMS_WEBHOOK_SECRET`）を検証して `revalidateTag(api, { expire: 0 })` する。記事の公開・更新で全体を再ビルドする必要はない。
+CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revalidate` を呼ぶ。署名（`x-cms-signature`、HMAC-SHA256、`CMS_WEBHOOK_SECRET`）を検証して `revalidateTag(api, { expire: 0 })` する。記事の公開・更新で全体を再ビルドする必要はない。
 
 ### Cache Components の注意点
 
@@ -53,7 +53,7 @@ microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び
 |---|---|
 | `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事・note・Podcast・店舗情報） |
 | `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
-| `/blog/[slug]` | 記事。`slug` フィールドがあればスラッグ、なければ microCMS のコンテンツID。IDでアクセスされスラッグがある場合は 308 リダイレクト |
+| `/blog/[slug]` | 記事（スラッグ）。microCMS から移した記事は、そのコンテンツIDがスラッグ。`id`（旧コンテンツID）でアクセスされ、スラッグと違う場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
 | `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml` | `app/sitemap.ts` 等で動的生成 |
 | `/about`, `/reserve`, `/upstore`, `/contact`, `/hakoneko` | 固定ページ（hakoneko は独自デザインのゲーム紹介ページ） |
@@ -74,9 +74,9 @@ microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び
 
 ### 記事本文のレンダリング（`app/blog/[slug]/page.tsx`）
 
-microCMS のリッチエディタHTMLをサーバーで加工してから `dangerouslySetInnerHTML` で出力する。
+CMS が書き出した本文の HTML（Lexical から変換済み）をサーバーで加工してから `dangerouslySetInnerHTML` で出力する。
 
-1. `lib/content-images.ts` — microCMS画像を `<picture>`（AVIF優先・WebP、srcset、`loading="lazy"`）に変換
+1. `lib/content-images.ts` — `<img data-avif data-webp>`（CMS が書き出すサイズ別の srcset）を `<picture>`（AVIF優先・WebP、`loading="lazy"`）に変換
 2. `lib/toc.ts` — h2/h3 にIDを付け、目次データを抽出（目次をSSRしてCLSを防ぐ）
 
 ### サーバー / クライアントコンポーネント
@@ -118,21 +118,23 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 
 | セクション | データ |
 |---|---|
-| ヒーローの写真2枚 | microCMS の **縦長のバナー**（先頭から2枚）。足りない分は `public/images` の写真 |
-| Pick Up | microCMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
+| ヒーローの写真2枚 | CMS の **縦長のバナー**（先頭から2枚）。足りない分は `public/images` の写真 |
+| Pick Up | CMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
 | New Arrivals | Shopify Storefront API の新着・在庫ありの商品（`lib/shopify-storefront.ts`） |
-| Journal / note / Podcast | microCMS の最新記事 / note RSS / Spotify 埋め込み |
+| Journal / note / Podcast | CMS の最新記事 / note RSS / Spotify 埋め込み |
 | Store | `lib/store-info.ts`（店舗情報の唯一の定義元。住所・地図・駐車場のURL・通常の営業時間）＋ 営業日カレンダー |
 
 配送・返品・利用規約・プライバシーポリシーのページは、オンラインストア（Shopify）のポリシーを Storefront API で取得して表示している（`components/PolicyPage.tsx`）。内容の変更は Shopify 管理画面で行う。
 
-## microCMS のコンテンツモデル
+## CMS（`cms/`、Payload）
 
-- **blogs**: `title`, `slug`（任意。半角英数とハイフン推奨）, `content`（リッチエディタ）, `eyecatch`, `featured`, `category`（複数）, `tags`（複数）, `author`, `excerpt`, `description`
-- **products**: `name`, `shopifyHandle`, `category`, `price`, `images`, `description`, `featured`
-- **banners**: `image`, `title`, `subtitle`, `show*Button`, `detailButtonUrl`, `detailButtonText`, `order`
-
-型は `types/microcms.ts`。
+- 85pi の docker compose で動かす（Payload 3・SQLite。Litestream で R2 の `85store-cms-backup` へ随時バックアップ）。手順は `cms/README.md`、配置は `cms/deploy.sh`。
+- 管理画面は `https://cms.taila713c8.ts.net`（tailnet 内のみ）。tailscale のサイドカーが `Tailscale-User-Login` を付けて転送し、Payload のカスタム認証（`cms/src/lib/tailscale-auth.ts`）が「メンバー」に登録されたメールだけを通す。Payload はホストにポートを出さない（ヘッダーを偽装できないようにするため）。
+- コレクション: `posts`（下書き/公開・Lexical 本文に写真・写真の横並び・埋め込み）、`banners`（並び替え）、`categories`、`media`（R2 に保存、avif/webp の 480〜1600）、`users`（管理者/編集者）。
+- 公開・更新・削除のたびに `cms/src/publish/` が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。書き出す形は `types/cms.ts` と `cms/src/publish/export.ts` で合わせる。
+- 本文の HTML は microCMS と同じ構造（`<figure><img width height>`、埋め込みは padding の div + iframe）で出すので、`lib/toc.ts`・`groupPortraitFigures`・`.article-body` の CSS がそのまま使える。
+- Event1st / Event2nd のカテゴリは Reserve ページのイベント一覧に使っている（名前を変えない）。
+- `cms/` は独立した package.json・tsconfig を持ち、サイトの tsc・eslint の対象外。
 
 ## プロジェクト固有のルール
 
@@ -141,7 +143,7 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 
 ## トラブルシューティング
 
-### ローカルで microCMS / note への fetch が `ECONNRESET` / `Network Error` になる
+### ローカルで note などへの fetch が `ECONNRESET` / `Network Error` になる
 
 一部のネットワーク環境では、Node 24（OpenSSL 3.5）の耐量子TLS鍵交換（X25519MLKEM768）でClientHelloが大きくなり、CloudFront宛の接続がリセットされる（curlでは再現しない）。Vercel上では発生しない。ローカルでは鍵交換グループを固定するプリロードを使う:
 
