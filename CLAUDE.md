@@ -61,14 +61,14 @@ microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び
 
 記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
 
-### 営業日カレンダー（`cloudflare/business-calendar/`・`lib/business-calendar.ts`）
+### 営業日カレンダー（[business-calendar](https://github.com/HayatoShimada/business-calendar)・`lib/business-calendar.ts`）
 
 - 休業日・その日だけの営業時間・通常の営業時間は、Cloudflare Worker の管理画面（`calendar-admin.85-store.com`）で入力し、D1 に保存する。
 - 管理画面は Cloudflare Access で保護し、ログイン方法は 85pi で動かす **tsidp**（Tailscale の ID で入る OIDC）だけ。tsidp は tailnet 外からのログインを拒否するので、tailnet 内の info@85-store.com だけが使える。Worker 側でも Access の JWT とメールを検証する。
 - サイトはブラウザから公開API（`https://calendar.85-store.com/v1/calendar`、`NEXT_PUBLIC_CALENDAR_API_URL` で変更可）を直接読む（`components/useBusinessCalendar.ts`）。**再デプロイ・キャッシュの再検証なしで即反映**される（表示時・60秒ごと・タブ復帰時）。
 - 判定ロジックは `lib/business-calendar.ts`（`resolveDay` / `getStatusAt`、日本時間）。APIが使えないときは `STORE.hours`（通常ルール）で表示する。
 - 「営業中」表示は `components/StoreStatus.tsx`、カレンダーは `components/BusinessCalendar.tsx`（トップの店舗情報・About・Reserve）。時刻に依存する表示はブラウザでだけ描く（`useNow`）。
-- セットアップ手順・API は `cloudflare/business-calendar/README.md`。Worker は独自の package.json / tsconfig を持ち、サイトの tsc・eslint の対象外。
+- Worker 本体は公開リポジトリ HayatoShimada/business-calendar（汎用版・MIT）。このリポジトリの `cloudflare/business-calendar/` には 85-Store 用の `wrangler.jsonc` と `deploy.sh`（決まったバージョンを `upstream/` に取得してデプロイ）だけを置く。Worker のコードを直すときは business-calendar 側で直してタグを打ち、`deploy.sh` の `VERSION` を上げる。
 
 ### 記事本文のレンダリング（`app/blog/[slug]/page.tsx`）
 
