@@ -131,6 +131,7 @@ export default async function ReservePage() {
               <iframe
                 src={store.calendarEmbedUrl}
                 style={{ border: 0 }}
+                className="embed-dark-invert"
                 width="100%"
                 height="600"
                 loading="lazy"

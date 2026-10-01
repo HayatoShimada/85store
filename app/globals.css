@@ -311,6 +311,11 @@
     transform: scale(1.03);
   }
 
+  /* Google カレンダーの予約ページにはダーク表示がないため、ダークモードでは色を反転して暗くする（白→背景色に近い黒） */
+  :root[data-theme='dark'] .embed-dark-invert {
+    filter: invert(0.93) hue-rotate(180deg);
+  }
+
   /* 記事本文（microCMSのリッチエディタHTML） */
   .article-body {
     max-width: 40em;
