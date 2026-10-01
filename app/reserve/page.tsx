@@ -112,7 +112,7 @@ export default async function ReservePage() {
                 <div>
                   <p className="mb-4 text-ink-2">{store.description}</p>
                   <dl className="facts">
-                    <div><dt>営業時間</dt><dd>{store.hours}{store.extendedHours && <span className="block text-sm text-muted">{store.extendedHours}</span>}<IrregularHolidayNote className="text-muted" /></dd></div>
+                    <div><dt>営業時間</dt><dd>{store.hours}{store.extendedHours && <span className="block text-sm text-muted">{store.extendedHours}</span>}</dd></div>
                   </dl>
                 </div>
                 <div className="flex flex-wrap gap-2">
