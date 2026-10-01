@@ -57,5 +57,6 @@ scripts/download-notion-images.ts
 
 # Cloudflare Worker（cloudflare/）
 cloudflare/**/node_modules/
+cloudflare/business-calendar/upstream/
 .wrangler/
 .dev.vars*
