@@ -3,6 +3,7 @@ import Link from 'next/link';
 import AboutStore from '@/components/AboutStore';
 import AboutUs from '@/components/AboutUs';
 import AboutTeam from '@/components/AboutTeam';
+import BusinessCalendar from '@/components/BusinessCalendar';
 import IrregularHolidayNote from '@/components/IrregularHolidayNote';
 import ParkingNote from '@/components/ParkingNote';
 import StoreActions from '@/components/StoreActions';
@@ -121,6 +122,12 @@ export default function About() {
         </dl>
         <div className="mt-6">
           <StoreActions showOnlineStore={false} />
+        </div>
+        <div className="mt-10">
+          <h3 className="mb-4 font-display text-lg font-bold">
+            Calendar<span className="ml-2 font-sans text-sm font-normal text-muted">営業日カレンダー</span>
+          </h3>
+          <BusinessCalendar />
         </div>
         <div className="mt-8 aspect-[4/3] max-h-[480px] w-full bg-surface md:aspect-[16/9]">
           <iframe

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import BusinessCalendar from "@/components/BusinessCalendar";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import ParkingNote from "@/components/ParkingNote";
 import StoreActions from "@/components/StoreActions";
@@ -49,6 +50,13 @@ export default function StoreInfoSection() {
             <b className="font-display text-lg font-semibold group-hover:underline group-hover:underline-offset-4">2F 85-UpStore</b>
             <span className="text-sm text-muted">ポップアップや制作に使える共創スペース</span>
           </Link>
+        </div>
+
+        <div className="col-span-12 bg-bg p-[clamp(20px,3vw,40px)]">
+          <h3 className="mb-6 font-display text-xl font-bold">
+            Calendar<span className="ml-2 font-sans text-sm font-normal text-muted">営業日カレンダー</span>
+          </h3>
+          <BusinessCalendar />
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
+import BusinessCalendar from "@/components/BusinessCalendar";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import SectionHeading from "@/components/SectionHeading";
 import { STORE } from "@/lib/store-info";
@@ -93,6 +94,11 @@ export default async function ReservePage() {
           <a key={store.id} href={`#${store.id}`} className="btn btn-secondary">{store.name}　{store.nameEn}</a>
         ))}
       </nav>
+
+      <section className="section" aria-labelledby="calendar-heading">
+        <SectionHeading id="calendar-heading" title="Calendar" description="営業日カレンダー（ご来店前にご確認ください）" />
+        <BusinessCalendar />
+      </section>
 
       {stores.map((store) => {
         const events = eventsOf(store).slice(0, 3);

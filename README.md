@@ -15,6 +15,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 - ✍️ **note連携**: note.com の記事をトップページに表示
 - 🎙️ **Podcast**: Spotify の埋め込みプレイヤー
 - 📅 **予約ページ**: Limited Store / 1st Floor(85-Store) / 2nd Floor(85-UpStore) の案内
+- 🗓️ **営業日カレンダー**: Cloudflare Worker の管理画面（Tailscale 内の管理者だけがログイン可能）で休業日・営業時間を設定し、サイトに即反映（`cloudflare/business-calendar/`）
 - 📧 **お問い合わせフォーム**: nodemailer による自動返信・管理者通知
 - 📈 **アクセス解析**: Vercel Analytics / Speed Insights
 - 🗺️ **SEO**: `app/sitemap.ts` / `app/robots.ts` によるサイトマップ・robots.txt 生成、RSS/Atom フィード、構造化データ

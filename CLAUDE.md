@@ -61,6 +61,15 @@ microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び
 
 記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
 
+### 営業日カレンダー（`cloudflare/business-calendar/`・`lib/business-calendar.ts`）
+
+- 休業日・その日だけの営業時間・通常の営業時間は、Cloudflare Worker の管理画面（`calendar-admin.85-store.com`）で入力し、D1 に保存する。
+- 管理画面は Cloudflare Access で保護し、ログイン方法は 85pi で動かす **tsidp**（Tailscale の ID で入る OIDC）だけ。tsidp は tailnet 外からのログインを拒否するので、tailnet 内の info@85-store.com だけが使える。Worker 側でも Access の JWT とメールを検証する。
+- サイトはブラウザから公開API（`https://calendar.85-store.com/v1/calendar`、`NEXT_PUBLIC_CALENDAR_API_URL` で変更可）を直接読む（`components/useBusinessCalendar.ts`）。**再デプロイ・キャッシュの再検証なしで即反映**される（表示時・60秒ごと・タブ復帰時）。
+- 判定ロジックは `lib/business-calendar.ts`（`resolveDay` / `getStatusAt`、日本時間）。APIが使えないときは `STORE.hours`（通常ルール）で表示する。
+- 「営業中」表示は `components/StoreStatus.tsx`、カレンダーは `components/BusinessCalendar.tsx`（トップの店舗情報・About・Reserve）。時刻に依存する表示はブラウザでだけ描く（`useNow`）。
+- セットアップ手順・API は `cloudflare/business-calendar/README.md`。Worker は独自の package.json / tsconfig を持ち、サイトの tsc・eslint の対象外。
+
 ### 記事本文のレンダリング（`app/blog/[slug]/page.tsx`）
 
 microCMS のリッチエディタHTMLをサーバーで加工してから `dangerouslySetInnerHTML` で出力する。
@@ -111,7 +120,7 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 | Pick Up | microCMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
 | New Arrivals | Shopify Storefront API の新着・在庫ありの商品（`lib/shopify-storefront.ts`） |
 | Journal / note / Podcast | microCMS の最新記事 / note RSS / Spotify 埋め込み |
-| Store | `lib/store-info.ts`（店舗情報の唯一の定義元。営業時間・住所・地図・駐車場のURLもここ） |
+| Store | `lib/store-info.ts`（店舗情報の唯一の定義元。住所・地図・駐車場のURL・通常の営業時間）＋ 営業日カレンダー |
 
 配送・返品・利用規約・プライバシーポリシーのページは、オンラインストア（Shopify）のポリシーを Storefront API で取得して表示している（`components/PolicyPage.tsx`）。内容の変更は Shopify 管理画面で行う。
 
