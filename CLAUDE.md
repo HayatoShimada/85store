@@ -111,7 +111,7 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 - **形**: 角丸なし（営業状況とチップだけピル型）。影・すりガラス（backdrop-filter）は使わない
 - **見出し**: セクション見出しは英語（`SectionHeading` の `title`）＋日本語の補足（`description`）
 - **部品**: `.wrap`（最大幅と左右余白）、`.section`（セクション間の余白）、`.grid-lines`（罫線グリッド）、`.btn` + `.btn-primary / .btn-secondary / .btn-inverse`、`.chip`、`.status`、`.facts`（見出し/値の罫線リスト）、`.media-frame`、`.article-body`（記事本文）
-- **画像の比率は崩さない**: 一覧カードは4:5の枠（`.media-frame`）に `object-fit: contain` で収め、縦長は幅を狭めて中央に置く。記事本文の縦長画像は高さ72vhまで、連続する縦長写真は2枚並び（`lib/content-images.ts`）
+- **カードの画像は枠いっぱいに**: 一覧カード（`.media-frame`）は枠の比率（記事4:5・Pick Up 4:3 など）に `object-fit: cover` で拡大し、はみ出た部分は切り取る（余白の帯を出さない）。記事本文の画像は比率を崩さず、縦長は高さ72vhまで、連続する縦長写真は2枚並び（`lib/content-images.ts`）
 - **アクセシビリティ**: 文字色はすべてAA以上、`:focus-visible` の枠線、`prefers-reduced-motion` で動きを止める、タップ領域は44px以上
 
 ### トップページの構成とデータの出どころ
@@ -149,3 +149,13 @@ microCMS のリッチエディタHTMLをサーバーで加工してから `dange
 echo "require('tls').DEFAULT_ECDH_CURVE = 'X25519:P-256:P-384';" > /tmp/tls-fix.cjs
 NODE_OPTIONS="--require /tmp/tls-fix.cjs" npm run build
 ```
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
