@@ -2,7 +2,7 @@ import Link from "next/link";
 import FallbackImage from "@/components/FallbackImage";
 import { formatDate } from "@/utils/date";
 import { getBlogPostPath } from "@/utils/blog";
-import type { Blog } from "@/types/microcms";
+import type { Blog } from "@/types/cms";
 
 interface BlogCardProps {
   post: Blog;

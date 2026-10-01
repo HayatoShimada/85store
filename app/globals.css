@@ -384,7 +384,8 @@
   .article-body figure {
     margin-inline: 0;
   }
-  .article-body figcaption {
+  .article-body figcaption,
+  .article-body .article-gallery-caption {
     font-size: var(--text-sm);
     color: var(--color-muted);
     margin-top: 0.6em;

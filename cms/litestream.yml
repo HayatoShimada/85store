@@ -1,0 +1,14 @@
+# SQLite（/data/payload.db）を R2 の非公開バケットへ随時複製する（バックアップ）
+# 戻し方は README.md の「バックアップから戻す」
+dbs:
+  - path: /data/payload.db
+    replicas:
+      - type: s3
+        bucket: ${LITESTREAM_BUCKET}
+        path: payload.db
+        endpoint: https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
+        region: auto
+        access-key-id: ${R2_ACCESS_KEY_ID}
+        secret-access-key: ${R2_SECRET_ACCESS_KEY}
+        retention: 720h
+        snapshot-interval: 24h

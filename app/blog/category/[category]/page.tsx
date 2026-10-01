@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogListLayout from "@/components/BlogListLayout";
-import { getBlogPostsByCategory, getAllCategories } from "@/lib/microcms";
+import { getBlogPostsByCategory, getAllCategories } from "@/lib/cms";
 import { nonEmptyParams } from "@/utils/static-params";
 
 interface CategoryPageProps {

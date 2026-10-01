@@ -5,7 +5,7 @@ import NoteCard from "@/components/NoteCard";
 import Pagination from "@/components/Pagination";
 import SectionHeading from "@/components/SectionHeading";
 import StructuredData from "@/components/StructuredData";
-import { getAllCategories, getBlogPostsPage } from "@/lib/microcms";
+import { getAllCategories, getBlogPostsPage } from "@/lib/cms";
 import { getNoteArticles } from "@/lib/note";
 import { STORE } from "@/lib/store-info";
 

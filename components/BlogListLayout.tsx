@@ -1,7 +1,7 @@
 import Link from "next/link";
 import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
 import SectionHeading from "@/components/SectionHeading";
-import type { Blog } from "@/types/microcms";
+import type { Blog } from "@/types/cms";
 
 interface BlogListLayoutProps {
   title: string;
