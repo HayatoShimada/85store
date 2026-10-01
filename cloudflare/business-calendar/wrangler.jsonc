@@ -20,9 +20,9 @@
     // 管理画面のホスト名（これ以外のホストでは管理画面・書き込みAPIを出さない）
     "ADMIN_HOST": "calendar-admin.85-store.com",
     // Cloudflare Zero Trust のチームドメイン（例: 85store.cloudflareaccess.com）
-    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_TEAM_DOMAIN": "calm-tree-fa3c.cloudflareaccess.com",
     // Access アプリの Application Audience (AUD) タグ
-    "ACCESS_AUD": "",
+    "ACCESS_AUD": "354757d5adfbf77391bb6f6c5629aa3d0c853950e8f91a7a54b424f67ab18d7d",
     // 管理画面を使えるメールアドレス（カンマ区切り）
     "ADMIN_EMAILS": "info@85-store.com"
   },
