@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # 使う business-calendar のバージョン（更新するときはここを変える）
-VERSION="v1.0.0"
+VERSION="v1.1.0"
 REPO="https://github.com/HayatoShimada/business-calendar.git"
 
 cd "$(dirname "$0")"

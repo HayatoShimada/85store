@@ -2,6 +2,7 @@
 
 import { jstNow, resolveDay } from "@/lib/business-calendar";
 import { useBusinessCalendar, useNow } from "@/components/useBusinessCalendar";
+import ShareCalendarButton from "@/components/ShareCalendarButton";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -115,6 +116,7 @@ export default function BusinessCalendar({ months = 2 }: { months?: number }) {
         <span className="inline-flex items-center gap-1 text-ink-2"><CatIcon /> お休み</span>
         <span>時刻の表示がある日は営業時間が変わります</span>
       </p>
+      <ShareCalendarButton months={targets.map((t) => `${t.year}-${pad(t.month)}`)} />
     </div>
   );
 }
