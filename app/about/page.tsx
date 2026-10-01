@@ -3,6 +3,8 @@ import Link from 'next/link';
 import AboutStore from '@/components/AboutStore';
 import AboutUs from '@/components/AboutUs';
 import AboutTeam from '@/components/AboutTeam';
+import IrregularHolidayNote from '@/components/IrregularHolidayNote';
+import ParkingNote from '@/components/ParkingNote';
 import StoreActions from '@/components/StoreActions';
 import { STORE } from '@/lib/store-info';
 
@@ -107,12 +109,14 @@ export default function About() {
             <dt>営業時間</dt>
             <dd>
               <span className="num">{STORE.hours.label}</span>（{STORE.hours.closedLabel}）
+              <IrregularHolidayNote className="text-muted" />
               <span className="block text-sm text-muted">
                 {STORE.hours.note}
                 <Link href="/reserve" className={`ml-1 ${linkClass}`}>事前予約はこちら</Link>
               </span>
             </dd>
           </div>
+          <div><dt>駐車場</dt><dd><ParkingNote /></dd></div>
           <div><dt>オンラインストア</dt><dd><a href={STORE.onlineShopUrl} className={linkClass}>shop.85-store.com</a></dd></div>
         </dl>
         <div className="mt-6">

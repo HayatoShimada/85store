@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
+import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import SectionHeading from "@/components/SectionHeading";
 import { STORE } from "@/lib/store-info";
 import { getBlogPostsByCategory } from "@/lib/microcms";
@@ -49,7 +50,7 @@ const stores: StoreInfo[] = [
     name: "1st Floor",
     nameEn: "85-Store",
     description: "オーセンティックな古着とニューアイテムを提案するセレクトショップ。",
-    hours: "12:00 ~ 18:00（木曜定休）",
+    hours: `${STORE.hours.label}（${STORE.hours.closedLabel}）`,
     extendedHours: "事前予約で木曜と18:00～20:00延長営業可",
     aboutUrl: "/about",
     calendarUrl: "https://calendar.app.google/NC4YeDjkiWNVjLnw7",
@@ -62,7 +63,7 @@ const stores: StoreInfo[] = [
     name: "2nd Floor",
     nameEn: "85-UpStore",
     description: "2階のセレクトショップ。未オープン。",
-    hours: "12:00 ~ 18:00（木曜定休）",
+    hours: `${STORE.hours.label}（${STORE.hours.closedLabel}）`,
     aboutUrl: "/upstore",
     calendarUrl: "https://calendar.app.google/uaU1rBEzcqVUTQkA6",
     calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2JUkgse1YjUHHZxq77oo9ePtjpwItHH0OHtG5s-BODbPRxY8b74zfH4ofAaFwZi7PyU4FQ1u0J?gv=true",
@@ -85,6 +86,7 @@ export default async function ReservePage() {
       <SectionHeading as="h1" title="Reserve" description="来店予約・空き状況の確認" />
       <p className="max-w-[40em] text-ink-2">
         各フロアの空き状況をご確認のうえ、ご予約ください。営業時間は{STORE.hours.label}（{STORE.hours.closedLabel}）です。{STORE.hours.note}
+        <IrregularHolidayNote className="mt-1" />
       </p>
       <nav aria-label="フロア" className="mt-6 flex flex-wrap gap-2">
         {stores.map((store) => (

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import { STORE, STORE_FULL_ADDRESS } from "@/lib/store-info";
 
 const COLUMNS = [
@@ -44,6 +45,7 @@ export default function Footer() {
               <br />
               <span className="num">{STORE.hours.label}</span>　{STORE.hours.closedLabel}
             </p>
+            <IrregularHolidayNote className="mt-1 text-footer-muted" />
           </div>
           {COLUMNS.map((column) => (
             <div key={column.title}>
