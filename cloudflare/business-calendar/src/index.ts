@@ -1,5 +1,6 @@
 import adminHtml from "./admin.html";
 import { AccessError, requireAdmin, type AccessEnv } from "./access";
+import { readSyncStatus, syncToGoogle, type GoogleEnv } from "./google";
 import {
   ValidationError,
   deleteDay,
@@ -12,7 +13,7 @@ import {
   updateRegular,
 } from "./calendar";
 
-interface Env extends AccessEnv {
+interface Env extends AccessEnv, GoogleEnv {
   DB: D1Database;
   ADMIN_HOST: string;
 }
@@ -47,7 +48,7 @@ async function handlePublic(request: Request, env: Env, url: URL): Promise<Respo
   return json(await readCalendar(env.DB, from, to), { headers: PUBLIC_HEADERS });
 }
 
-async function handleAdmin(request: Request, env: Env, url: URL): Promise<Response> {
+async function handleAdmin(request: Request, env: Env, url: URL, ctx: ExecutionContext): Promise<Response> {
   const email = await requireAdmin(request, env);
 
   if (url.pathname === "/" && request.method === "GET") {
@@ -73,8 +74,21 @@ async function handleAdmin(request: Request, env: Env, url: URL): Promise<Respon
     return json(await readCalendar(env.DB, from, to));
   }
 
+  if (url.pathname === "/api/sync-status" && request.method === "GET") {
+    return json(await readSyncStatus(env));
+  }
+
+  // Googleマップへの反映をやり直す（結果を待って返す）
+  if (url.pathname === "/api/sync" && request.method === "POST") {
+    return json(await syncToGoogle(env));
+  }
+
+  // 保存のたびに、応答を返したあとで Googleマップにも反映する（未設定なら何もしない）
+  const syncLater = () => ctx.waitUntil(syncToGoogle(env));
+
   if (url.pathname === "/api/settings" && request.method === "PUT") {
     await updateRegular(env.DB, parseRegular(await request.json()), email);
+    syncLater();
     return json({ ok: true });
   }
 
@@ -84,10 +98,12 @@ async function handleAdmin(request: Request, env: Env, url: URL): Promise<Respon
     if (!isValidDate(date)) return json({ error: "日付が正しくありません" }, { status: 400 });
     if (request.method === "PUT") {
       await upsertDay(env.DB, date, parseDayOverride(await request.json()), email);
+      syncLater();
       return json({ ok: true });
     }
     if (request.method === "DELETE") {
       await deleteDay(env.DB, date);
+      syncLater();
       return json({ ok: true });
     }
   }
@@ -96,13 +112,13 @@ async function handleAdmin(request: Request, env: Env, url: URL): Promise<Respon
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     try {
       // 公開の読み取りAPIはどのホストでも同じ（管理ホストでも読める）
       if (url.pathname === "/v1/calendar") return await handlePublic(request, env, url);
       // 管理画面・書き込みAPIは管理ホストだけで提供する
-      if (url.hostname === env.ADMIN_HOST) return await handleAdmin(request, env, url);
+      if (url.hostname === env.ADMIN_HOST) return await handleAdmin(request, env, url, ctx);
       return json({ error: "Not Found" }, { status: 404 });
     } catch (error) {
       if (error instanceof AccessError) return json({ error: error.message }, { status: error.status });

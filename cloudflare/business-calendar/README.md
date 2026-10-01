@@ -125,6 +125,35 @@ Zero Trust → Access → Applications → Add an application → **Self-hosted*
 - Tailscale を切った端末で開く → tsidp のログインが「not allowed over funnel」で拒否される
 - 別のメールアドレスのアカウント → Access で拒否される
 
+## 5. Googleマップ（ビジネスプロフィール）への自動反映
+
+管理画面で保存するたびに、Googleマップの **通常の営業時間** と **特別営業時間**（今日から180日先まで）を管理画面の内容に合わせます（`src/google.ts`）。
+
+> 同期を始めると、Googleマップで直接編集した特別営業時間は上書きされます。編集は管理画面に一本化してください。
+
+### 前提: Business Profile API の利用承認
+
+2026-10-01 に申請済み（ケースID: 7-6137000041496）。Google Cloud Console の「割り当て」で Business Profile 関連 API が **0 QPM → 300 QPM** になっていれば承認済みです。
+
+### 承認後の手順
+
+1. Google Cloud Console（申請したプロジェクト）で次の API を有効にする
+   - My Business Account Management API
+   - My Business Business Information API
+2. 「API とサービス → OAuth 同意画面」を設定（外部・テストユーザーに info@85-store.com）
+3. 「認証情報 → OAuth クライアント ID を作成」で種類 **デスクトップ アプリ** を作る
+4. セットアップを実行（ブラウザで許可 → 店舗を選ぶ → secret を登録。値は画面に出ない）
+
+   ```bash
+   cd cloudflare/business-calendar
+   GOOGLE_CLIENT_ID=... GOOGLE_CLIENT_SECRET=... node scripts/google-setup.mjs --import
+   ```
+
+   `--import` を付けると、Googleマップに今ある「今日以降の特別営業時間」（祝日の営業時間など）を管理画面に取り込みます（管理画面で設定済みの日は上書きしません）。
+5. 管理画面の「Googleマップ」の欄で「今すぐ反映する」を押し、「反映済み」になることと、Googleマップの特別営業時間に出ることを確認する
+
+OAuth 同意画面が「テスト」のままだとリフレッシュトークンが7日で切れるので、動作確認後に「本番環境」に公開してください（自分だけが使うアプリなので審査は不要です）。
+
 ---
 
 ## ローカルでの開発・テスト
@@ -140,6 +169,14 @@ npx wrangler dev --local --env-file test/dev.vars --ip 127.0.0.1 --port 8787
 
 `test/dev.vars` は Access の検証先をローカルのテスト用 JWKS に向けます（`ACCESS_CERTS_URL`）。本番では設定しません。
 
+Googleマップへの同期を試すときは、Google の代わりのテストサーバーを使います:
+
+```bash
+node test/google-mock.mjs /tmp/google.log &
+npx wrangler dev --local --env-file test/dev.vars --env-file test/dev-google.vars --ip 127.0.0.1 --port 8787
+# 保存すると /tmp/google.log に Google へ送った内容が記録される
+```
+
 ## API
 
 | メソッド・パス | 説明 |
@@ -151,5 +188,7 @@ npx wrangler dev --local --env-file test/dev.vars --ip 127.0.0.1 --port 8787
 | `PUT /api/days/:date` | `{ "kind": "closed", "note"? }` または `{ "kind": "hours", "opens": "13:30", "closes": "18:00", "note"? }` |
 | `DELETE /api/days/:date` | その日を通常どおりに戻す |
 | `PUT /api/settings` | `{ "opens": "12:00", "closes": "18:00", "closedWeekdays": [4] }`（0=日曜） |
+| `GET /api/sync-status` | Googleマップへの反映状況（未連携 / 最終成功時刻 / エラー） |
+| `POST /api/sync` | Googleマップへの反映をやり直す |
 
 書き込みは管理画面と同じオリジンの JSON リクエストだけを受け付けます（CSRF 対策）。

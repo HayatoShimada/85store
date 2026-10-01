@@ -72,6 +72,9 @@
   .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; font-size: 14px; max-width: calc(100vw - 32px); }
   .toast.error { background: var(--danger); }
   .muted { color: var(--muted); font-size: 13px; }
+  .sync { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--ink-2); border: 1px solid var(--rule); padding: 8px 12px; margin: 0 0 20px; }
+  .sync.error { border-color: var(--danger); color: var(--danger); }
+  .sync .btn { min-height: 36px; padding: 0 12px; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -83,6 +86,7 @@
 
   <h1>営業日カレンダー</h1>
   <p class="lead">日付をタップして、休業日やその日だけの営業時間を設定します。保存すると、サイトのカレンダーと「営業中」の表示にすぐ反映されます。</p>
+  <div class="sync" id="sync" role="status" aria-live="polite"></div>
 
   <div class="month-nav">
     <button type="button" class="btn" id="prev" aria-label="前の月">‹</button>
@@ -167,6 +171,45 @@
     if (!res.ok) throw new Error(body.error || `エラーが発生しました（${res.status}）`);
     return body;
   }
+
+  const fmt = (iso) => {
+    const d = new Date(new Date(iso).getTime() + 9 * 3600 * 1000);
+    return `${d.getUTCMonth() + 1}/${d.getUTCDate()} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
+  };
+
+  // Googleマップ（ビジネスプロフィール）への反映状況
+  async function loadSync() {
+    const el = $("sync");
+    try {
+      const s = await api("/api/sync-status");
+      el.classList.toggle("error", !!(s.configured && s.lastError));
+      if (!s.configured) {
+        el.textContent = "Googleマップ：未連携（Google の API が承認されたら、保存のたびに自動で反映されます）";
+      } else if (s.lastError) {
+        el.innerHTML = `<span>Googleマップ：反映に失敗しました（${fmt(s.lastAttemptAt)}）${escapeHtml(s.lastError)}</span><button type="button" class="btn" id="sync-retry">もう一度反映する</button>`;
+        $("sync-retry").addEventListener("click", retrySync);
+      } else if (s.lastSuccessAt) {
+        el.textContent = `Googleマップ：反映済み（${fmt(s.lastSuccessAt)}）`;
+      } else {
+        el.innerHTML = '<span>Googleマップ：まだ反映していません</span><button type="button" class="btn" id="sync-retry">今すぐ反映する</button>';
+        $("sync-retry").addEventListener("click", retrySync);
+      }
+    } catch {
+      el.textContent = "";
+    }
+  }
+
+  async function retrySync() {
+    $("sync").textContent = "Googleマップに反映しています…";
+    try {
+      await api("/api/sync", { method: "POST", body: "{}" });
+    } finally {
+      loadSync();
+    }
+  }
+
+  // 保存のあと Google への反映が終わる頃に状況を読み直す
+  const refreshSyncLater = () => setTimeout(loadSync, 2500);
 
   async function load() {
     const last = new Date(Date.UTC(state.year, state.month, 0)).getUTCDate();
@@ -259,6 +302,7 @@
       $("day-dialog").close();
       await load();
       toast("保存しました。サイトにすぐ反映されます。");
+      refreshSyncLater();
     } catch (error) {
       toast(error.message, true);
     } finally {
@@ -276,6 +320,7 @@
       });
       await load();
       toast("通常の営業時間を保存しました。");
+      refreshSyncLater();
     } catch (error) {
       toast(error.message, true);
     }
@@ -295,6 +340,7 @@
   state.month = m;
   api("/api/me").then(({ email }) => ($("who").textContent = email)).catch(() => {});
   load().catch((error) => toast(error.message, true));
+  loadSync();
 })();
 </script>
 </body>
