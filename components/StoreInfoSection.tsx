@@ -52,7 +52,7 @@ export default function StoreInfoSection() {
           </Link>
         </div>
 
-        <div className="col-span-12 bg-bg p-[clamp(20px,3vw,40px)]">
+        <div id="calendar" className="col-span-12 scroll-mt-20 bg-bg p-[clamp(20px,3vw,40px)]">
           <h3 className="mb-6 font-display text-xl font-bold">
             Calendar<span className="ml-2 font-sans text-sm font-normal text-muted">営業日カレンダー</span>
           </h3>
