@@ -37,7 +37,7 @@ export default function StoreInfoSection() {
           />
         </div>
 
-        <figure className="relative col-span-5 min-h-80 bg-surface max-[900px]:col-span-12 max-[900px]:aspect-[3/2]">
+        <figure className="relative col-span-5 min-h-80 bg-surface max-[900px]:col-span-12 max-[900px]:aspect-[3/2] max-[900px]:min-h-0">
           <Image src="/images/shop.jpg" alt="85-Store の店内" fill sizes="(max-width: 900px) 100vw, 40vw" className="object-cover" />
         </figure>
 

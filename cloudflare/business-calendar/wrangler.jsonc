@@ -26,7 +26,9 @@
     "ADMIN_EMAILS": "info@85-store.com",
     "TIMEZONE": "Asia/Tokyo",
     "LANGUAGE": "ja",
-    "STORE_NAME": "85-Store"
+    "STORE_NAME": "85-Store",
+    "SHARE_URL": "https://85-store.com/reserve",
+    "IMAGE_CLOSED_MARK": "cat"
   },
   "observability": { "enabled": true }
 }

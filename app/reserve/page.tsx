@@ -111,7 +111,7 @@ export default async function ReservePage() {
               link={{ href: store.aboutUrl, label: "詳しく見る" }}
             />
             <div className="grid-lines grid-cols-12">
-              <figure className="relative col-span-5 min-h-72 bg-surface max-[900px]:col-span-12 max-[900px]:aspect-[3/2]">
+              <figure className="relative col-span-5 min-h-72 bg-surface max-[900px]:col-span-12 max-[900px]:aspect-[3/2] max-[900px]:min-h-0">
                 <Image src={store.images[0]} alt={`${store.nameEn} の様子`} fill sizes="(max-width: 900px) 100vw, 40vw" className="object-cover" />
               </figure>
               <div className="col-span-7 grid content-between gap-6 p-[clamp(20px,3vw,40px)] max-[900px]:col-span-12">

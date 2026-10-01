@@ -9,6 +9,7 @@ Worker 本体は公開リポジトリ **[HayatoShimada/business-calendar](https:
 
 - D1: `85store-business-calendar`（APAC）
 - ログイン: 方式 C（Tailscale 内の端末だけ）。tsidp は 85pi で動いている（[docs/auth.md](https://github.com/HayatoShimada/business-calendar/blob/main/docs/auth.md)）
+- SNS でのお知らせ: 管理画面の「お知らせを作る」→ 共有シートで X・Instagram に投稿（[docs/share.md](https://github.com/HayatoShimada/business-calendar/blob/main/docs/share.md)）
 - Googleマップ連携: Business Profile API の承認待ち（2026-10-01 申請、ケースID 7-6137000041496）
 
 ## デプロイ

@@ -68,6 +68,8 @@ microCMS の Webhook（カスタム通知）が `POST /api/revalidate` を呼び
 - サイトはブラウザから公開API（`https://calendar.85-store.com/v1/calendar`、`NEXT_PUBLIC_CALENDAR_API_URL` で変更可）を直接読む（`components/useBusinessCalendar.ts`）。**再デプロイ・キャッシュの再検証なしで即反映**される（表示時・60秒ごと・タブ復帰時）。
 - 判定ロジックは `lib/business-calendar.ts`（`resolveDay` / `getStatusAt`、日本時間）。APIが使えないときは `STORE.hours`（通常ルール）で表示する。
 - 「営業中」表示は `components/StoreStatus.tsx`、カレンダーは `components/BusinessCalendar.tsx`（トップの店舗情報・About・Reserve）。時刻に依存する表示はブラウザでだけ描く（`useNow`）。
+- カレンダーの「共有」ボタンは `components/ShareCalendarButton.tsx`。画像は Worker が配信する `calendar-image.js`（canvas で描く ES モジュール）をブラウザで読み込んで作り、Web Share API（iOS の共有シート・Android の Sharesheet）で渡す。使えないブラウザでは画像を保存してリンクをコピーする。共有シートはタップ直後にしか開けないので、画像は先に作っておく。
+- SNS へのお知らせは管理画面の「お知らせを作る」で行う（変更内容から文面と画像を作り、共有シートで X・Instagram に投稿。API は使わない）。
 - Worker 本体は公開リポジトリ HayatoShimada/business-calendar（汎用版・MIT）。このリポジトリの `cloudflare/business-calendar/` には 85-Store 用の `wrangler.jsonc` と `deploy.sh`（決まったバージョンを `upstream/` に取得してデプロイ）だけを置く。Worker のコードを直すときは business-calendar 側で直してタグを打ち、`deploy.sh` の `VERSION` を上げる。
 
 ### 記事本文のレンダリング（`app/blog/[slug]/page.tsx`）
