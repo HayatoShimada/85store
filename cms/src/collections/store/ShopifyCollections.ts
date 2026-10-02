@@ -77,7 +77,7 @@ export const ShopifyCollections: CollectionConfig = {
                 { label: '手動（商品を選ぶ）', value: 'manual' },
               ],
               admin: { layout: 'horizontal', description: '作ったあとは変えられません。' },
-              access: { update: ({ doc }) => !doc?.shopify?.id },
+              access: { update: ({ doc }) => !doc?.shopify?.gid },
             },
             { name: 'title', label: 'タイトル', type: 'text', required: true },
             handleField(),

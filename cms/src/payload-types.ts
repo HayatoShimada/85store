@@ -439,7 +439,7 @@ export interface ShopifyCollection {
      * 選んで保存すると実行します。
      */
     resolve?: ('overwrite' | 'import') | null;
-    id?: string | null;
+    gid?: string | null;
     updatedAt?: string | null;
     lastSyncedAt?: string | null;
     fingerprint?: string | null;
@@ -585,7 +585,7 @@ export interface StorePage {
      * 選んで保存すると実行します。
      */
     resolve?: ('overwrite' | 'import') | null;
-    id?: string | null;
+    gid?: string | null;
     updatedAt?: string | null;
     lastSyncedAt?: string | null;
     fingerprint?: string | null;
@@ -656,7 +656,7 @@ export interface StoreArticle {
      * 選んで保存すると実行します。
      */
     resolve?: ('overwrite' | 'import') | null;
-    id?: string | null;
+    gid?: string | null;
     updatedAt?: string | null;
     lastSyncedAt?: string | null;
     fingerprint?: string | null;
@@ -687,7 +687,7 @@ export interface StoreBlog {
      * 選んで保存すると実行します。
      */
     resolve?: ('overwrite' | 'import') | null;
-    id?: string | null;
+    gid?: string | null;
     updatedAt?: string | null;
     lastSyncedAt?: string | null;
     fingerprint?: string | null;
@@ -851,7 +851,7 @@ export interface StoreMenu {
      * 選んで保存すると実行します。
      */
     resolve?: ('overwrite' | 'import') | null;
-    id?: string | null;
+    gid?: string | null;
     updatedAt?: string | null;
     lastSyncedAt?: string | null;
     fingerprint?: string | null;
@@ -1282,7 +1282,7 @@ export interface ShopifyCollectionsSelect<T extends boolean = true> {
         syncStatus?: T;
         syncMessage?: T;
         resolve?: T;
-        id?: T;
+        gid?: T;
         updatedAt?: T;
         lastSyncedAt?: T;
         fingerprint?: T;
@@ -1338,7 +1338,7 @@ export interface StorePagesSelect<T extends boolean = true> {
         syncStatus?: T;
         syncMessage?: T;
         resolve?: T;
-        id?: T;
+        gid?: T;
         updatedAt?: T;
         lastSyncedAt?: T;
         fingerprint?: T;
@@ -1373,7 +1373,7 @@ export interface StoreArticlesSelect<T extends boolean = true> {
         syncStatus?: T;
         syncMessage?: T;
         resolve?: T;
-        id?: T;
+        gid?: T;
         updatedAt?: T;
         lastSyncedAt?: T;
         fingerprint?: T;
@@ -1396,7 +1396,7 @@ export interface StoreBlogsSelect<T extends boolean = true> {
         syncStatus?: T;
         syncMessage?: T;
         resolve?: T;
-        id?: T;
+        gid?: T;
         updatedAt?: T;
         lastSyncedAt?: T;
         fingerprint?: T;
@@ -1454,7 +1454,7 @@ export interface StoreMenusSelect<T extends boolean = true> {
         syncStatus?: T;
         syncMessage?: T;
         resolve?: T;
-        id?: T;
+        gid?: T;
         updatedAt?: T;
         lastSyncedAt?: T;
         fingerprint?: T;

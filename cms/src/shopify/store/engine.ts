@@ -27,7 +27,7 @@ export const storeSyncMode = (): StoreSyncMode => {
 }
 
 export type SyncState = {
-  id?: string | null
+  gid?: string | null
   syncStatus?: 'synced' | 'pending' | 'dry-run' | 'conflict' | 'error' | null
   syncMessage?: string | null
   resolve?: 'overwrite' | 'import' | null
@@ -40,7 +40,7 @@ type Canonical = Record<string, unknown>
 
 // Payload の ID ⇔ Shopify の ID（関連の変換。1回の処理の中だけキャッシュする）
 const ID_PATHS: Partial<Record<CollectionSlug, string>> = { products: 'shopify.productId' }
-const idPath = (collection: CollectionSlug) => ID_PATHS[collection] ?? 'shopify.id'
+const idPath = (collection: CollectionSlug) => ID_PATHS[collection] ?? 'shopify.gid'
 
 export class Lookup {
   private toGid = new Map<string, string | null>()
@@ -49,8 +49,8 @@ export class Lookup {
 
   async gid(collection: CollectionSlug, value: unknown): Promise<string | null> {
     if (value && typeof value === 'object') {
-      const shopify = (value as { shopify?: { id?: string; productId?: string } }).shopify
-      const found = collection === 'products' ? shopify?.productId : shopify?.id
+      const shopify = (value as { shopify?: { gid?: string; productId?: string } }).shopify
+      const found = collection === 'products' ? shopify?.productId : shopify?.gid
       if (found) return found
       value = (value as { id: unknown }).id
     }
@@ -58,8 +58,8 @@ export class Lookup {
     const key = `${collection}:${value}`
     if (!this.toGid.has(key)) {
       const doc = (await this.payload.findByID({ collection, id: value, depth: 0, overrideAccess: true, disableErrors: true })) as StoreDoc | null
-      const shopify = doc?.shopify as { id?: string; productId?: string } | undefined
-      this.toGid.set(key, (collection === 'products' ? shopify?.productId : shopify?.id) ?? null)
+      const shopify = doc?.shopify as { gid?: string; productId?: string } | undefined
+      this.toGid.set(key, (collection === 'products' ? shopify?.productId : shopify?.gid) ?? null)
     }
     return this.toGid.get(key) ?? null
   }
@@ -146,7 +146,7 @@ async function record(payload: Payload, collection: CollectionSlug, id: number, 
 }
 
 const syncedState = (def: ResourceDef<{ id: string; updatedAt?: string | null }>, s: { id: string; updatedAt?: string | null }): SyncState => ({
-  id: s.id,
+  gid: s.id,
   updatedAt: s.updatedAt ?? null,
   fingerprint: fingerprint(def.canonical(s)),
   lastSyncedAt: new Date().toISOString(),
@@ -172,7 +172,7 @@ export async function importInto(
 }
 
 async function findByShopifyId(payload: Payload, collection: CollectionSlug, gid: string): Promise<StoreDoc | null> {
-  const found = await payload.find({ collection, where: { 'shopify.id': { equals: gid } }, limit: 1, depth: 0, overrideAccess: true })
+  const found = await payload.find({ collection, where: { 'shopify.gid': { equals: gid } }, limit: 1, depth: 0, overrideAccess: true })
   return (found.docs[0] as unknown as StoreDoc | undefined) ?? null
 }
 
@@ -190,7 +190,7 @@ export async function syncResource(payload: Payload, collection: string, id: num
   if (!doc) return
   const lookup = new Lookup(payload)
   const desired = await def.desired(doc, lookup)
-  const shopifyId = doc.shopify?.id
+  const shopifyId = doc.shopify?.gid
   try {
     let target: string
     if (shopifyId) {
@@ -247,9 +247,9 @@ export async function syncResource(payload: Payload, collection: string, id: num
 export async function refreshResource(payload: Payload, collection: string, id: number): Promise<{ changed: boolean; message?: string }> {
   const def = defOf(collection)
   const doc = (await payload.findByID({ collection: def.collection, id, depth: 0, overrideAccess: true })) as unknown as StoreDoc
-  if (!doc.shopify?.id) return { changed: false }
+  if (!doc.shopify?.gid) return { changed: false }
   if (hasUnsyncedChanges(doc)) return { changed: false, message: 'Shopify にまだ送っていない変更があるため、取り込みませんでした。' }
-  const s = await def.fetchOne(doc.shopify.id)
+  const s = await def.fetchOne(doc.shopify.gid)
   if (!s) {
     await record(payload, def.collection, id, { syncStatus: 'error', syncMessage: 'Shopify で削除されています。不要なら削除してください。' })
     return { changed: true }
@@ -287,7 +287,7 @@ export async function refreshAllStore(payload: Payload) {
     const ids = new Set(items.map((s) => s.id))
     const { docs } = await payload.find({ collection: def.collection, where: { 'shopify.syncStatus': { equals: 'synced' } }, limit: 0, pagination: false, depth: 0, overrideAccess: true })
     for (const doc of docs as unknown as StoreDoc[]) {
-      if (doc.shopify?.id && !ids.has(doc.shopify.id)) {
+      if (doc.shopify?.gid && !ids.has(doc.shopify.gid)) {
         await record(payload, def.collection, doc.id, { syncStatus: 'error', syncMessage: 'Shopify で削除されています。不要なら削除してください。' })
       }
     }
@@ -395,7 +395,7 @@ export function storeHooks(collection: CollectionSlug, bodies: string[] = []) {
   }
   // 削除は管理者だけ（access）。Shopify からも消す
   const afterDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
-    const shopifyId = (doc as StoreDoc).shopify?.id
+    const shopifyId = (doc as StoreDoc).shopify?.gid
     if (shopifyId && storeSyncMode() !== 'off') await queue(req, 'deleteStoreResource', { collection, shopifyId })
   }
   return { beforeChange: [beforeChange], afterChange: [afterChange], afterDelete: [afterDelete] }
@@ -477,7 +477,7 @@ export const syncSidebar = (): Field => ({
       ],
       admin: { condition: (data) => data?.shopify?.syncStatus === 'conflict', description: '選んで保存すると実行します。' },
     },
-    { name: 'id', label: 'Shopify の ID', type: 'text', index: true, admin: { readOnly: true } },
+    { name: 'gid', label: 'Shopify の ID', type: 'text', index: true, admin: { readOnly: true } },
     { name: 'updatedAt', label: 'Shopify の更新日時', type: 'text', admin: { readOnly: true } },
     { name: 'lastSyncedAt', label: '前回の同期', type: 'date', admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } },
     { name: 'fingerprint', type: 'text', admin: { hidden: true } },
@@ -491,7 +491,7 @@ export const handleField = (description = 'URL の末尾です。変えると、
   type: 'text',
   admin: { description },
   validate: (value: unknown, { data }: { data: Partial<StoreDoc> }) =>
-    data?.shopify?.id && !(typeof value === 'string' && value.trim()) ? 'Shopify にあるものは空にできません' : true,
+    data?.shopify?.gid && !(typeof value === 'string' && value.trim()) ? 'Shopify にあるものは空にできません' : true,
 })
 
 // GraphQL の mutation の userErrors を例外にする
