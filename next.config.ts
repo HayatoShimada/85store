@@ -6,6 +6,8 @@ const localCms = process.env.CMS_CONTENT_URL?.startsWith('http://localhost:3001'
 const nextConfig: NextConfig = {
   // "use cache" + cacheTag によるキャッシュと Partial Prerendering を有効化
   cacheComponents: true,
+  // next dev が CLAUDE.md / AGENTS.md に英語の案内を書き足さないようにする（同じ内容は CLAUDE.md に日本語で書いた）
+  agentRules: false,
   images: {
     qualities: [75, 90, 100],
     remotePatterns: [

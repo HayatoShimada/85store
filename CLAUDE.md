@@ -6,6 +6,7 @@
 
 富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイト（https://85-store.com）。
 ブログ・バナーは自前の CMS（**Payload**、`cms/`、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
+Shopify の商品・コレクション・ストアのページ・ブログ・メニューも、同じ Payload を入力画面にしている（正は Shopify）。
 
 - Next.js 16（App Router / Turbopack / **Cache Components**）
 - React 19 / TypeScript 5
@@ -130,11 +131,21 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 - 85pi の docker compose で動かす（Payload 3・SQLite。Litestream で R2 の `85store-cms-backup` へ随時バックアップ）。手順は `cms/README.md`、配置は `cms/deploy.sh`。
 - 管理画面は `https://cms.taila713c8.ts.net`（tailnet 内のみ）。tailscale のサイドカーが `Tailscale-User-Login` を付けて転送し、Payload のカスタム認証（`cms/src/lib/tailscale-auth.ts`）が「メンバー」に登録されたメールだけを通す。Payload はホストにポートを出さない（ヘッダーを偽装できないようにするため）。
-- コレクション: `posts`（下書き/公開・Lexical 本文に写真・写真の横並び・埋め込み）、`banners`（並び替え）、`categories`、`media`（R2 に保存、avif/webp の 480〜1600）、`users`（管理者/編集者）。
+- コレクション（サイト）: `posts`（下書き/公開・Lexical 本文に写真・写真の横並び・埋め込み）、`banners`（並び替え）、`categories`、`media`（R2 に保存、avif/webp の 480〜1600）、`users`（管理者/編集者）。
+- コレクション（Shopify）: `products`・`brands`・`productPhotos`、`shopifyCollections`、`storePages`・`storeBlogs`・`storeArticles`・`storeMenus`。
 - 公開・更新・削除のたびに `cms/src/publish/` が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。書き出す形は `types/cms.ts` と `cms/src/publish/export.ts` で合わせる。
 - 本文の HTML は microCMS と同じ構造（`<figure><img width height>`、埋め込みは padding の div + iframe）で出すので、`lib/toc.ts`・`groupPortraitFigures`・`.article-body` の CSS がそのまま使える。
 - Event1st / Event2nd のカテゴリは Reserve ページのイベント一覧に使っている（名前を変えない）。
 - `cms/` は独立した package.json・tsconfig を持ち、サイトの tsc・eslint の対象外。
+
+### Shopify との同期（`cms/src/shopify/`）
+
+- **正は Shopify**。Payload は入力画面で、画面を開いたときと10分ごとに Shopify から取り込み、保存すると Shopify に送る（Payload Jobs）。前回の同期のあとに Shopify 側でも変わっていたら送らずに止め、どちらを残すか選んでもらう（指紋で比べる）。
+- 商品は `sync.ts`（productSet。新しい商品は全販売チャネルに出す）、ストアの内容は `store/`（コレクション・ページ・ブログ・記事・メニューの定義と共通の `engine.ts`）。
+- モードは 85pi の `.env` の `SHOPIFY_SYNC_MODE`（商品）・`SHOPIFY_STORE_SYNC_MODE`（ストア）。新しく同期の対象を足したら、dry-run で全件を取り込み、差分ゼロ（`/api/shopify/diff-*`）を確かめてから live にする。
+- 商品を送ったら、サイトの `/api/revalidate` に `shopify-products` を送り、New Arrivals を作り直す。
+- 本番の DB はマイグレーション（`cms/src/migrations/`）で変える。作り方は `cms/README.md`。
+- 説明文の AI 生成は 85crm の内部 API（tailnet 内の `:11443/internal`、`X-Internal-Token`）を呼ぶ。
 
 ## プロジェクト固有のルール
 
@@ -152,12 +163,7 @@ echo "require('tls').DEFAULT_ECDH_CURVE = 'X25519:P-256:P-384';" > /tmp/tls-fix.
 NODE_OPTIONS="--require /tmp/tls-fix.cjs" npm run build
 ```
 
-<!-- BEGIN:nextjs-agent-rules -->
+## Next.js のドキュメント
 
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+Next.js 16 は、学習データとは API・決まりごと・ファイル構成が違うことがある。コードを書く前に `node_modules/next/dist/docs/` の該当するガイドを読み、非推奨の案内に従う。
+（`next dev` がこの内容を英語で自動で書き足さないよう、`next.config.ts` で `agentRules: false` にしている）

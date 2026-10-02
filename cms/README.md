@@ -1,6 +1,9 @@
 # 85-Store CMS（Payload）
 
-85-Store のサイトの記事・バナーを管理する CMS です。85pi（Raspberry Pi 5）の docker compose で動かします。
+85-Store の入力画面をまとめた CMS です。85pi（Raspberry Pi 5）の docker compose で動かします。
+
+- **サイト（85-store.com）**: 記事・バナー
+- **Shopify（shop.85-store.com）**: 商品・コレクション・ストアのページ・ブログの記事・メニュー（正は Shopify。→「Shopify との同期」）
 
 ```
 [メンバーのスマホ・PC（tailnet 内）]
@@ -15,6 +18,9 @@
 [R2: 85store-media（media.85-store.com）]
    ├─ media/     画像（元画像と avif / webp の各サイズ）
    └─ content/   公開中の記事・バナーの JSON → サイト（Vercel）が読む
+
+[payload] ⇄ [Shopify Admin API]  商品・ストアの内容（Payload 専用のアプリ。Client Credentials）
+[payload] → [85crm の内部 API]   説明文の AI 生成（tailscale serve の 11443 番。tailnet 内だけ）
 ```
 
 - サイトは R2 の JSON だけを読みます。85pi が止まっていても、サイトの表示とビルドは影響を受けません（止まっている間は編集できないだけです）。
@@ -26,6 +32,14 @@
   - 「公開」を押すと、数十秒でサイトに反映されます。「下書き保存」はサイトに出ません。
   - スラッグ（URL）は空なら日付から作ります。半角英数とハイフンで変えられます。
 - **バナー**: ドラッグで並び替えます。縦長の画像はトップのヒーロー（先頭から2枚）、それ以外は Pick Up に並びます。
+- **商品**: 「商品」→ 開くと Shopify の最新の内容を取り込みます。直して保存すると Shopify に送ります。
+  - 古着は「ブランド」「品名」から商品名（`[BRAND] 品名 [USED]`）を作ります。自動コレクションの多くが商品名で判定しているので、形を崩さないでください。
+  - 新しく作った商品は、すべての販売チャネルに出します（表示するかは「状態」で決まります）。原価・SKU・初期在庫は作成時だけ送ります。
+  - 「説明文を作る（AI）」は 85crm の生成を呼び、説明文を置き換えます（保存すると Shopify に送ります）。
+  - 削除はできません。やめる商品は「状態」をアーカイブにします。
+- **コレクション・ストアのページ・ストアの記事・メニュー**: 商品と同じく、開くと取り込み、保存で送ります。
+  - 本文は「見たまま」と「HTML を直接」。画像・埋め込みのある既存の本文は、崩さないよう「HTML を直接」で取り込んでいます。
+  - 削除は管理者だけです（Shopify からも消えます）。
 - **メンバーを追加する**（管理者だけ）:
   1. Tailscale の管理画面から、その人を tailnet に招待する
   2. CMS の「メンバー」で、その人の Tailscale のメールアドレスを登録し、権限を選ぶ（管理者 / 編集者）
@@ -89,6 +103,23 @@ rm -f data/payload.db && npm run migrate:microcms
 - 移行は何度やり直しても重複しません（microCMS の ID と画像の URL で上書きします）。
 - 最後に、本文のテキスト・画像・埋め込みの数を元の記事と比べたレポート（`data/migration-report.json`）を出します。
 
+## Shopify との同期
+
+正は Shopify です。Payload は入力画面で、編集する前に Shopify の内容を取り込みます（`src/shopify/`）。
+
+- **取り込み**: 画面を開いたときと、10分ごと（商品は 0・10・20…分、ストアの内容は 5・15・25…分）。Payload で保存したがまだ送れていないもの（待ち・dry-run・衝突・エラー）は取り込みません。
+- **送る**: 保存するとジョブに積み、2秒後に送ります（失敗したら2回までやり直し、1分ごとに拾い直す）。送ったあとに読み直して、Shopify が付けたもの（オートメーションの「新着」タグなど）も書き戻します。
+- **衝突**: 前回の同期のあとに Shopify 側（管理画面・85crm・POS など）でも変わっていたら、送らずに止めます。右の欄に違いが出るので、「Payload の内容で上書きする / Shopify の内容を取り込む」を選んで保存します。
+- **モード**（85pi の `.env`）: `SHOPIFY_SYNC_MODE`（商品）・`SHOPIFY_STORE_SYNC_MODE`（ストアの内容）。`off` / `dry-run`（送る内容を記録するだけ）/ `live`。変えたら `docker compose up -d payload`。
+- **全件の取り込み・差分の確認**（管理者だけ）: 新しく同期の対象を足したときは、dry-run で全件を取り込み、差分がゼロになってから live にします。
+
+  | | 取り込み | 差分の確認 |
+  |---|---|---|
+  | 商品 | `POST /api/shopify/import-products` | `GET /api/shopify/diff-products` |
+  | ストアの内容 | `POST /api/shopify/import-store` | `GET /api/shopify/diff-store` |
+
+- **新しく撮った商品写真**は 85pi の `/data/product-photos` に一時的に置き、Shopify に上げたら消します（写真の正も Shopify）。コレクション・記事の画像は「画像」（R2）から選び、Shopify にコピーされます。
+
 ## バックアップから戻す
 
 Litestream が R2 の `85store-cms-backup` に DB を随時コピーしています（30日分）。
@@ -116,3 +147,12 @@ npm run dev -- -p 3001 # http://localhost:3001/admin
 - R2 の値が無いときは、画像は `media/`、書き出しは `.local-bucket/` に保存し、`http://localhost:3001/local-bucket/content/...` で配信します。
 - サイトをこれにつなぐときは、リポジトリ直下で `CMS_CONTENT_URL=http://localhost:3001/local-bucket/content npm run dev`。
 - コレクションを変えたら `npm run generate:types` で `src/payload-types.ts` を作り直します。
+- **本番（85pi）の DB はマイグレーションで変えます**（本番では Payload が表を自動で作らないため）。コレクションを変えたら、R2 のダミーの値を付けてマイグレーションを作り、`src/migrations/` をコミットします（起動時に適用されます）。R2 の値が無いと、画像の保存先の列が違うマイグレーションになります。
+
+  ```bash
+  R2_ACCOUNT_ID=x R2_ACCESS_KEY_ID=x R2_SECRET_ACCESS_KEY=x R2_BUCKET=x MEDIA_PUBLIC_URL=https://media.85-store.com \
+    npm run payload migrate:create <名前>
+  ```
+
+  - 表の「作成か名前の変更か」を聞かれたら、データを移す必要がなければ「create table」を選びます。
+  - グループの中に `id` という名前の欄を作らない（検索できなくなる）。入れ子の配列は階層ごとに名前を変える（同じ名前だと関連の名前がぶつかる）。
