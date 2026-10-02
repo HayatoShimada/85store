@@ -8,11 +8,16 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Banners } from './collections/Banners'
+import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
+import { ProductPhotos } from './collections/ProductPhotos'
+import { Products } from './collections/Products'
 import { Users } from './collections/Users'
 import { publicUrl, r2Enabled, s3Config } from './lib/bucket'
+import { shopifyEndpoints } from './shopify/import'
+import { syncProductTask } from './shopify/sync'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,7 +30,14 @@ export default buildConfig({
     meta: { titleSuffix: ' | 85-Store CMS' },
   },
   i18n: { supportedLanguages: { ja }, fallbackLanguage: 'ja' },
-  collections: [Posts, Banners, Categories, Media, Users],
+  collections: [Products, Brands, ProductPhotos, Posts, Banners, Categories, Media, Users],
+  endpoints: shopifyEndpoints,
+  // Shopify への同期はジョブで行う（失敗したらやり直す）。保存の直後に実行し、取りこぼしは1分ごとに拾う
+  jobs: {
+    tasks: [syncProductTask],
+    autoRun: [{ cron: '* * * * *', queue: 'shopify', limit: 10 }],
+    shouldAutoRun: () => process.env.SHOPIFY_SYNC_MODE !== 'off',
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
@@ -44,6 +56,11 @@ export default buildConfig({
           prefix: 'media',
           disablePayloadAccessControl: true,
           generateFileURL: ({ filename, prefix }) => publicUrl(`${prefix ?? 'media'}/${filename}`),
+        },
+        productPhotos: {
+          prefix: 'products',
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) => publicUrl(`${prefix ?? 'products'}/${filename}`),
         },
       },
     }),

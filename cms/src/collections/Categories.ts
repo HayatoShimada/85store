@@ -8,7 +8,7 @@ export const Categories: CollectionConfig = {
   slug: 'categories',
   labels: { singular: 'カテゴリ', plural: 'カテゴリ' },
   access: { read: () => true, create: loggedIn, update: loggedIn, delete: loggedIn },
-  admin: { useAsTitle: 'name', description: '名前はサイトの URL になります。Event1st / Event2nd は Reserve ページのイベント一覧に使っています。' },
+  admin: { group: 'サイト（85-store.com）', useAsTitle: 'name', description: '名前はサイトの URL になります。Event1st / Event2nd は Reserve ページのイベント一覧に使っています。' },
   hooks: {
     afterChange: [({ doc, req }) => scheduleExport(req.payload, `categories:${doc.id}`)],
     afterDelete: [({ doc, req }) => scheduleExport(req.payload, `categories:${doc.id}:delete`)],

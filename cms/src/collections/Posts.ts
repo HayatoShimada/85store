@@ -24,7 +24,7 @@ export const Posts: CollectionConfig = {
     update: loggedIn,
     delete: loggedIn,
   },
-  admin: {
+  admin: { group: 'サイト（85-store.com）',
     useAsTitle: 'title',
     defaultColumns: ['title', 'categories', '_status', 'publishedAt'],
     listSearchableFields: ['title', 'slug'],

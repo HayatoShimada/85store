@@ -7,7 +7,7 @@ import { tailscaleStrategy } from '../lib/tailscale-auth'
 export const Users: CollectionConfig = {
   slug: 'users',
   labels: { singular: 'メンバー', plural: 'メンバー' },
-  admin: {
+  admin: { group: '設定',
     useAsTitle: 'email',
     defaultColumns: ['email', 'name', 'role'],
     description: 'Tailscale のアカウントのメールアドレスを登録すると、その人が管理画面に入れるようになります。',
