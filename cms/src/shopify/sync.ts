@@ -336,7 +336,20 @@ async function push(
     inventoryItemId: product.variants.nodes[i]?.inventoryItem.id ?? variant.inventoryItemId,
     inventoryQuantity: product.variants.nodes[i]?.inventoryQuantity ?? variant.inventoryQuantity,
   }))
-  const synced = docFromShopify(product).data.shopify
+  // 読み直した内容（オートメーションが付けたタグ、Shopify が整えた HTML など）も書き戻す。
+  // 指紋は読み直した内容で作るので、書き戻さないと「同期済み」のまま食い違い、次の保存で消してしまう
+  const { shopify: synced, ...fromProduct } = docFromShopify(product).data
+  const shopifyOwned = {
+    title: fromProduct.title,
+    status: fromProduct.status,
+    tags: fromProduct.tags,
+    newArrival: fromProduct.newArrival,
+    descriptionHtml: fromProduct.descriptionHtml,
+    productType: fromProduct.productType,
+    vendor: fromProduct.vendor,
+    categoryId: fromProduct.categoryId,
+    categoryName: fromProduct.categoryName,
+  }
   await record(
     payload,
     doc.id,
@@ -348,7 +361,7 @@ async function push(
       syncMessage: channelWarning,
       resolve: null,
     },
-    { images, variants, ...(typeof doc.brand === 'object' && doc.brand ? { brand: doc.brand.id } : {}) },
+    { ...shopifyOwned, images, variants, ...(typeof doc.brand === 'object' && doc.brand ? { brand: doc.brand.id } : {}) },
   )
   // Shopify に上げた写真は、85pi の手元から消す（写真の正は Shopify）
   for (const image of doc.images ?? []) {
