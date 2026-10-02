@@ -123,6 +123,15 @@ rm -f data/payload.db && npm run migrate:microcms
 
 - **新しく撮った商品写真**は 85pi の `/data/product-photos` に一時的に置き、Shopify に上げたら消します（写真の正も Shopify）。コレクション・記事の画像は「画像」（R2）から選び、Shopify にコピーされます。
 
+## うまく開けないとき
+
+- **tailnet に入っているか**: cms.85-store.com は tailnet の中からしか開けません（スマホも Tailscale をオンにする）。
+- **tailscale のコンテナだけが再起動したとき**（serve の設定の変更でエラーになったときなど）: caddy と payload は古いネットワークに残るので、入れ直します。
+  ```bash
+  ssh hacopi@85pi.taila713c8.ts.net 'cd ~/85store-cms && docker compose restart caddy payload'
+  ```
+- **証明書**: Caddy が期限の前に自動で更新します（Cloudflare の API トークンを使う）。ログは `docker compose logs caddy`。
+
 ## バックアップから戻す
 
 Litestream が R2 の `85store-cms-backup` に DB を随時コピーしています（30日分）。
