@@ -161,13 +161,28 @@ async function locationId(): Promise<string> {
   return (cachedLocation = location.id)
 }
 
-let cachedPublication: string | null = null
-async function onlineStorePublicationId(): Promise<string> {
-  if (cachedPublication) return cachedPublication
-  const data = await shopifyGraphQL<{ publications: { nodes: { id: string; name: string }[] } }>(`{ publications(first: 20) { nodes { id name } } }`)
-  const publication = data.publications.nodes.find((p) => p.name === 'Online Store' || p.name === 'オンラインストア')
-  if (!publication) throw new Error('オンラインストアの販売チャネルが見つかりません')
-  return (cachedPublication = publication.id)
+let cachedPublications: string[] | null = null
+async function allPublicationIds(): Promise<string[]> {
+  if (cachedPublications) return cachedPublications
+  const data = await shopifyGraphQL<{ publications: { nodes: { id: string }[] } }>(`{ publications(first: 50) { nodes { id } } }`)
+  return (cachedPublications = data.publications.nodes.map((p) => p.id))
+}
+
+// まだ出ていない販売チャネルすべてに出す（既存の商品は全チャネルに出している。表示するかは「状態」で決まる）。
+// 失敗したチャネルは同期を止めずに知らせる
+async function publishToAllChannels(productId: string): Promise<string | null> {
+  const data = await shopifyGraphQL<{
+    product: { resourcePublicationsV2: { nodes: { publication: { id: string } }[] } } | null
+  }>(`query($id: ID!) { product(id: $id) { resourcePublicationsV2(first: 50, onlyPublished: false) { nodes { publication { id } } } } }`, { id: productId })
+  const current = new Set(data.product?.resourcePublicationsV2.nodes.map((n) => n.publication.id) ?? [])
+  const missing = (await allPublicationIds()).filter((id) => !current.has(id))
+  if (!missing.length) return null
+  const res = await shopifyGraphQL<{ publishablePublish: { userErrors: { field: string[] | null; message: string }[] } }>(
+    `mutation($id: ID!, $input: [PublicationInput!]!) { publishablePublish(id: $id, input: $input) { userErrors { field message } } }`,
+    { id: productId, input: missing.map((publicationId) => ({ publicationId })) },
+  )
+  const errors = res.publishablePublish.userErrors
+  return errors.length ? `一部の販売チャネルに出せませんでした: ${errors.map((e) => e.message).join(' / ')}` : null
 }
 
 // productSet の入力を作る。作成時だけ SKU・原価・初期在庫を入れる
@@ -251,7 +266,7 @@ export async function syncProduct(payload: Payload, id: number): Promise<void> {
         await record(payload, id, { syncStatus: 'dry-run', syncMessage: `送る予定の変更:\n${summarize(diffs)}` })
         return
       }
-      await push(payload, doc, desired, brands, productId)
+      await push(payload, doc, desired, brands, productId, current.status === 'ACTIVE')
       return
     }
 
@@ -260,14 +275,21 @@ export async function syncProduct(payload: Payload, id: number): Promise<void> {
       await record(payload, id, { syncStatus: 'dry-run', syncMessage: 'Shopify に新しく作る予定です（dry-run のため送っていません）。' })
       return
     }
-    await push(payload, doc, desired, brands, null)
+    await push(payload, doc, desired, brands, null, false)
   } catch (error) {
     await record(payload, id, { syncStatus: 'error', syncMessage: error instanceof Error ? error.message : String(error) })
     throw error
   }
 }
 
-async function push(payload: Payload, doc: Product, desired: CanonicalProduct, brands: Map<number, Brand>, productId: string | null) {
+async function push(
+  payload: Payload,
+  doc: Product,
+  desired: CanonicalProduct,
+  brands: Map<number, Brand>,
+  productId: string | null,
+  wasActive: boolean,
+) {
   const creating = !productId
   const input = await productSetInput(doc, desired, creating)
   const result = await shopifyGraphQL<{
@@ -296,14 +318,8 @@ async function push(payload: Payload, doc: Product, desired: CanonicalProduct, b
     assertNoUserErrors('metafieldsDelete', res.metafieldsDelete.userErrors)
   }
 
-  // 新しい商品はオンラインストアで販売できるようにする（表示するかは「状態」で決まる）
-  if (creating) {
-    const res = await shopifyGraphQL<{ publishablePublish: { userErrors: { field: string[] | null; message: string }[] } }>(
-      `mutation($id: ID!, $input: [PublicationInput!]!) { publishablePublish(id: $id, input: $input) { userErrors { field message } } }`,
-      { id: newId, input: [{ publicationId: await onlineStorePublicationId() }] },
-    )
-    assertNoUserErrors('publishablePublish', res.publishablePublish.userErrors)
-  }
+  // 新しい商品と、公開に変えた商品（85crm で作った下書きはチャネルが空）を、すべての販売チャネルに出す
+  const channelWarning = creating || (desired.status === 'ACTIVE' && !wasActive) ? await publishToAllChannels(newId) : null
 
   // 結果を読み直して、Shopify の ID（商品・バリアント・画像）と指紋を書き戻す
   const product = await fetchShopifyProduct(newId)
@@ -320,7 +336,20 @@ async function push(payload: Payload, doc: Product, desired: CanonicalProduct, b
     inventoryItemId: product.variants.nodes[i]?.inventoryItem.id ?? variant.inventoryItemId,
     inventoryQuantity: product.variants.nodes[i]?.inventoryQuantity ?? variant.inventoryQuantity,
   }))
-  const synced = docFromShopify(product).data.shopify
+  // 読み直した内容（オートメーションが付けたタグ、Shopify が整えた HTML など）も書き戻す。
+  // 指紋は読み直した内容で作るので、書き戻さないと「同期済み」のまま食い違い、次の保存で消してしまう
+  const { shopify: synced, ...fromProduct } = docFromShopify(product).data
+  const shopifyOwned = {
+    title: fromProduct.title,
+    status: fromProduct.status,
+    tags: fromProduct.tags,
+    newArrival: fromProduct.newArrival,
+    descriptionHtml: fromProduct.descriptionHtml,
+    productType: fromProduct.productType,
+    vendor: fromProduct.vendor,
+    categoryId: fromProduct.categoryId,
+    categoryName: fromProduct.categoryName,
+  }
   await record(
     payload,
     doc.id,
@@ -329,10 +358,10 @@ async function push(payload: Payload, doc: Product, desired: CanonicalProduct, b
       fingerprint: fingerprint(fromShopify(product)),
       lastSyncedAt: new Date().toISOString(),
       syncStatus: 'synced',
-      syncMessage: null,
+      syncMessage: channelWarning,
       resolve: null,
     },
-    { images, variants, ...(typeof doc.brand === 'object' && doc.brand ? { brand: doc.brand.id } : {}) },
+    { ...shopifyOwned, images, variants, ...(typeof doc.brand === 'object' && doc.brand ? { brand: doc.brand.id } : {}) },
   )
   // Shopify に上げた写真は、85pi の手元から消す（写真の正は Shopify）
   for (const image of doc.images ?? []) {
