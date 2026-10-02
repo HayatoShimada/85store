@@ -1,8 +1,8 @@
 # 85pi で動かす CMS。~/85store-cms に置き、.env（.env.example 参照）を用意して
 #   docker compose up -d --build
-# 管理画面: https://cms.<tailnet>.ts.net（tailnet 内からのみ）
+# 管理画面: https://cms.85-store.com（DNS は CMS の端末の tailnet のアドレス。tailnet 内からのみ届く）
 services:
-  # tailnet に「cms」という端末として参加し、HTTPS で Payload に転送する（ログインした人のメールをヘッダーで渡す）
+  # tailnet に「cms」という端末として参加し、443 番を Caddy に転送する（PROXY プロトコルで接続元のアドレスを渡す）
   tailscale:
     image: tailscale/tailscale:stable
     hostname: cms
@@ -14,13 +14,34 @@ services:
       - TS_EXTRA_ARGS=--advertise-tags=tag:cms
       # 85crm の内部 API（85pi.<tailnet>.ts.net）を名前で引くため、MagicDNS を使う
       - TS_ACCEPT_DNS=true
+      # Payload が接続元の利用者を問い合わせる（whois）ために、LocalAPI のソケットを共有する
+      - TS_SOCKET=/var/run/ts/tailscaled.sock
     volumes:
       - tailscale-state:/var/lib/tailscale
+      - tailscale-sock:/var/run/ts
       - ./tailscale:/config:ro
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - net_admin
+
+  # cms.85-store.com の TLS を終端する（証明書は Let's Encrypt から DNS で取る）
+  caddy:
+    image: 85store-cms-caddy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    restart: unless-stopped
+    environment:
+      # Cloudflare の API トークン（85-store.com の DNS の編集だけ）。.env から渡す
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    network_mode: service:tailscale
+    depends_on:
+      - tailscale
 
   payload:
     # イメージは手元の PC で arm64 向けにビルドして送る（deploy.sh）。85pi でビルドすると負荷で落ちることがあるため
@@ -32,8 +53,10 @@ services:
       - DATABASE_URL=file:/data/payload.db
       # 新しく撮った商品写真の一時置き場（Shopify に上げたら消す）
       - PRODUCT_PHOTOS_DIR=/data/product-photos
+      - TAILSCALE_SOCKET=/var/run/ts/tailscaled.sock
     volumes:
       - cms-data:/data
+      - tailscale-sock:/var/run/ts
     # ポートはホストに出さない。tailscale と同じネットワークで 127.0.0.1:3000 だけで待ち受ける
     network_mode: service:tailscale
     depends_on:
@@ -50,4 +73,7 @@ services:
 
 volumes:
   tailscale-state:
+  tailscale-sock:
+  caddy-data:
+  caddy-config:
   cms-data:

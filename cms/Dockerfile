@@ -21,6 +21,6 @@ RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid nod
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
-# tailscale のサイドカーとネットワークを共有し、127.0.0.1 でだけ待ち受ける（外からは tailscale serve 経由でしか届かない）
+# tailscale のサイドカーとネットワークを共有し、127.0.0.1 でだけ待ち受ける（外からは tailscale serve → Caddy 経由でしか届かない）
 ENV PORT=3000 HOSTNAME=127.0.0.1
 CMD ["node", "server.js"]

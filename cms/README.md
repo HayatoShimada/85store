@@ -7,11 +7,12 @@
 
 ```
 [メンバーのスマホ・PC（tailnet 内）]
-   │ https://cms.taila713c8.ts.net
+   │ https://cms.85-store.com（DNS は「cms」端末の tailnet のアドレス。tailnet の外からは届かない）
    ▼
 [85pi: docker compose]
-   ├─ tailscale   tailnet に「cms」として参加。HTTPS で payload に転送し、ログインした人のメールを渡す
-   ├─ payload     管理画面（ホストにポートを出さない）
+   ├─ tailscale   tailnet に「cms」として参加。443 番を caddy に転送（PROXY プロトコルで接続元を渡す）
+   ├─ caddy       cms.85-store.com の TLS を終端（証明書は Let's Encrypt から DNS で取る）
+   ├─ payload     管理画面（ホストにポートを出さない）。接続元を tailscaled に問い合わせて（whois）ログインさせる
    └─ litestream  DB（SQLite）を R2 の 85store-cms-backup へ随時バックアップ
         │ 公開・更新・削除のたびに
         ▼
@@ -24,7 +25,7 @@
 ```
 
 - サイトは R2 の JSON だけを読みます。85pi が止まっていても、サイトの表示とビルドは影響を受けません（止まっている間は編集できないだけです）。
-- ログインにパスワードは使いません。Tailscale のアカウントのメールアドレスを「メンバー」に登録した人だけが入れます。
+- ログインにパスワードは使いません。tailnet に入った端末から開き、その Tailscale のアカウントのメールアドレスが「メンバー」に登録されている人だけが入れます（タグ付きの端末は入れません）。
 
 ## 使い方
 
@@ -72,6 +73,8 @@
   ],
   ```
 
+- **DNS**: Cloudflare の 85-store.com に `cms` の A レコード（値は「cms」端末の tailnet の IPv4。`tailscale ip -4`）。プロキシはオフ（DNS のみ）。
+- **証明書用の API トークン**: Cloudflare → マイプロフィール → API トークン →「トークンを作成」→「ゾーン DNS を編集する」テンプレート。対象は 85-store.com だけ。85pi の `~/85store-cms/.env` の `CLOUDFLARE_API_TOKEN` に書く。
 - **認証キーを作る**: Settings → Keys → Generate auth key
   - Reusable: オフ、Ephemeral: オフ、Pre-approved: オン、Tags: `tag:cms`
   - 85pi の `~/85store-cms/.env` の `TS_AUTHKEY` に書く
@@ -119,6 +122,15 @@ rm -f data/payload.db && npm run migrate:microcms
   | ストアの内容 | `POST /api/shopify/import-store` | `GET /api/shopify/diff-store` |
 
 - **新しく撮った商品写真**は 85pi の `/data/product-photos` に一時的に置き、Shopify に上げたら消します（写真の正も Shopify）。コレクション・記事の画像は「画像」（R2）から選び、Shopify にコピーされます。
+
+## うまく開けないとき
+
+- **tailnet に入っているか**: cms.85-store.com は tailnet の中からしか開けません（スマホも Tailscale をオンにする）。
+- **tailscale のコンテナだけが再起動したとき**（serve の設定の変更でエラーになったときなど）: caddy と payload は古いネットワークに残るので、入れ直します。
+  ```bash
+  ssh hacopi@85pi.taila713c8.ts.net 'cd ~/85store-cms && docker compose restart caddy payload'
+  ```
+- **証明書**: Caddy が期限の前に自動で更新します（Cloudflare の API トークンを使う）。ログは `docker compose logs caddy`。
 
 ## バックアップから戻す
 

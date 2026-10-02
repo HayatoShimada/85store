@@ -130,7 +130,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 ## CMS（`cms/`、Payload）
 
 - 85pi の docker compose で動かす（Payload 3・SQLite。Litestream で R2 の `85store-cms-backup` へ随時バックアップ）。手順は `cms/README.md`、配置は `cms/deploy.sh`。
-- 管理画面は `https://cms.taila713c8.ts.net`（tailnet 内のみ）。tailscale のサイドカーが `Tailscale-User-Login` を付けて転送し、Payload のカスタム認証（`cms/src/lib/tailscale-auth.ts`）が「メンバー」に登録されたメールだけを通す。Payload はホストにポートを出さない（ヘッダーを偽装できないようにするため）。
+- 管理画面は `https://cms.85-store.com`。DNS は CMS の端末（tailscale のサイドカー）の tailnet のアドレスを指すので、tailnet の外からは届かない。tailscale serve が 443 番を PROXY プロトコル付きで Caddy に転送し、Caddy が TLS を終端（証明書は Let's Encrypt から Cloudflare の DNS で取る）。Payload のカスタム認証（`cms/src/lib/tailscale-auth.ts`）が、接続元のアドレスを tailscaled に whois で問い合わせ、「メンバー」に登録されたメールだけを通す。Payload と Caddy は 127.0.0.1 でだけ待ち受け、ホストにポートを出さない（接続元を偽装できないようにするため）。
 - コレクション（サイト）: `posts`（下書き/公開・Lexical 本文に写真・写真の横並び・埋め込み）、`banners`（並び替え）、`categories`、`media`（R2 に保存、avif/webp の 480〜1600）、`users`（管理者/編集者）。
 - コレクション（Shopify）: `products`・`brands`・`productPhotos`、`shopifyCollections`、`storePages`・`storeBlogs`・`storeArticles`・`storeMenus`。
 - 公開・更新・削除のたびに `cms/src/publish/` が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。書き出す形は `types/cms.ts` と `cms/src/publish/export.ts` で合わせる。
