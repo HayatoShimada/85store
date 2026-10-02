@@ -7,11 +7,12 @@
 
 ```
 [メンバーのスマホ・PC（tailnet 内）]
-   │ https://cms.taila713c8.ts.net
+   │ https://cms.85-store.com（DNS は「cms」端末の tailnet のアドレス。tailnet の外からは届かない）
    ▼
 [85pi: docker compose]
-   ├─ tailscale   tailnet に「cms」として参加。HTTPS で payload に転送し、ログインした人のメールを渡す
-   ├─ payload     管理画面（ホストにポートを出さない）
+   ├─ tailscale   tailnet に「cms」として参加。443 番を caddy に転送（PROXY プロトコルで接続元を渡す）
+   ├─ caddy       cms.85-store.com の TLS を終端（証明書は Let's Encrypt から DNS で取る）
+   ├─ payload     管理画面（ホストにポートを出さない）。接続元を tailscaled に問い合わせて（whois）ログインさせる
    └─ litestream  DB（SQLite）を R2 の 85store-cms-backup へ随時バックアップ
         │ 公開・更新・削除のたびに
         ▼
@@ -24,7 +25,7 @@
 ```
 
 - サイトは R2 の JSON だけを読みます。85pi が止まっていても、サイトの表示とビルドは影響を受けません（止まっている間は編集できないだけです）。
-- ログインにパスワードは使いません。Tailscale のアカウントのメールアドレスを「メンバー」に登録した人だけが入れます。
+- ログインにパスワードは使いません。tailnet に入った端末から開き、その Tailscale のアカウントのメールアドレスが「メンバー」に登録されている人だけが入れます（タグ付きの端末は入れません）。
 
 ## 使い方
 
@@ -72,6 +73,8 @@
   ],
   ```
 
+- **DNS**: Cloudflare の 85-store.com に `cms` の A レコード（値は「cms」端末の tailnet の IPv4。`tailscale ip -4`）。プロキシはオフ（DNS のみ）。
+- **証明書用の API トークン**: Cloudflare → マイプロフィール → API トークン →「トークンを作成」→「ゾーン DNS を編集する」テンプレート。対象は 85-store.com だけ。85pi の `~/85store-cms/.env` の `CLOUDFLARE_API_TOKEN` に書く。
 - **認証キーを作る**: Settings → Keys → Generate auth key
   - Reusable: オフ、Ephemeral: オフ、Pre-approved: オン、Tags: `tag:cms`
   - 85pi の `~/85store-cms/.env` の `TS_AUTHKEY` に書く

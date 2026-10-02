@@ -13,10 +13,11 @@ case "${1:-deploy}" in
     # 1. 手元の PC で arm64 向けにビルドする（85pi でビルドすると、ほかのサービスと合わせてメモリが足りなくなる）
     #    初回だけ: docker run --privileged --rm tonistiigi/binfmt --install arm64
     docker buildx build --platform linux/arm64 -t 85store-cms-payload:latest --load .
+    docker buildx build --platform linux/arm64 -f Dockerfile.caddy -t 85store-cms-caddy:latest --load .
     # 2. 設定ファイルを送る（ソースは送らない）
-    rsync -az docker-compose.yml litestream.yml tailscale "$HOST:$DIR/"
+    rsync -az docker-compose.yml litestream.yml Caddyfile tailscale "$HOST:$DIR/"
     # 3. イメージを送って入れ替える
-    docker save 85store-cms-payload:latest | gzip | ssh "$HOST" 'gunzip | docker load'
+    docker save 85store-cms-payload:latest 85store-cms-caddy:latest | gzip | ssh "$HOST" 'gunzip | docker load'
     ssh "$HOST" "cd $DIR && test -f .env || { echo '.env がありません（.env.example を参照）'; exit 1; }; docker compose up -d --no-build && docker compose ps"
     ;;
   logs)
