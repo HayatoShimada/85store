@@ -8,7 +8,7 @@ export const Banners: CollectionConfig = {
   labels: { singular: 'バナー', plural: 'バナー' },
   orderable: true,
   access: { read: loggedIn, create: loggedIn, update: loggedIn, delete: loggedIn },
-  admin: {
+  admin: { group: 'サイト（85-store.com）',
     useAsTitle: 'title',
     defaultColumns: ['title', 'image', 'updatedAt'],
     description: '縦長の画像はトップのヒーロー（先頭から2枚）、それ以外は Pick Up に並びます。ドラッグで並び替えできます。',

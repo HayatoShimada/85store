@@ -67,24 +67,32 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    products: Product;
+    brands: Brand;
+    productPhotos: ProductPhoto;
     posts: Post;
     banners: Banner;
     categories: Category;
     media: Media;
     users: User;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    productPhotos: ProductPhotosSelect<false> | ProductPhotosSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -93,15 +101,26 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'payload-jobs-stats': PayloadJobsStat;
+  };
+  globalsSelect: {
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
   user: User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      syncProduct: TaskSyncProduct;
+      refreshProducts: TaskRefreshProducts;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -122,6 +141,183 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Shopify の商品の入力画面です。開いたときに Shopify の最新の内容を取り込み、保存すると Shopify に反映します。商品を消すときは「状態」をアーカイブにしてください。
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  kind: 'used' | 'new' | 'consignment';
+  status: 'draft' | 'active' | 'archived';
+  newArrival?: boolean | null;
+  brand?: (number | null) | Brand;
+  /**
+   * 例: Italian Velor 3B Jacket
+   */
+  name?: string | null;
+  autoTitle?: boolean | null;
+  titleSuffix?: string | null;
+  /**
+   * Shopify の自動コレクションが商品名で判定しているので、[BRAND] と [USED] の形を崩さないでください。
+   */
+  title: string;
+  /**
+   * 1枚目が商品の代表画像になります。ドラッグで並べ替えできます。
+   */
+  images?:
+    | {
+        photo?: (number | null) | ProductPhoto;
+        shopifyUrl?: string | null;
+        alt?: string | null;
+        shopifyMediaId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * 編集すると、下の HTML が作り直されて Shopify に送られます。説明文の中に埋め込まれた画像は、編集すると消えます（商品の写真は「写真」に入れてください）。
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  descriptionHtml?: string | null;
+  seoDescription?: string | null;
+  /**
+   * 1点ものは空のままにします。
+   */
+  options?:
+    | {
+        name: string;
+        values?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  variants?:
+    | {
+        optionValues?: string[] | null;
+        price: number;
+        compareAtPrice?: number | null;
+        /**
+         * 作成時だけ送ります
+         */
+        sku?: string | null;
+        /**
+         * 作成時だけ送ります
+         */
+        cost?: number | null;
+        /**
+         * 作成時だけ送ります
+         */
+        initialQuantity?: number | null;
+        inventoryQuantity?: number | null;
+        shopifyVariantId?: string | null;
+        inventoryItemId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  condition?: ('SS' | 'S' | 'A' | 'B' | 'C') | null;
+  /**
+   * 例: 80s、ヴィンテージ
+   */
+  era?: string | null;
+  conditionNote?: string | null;
+  /**
+   * 採寸する順に並べます。着丈・身幅・肩幅・袖丈（トップス）、ウエスト・股上・股下・もも周り・裾周り（パンツ）
+   */
+  measurements?:
+    | {
+        name: string;
+        value: number;
+        id?: string | null;
+      }[]
+    | null;
+  style?: string[] | null;
+  features?: string[] | null;
+  /**
+   * 例: Shirts、Coats & Jackets
+   */
+  productType?: string | null;
+  vendor?: string | null;
+  categoryId?: string | null;
+  categoryName?: string | null;
+  /**
+   * 区分（USED / NOT USED / 委託）と「新着」は上の項目に合わせて自動で付け外しします。
+   */
+  tags?: string[] | null;
+  supplier?: string | null;
+  deliveryNumber?: string | null;
+  deliveryDate?: string | null;
+  shopify?: {
+    syncStatus?: ('synced' | 'pending' | 'dry-run' | 'conflict' | 'error') | null;
+    syncMessage?: string | null;
+    /**
+     * 選んで保存すると実行します。
+     */
+    resolve?: ('overwrite' | 'import') | null;
+    productId?: string | null;
+    handle?: string | null;
+    updatedAt?: string | null;
+    lastSyncedAt?: string | null;
+    fingerprint?: string | null;
+    metafields?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  name: string;
+  /**
+   * 商品名の [ ] に入れる表記（例: River）。空なら名前を使います。
+   */
+  titleLabel?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productPhotos".
+ */
+export interface ProductPhoto {
+  id: number;
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -313,11 +509,124 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'syncProduct' | 'refreshProducts';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'syncProduct' | 'refreshProducts') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
   id: number;
   document?:
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'brands';
+        value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'productPhotos';
+        value: number | ProductPhoto;
+      } | null)
     | ({
         relationTo: 'posts';
         value: number | Post;
@@ -379,6 +688,116 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  kind?: T;
+  status?: T;
+  newArrival?: T;
+  brand?: T;
+  name?: T;
+  autoTitle?: T;
+  titleSuffix?: T;
+  title?: T;
+  images?:
+    | T
+    | {
+        photo?: T;
+        shopifyUrl?: T;
+        alt?: T;
+        shopifyMediaId?: T;
+        id?: T;
+      };
+  description?: T;
+  descriptionHtml?: T;
+  seoDescription?: T;
+  options?:
+    | T
+    | {
+        name?: T;
+        values?: T;
+        id?: T;
+      };
+  variants?:
+    | T
+    | {
+        optionValues?: T;
+        price?: T;
+        compareAtPrice?: T;
+        sku?: T;
+        cost?: T;
+        initialQuantity?: T;
+        inventoryQuantity?: T;
+        shopifyVariantId?: T;
+        inventoryItemId?: T;
+        id?: T;
+      };
+  condition?: T;
+  era?: T;
+  conditionNote?: T;
+  measurements?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        id?: T;
+      };
+  style?: T;
+  features?: T;
+  productType?: T;
+  vendor?: T;
+  categoryId?: T;
+  categoryName?: T;
+  tags?: T;
+  supplier?: T;
+  deliveryNumber?: T;
+  deliveryDate?: T;
+  shopify?:
+    | T
+    | {
+        syncStatus?: T;
+        syncMessage?: T;
+        resolve?: T;
+        productId?: T;
+        handle?: T;
+        updatedAt?: T;
+        lastSyncedAt?: T;
+        fingerprint?: T;
+        metafields?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  name?: T;
+  titleLabel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productPhotos_select".
+ */
+export interface ProductPhotosSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -550,6 +969,38 @@ export interface PayloadKvSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  meta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -582,6 +1033,34 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: number;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -589,6 +1068,24 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSyncProduct".
+ */
+export interface TaskSyncProduct {
+  input: {
+    id: number;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskRefreshProducts".
+ */
+export interface TaskRefreshProducts {
+  input?: unknown;
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

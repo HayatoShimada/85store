@@ -19,7 +19,7 @@ export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: '画像', plural: '画像' },
   access: { read: () => true, create: loggedIn, update: loggedIn, delete: loggedIn },
-  admin: { defaultColumns: ['filename', 'alt', 'updatedAt'] },
+  admin: { group: 'サイト（85-store.com）', defaultColumns: ['filename', 'alt', 'updatedAt'] },
   fields: [
     { name: 'alt', label: '代替テキスト（画像の説明）', type: 'text' },
     // microCMS から移した画像の元の URL（移行のやり直しで重複させないため）

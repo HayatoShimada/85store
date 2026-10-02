@@ -8,11 +8,17 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { Banners } from './collections/Banners'
+import { Brands } from './collections/Brands'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
+import { ProductPhotos } from './collections/ProductPhotos'
+import { Products } from './collections/Products'
 import { Users } from './collections/Users'
+import { migrations } from './migrations'
 import { publicUrl, r2Enabled, s3Config } from './lib/bucket'
+import { shopifyEndpoints } from './shopify/import'
+import { refreshProductsTask, syncProductTask } from './shopify/sync'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,12 +31,25 @@ export default buildConfig({
     meta: { titleSuffix: ' | 85-Store CMS' },
   },
   i18n: { supportedLanguages: { ja }, fallbackLanguage: 'ja' },
-  collections: [Posts, Banners, Categories, Media, Users],
+  collections: [Products, Brands, ProductPhotos, Posts, Banners, Categories, Media, Users],
+  endpoints: shopifyEndpoints,
+  // Shopify との同期はジョブで行う（失敗したらやり直す）。保存の直後に送り、取りこぼしは1分ごとに拾う。
+  // Shopify で変わった商品は10分ごとに取り込む（商品の正は Shopify）
+  jobs: {
+    tasks: [syncProductTask, refreshProductsTask],
+    autoRun: [{ cron: '* * * * *', queue: 'shopify', limit: 10 }],
+    shouldAutoRun: () => process.env.SHOPIFY_SYNC_MODE !== 'off',
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: sqliteAdapter({
     client: { url: process.env.DATABASE_URL || 'file:./data/payload.db' },
+    // Litestream（バックアップ）が DB を読んでいる間に書き込むと "database is locked" になるので、待つ
+    busyTimeout: 10_000,
+    wal: true,
+    // 本番（85pi）は起動時に src/migrations を適用する。コレクションを変えたら npm run payload migrate:create <名前>
+    prodMigrations: migrations,
   }),
   sharp,
   plugins: [
