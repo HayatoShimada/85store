@@ -15,10 +15,10 @@ import { Posts } from './collections/Posts'
 import { ProductPhotos } from './collections/ProductPhotos'
 import { Products } from './collections/Products'
 import { Users } from './collections/Users'
+import { migrations } from './migrations'
 import { publicUrl, r2Enabled, s3Config } from './lib/bucket'
-import { crmEndpoints } from './crm/endpoints'
 import { shopifyEndpoints } from './shopify/import'
-import { syncProductTask } from './shopify/sync'
+import { refreshProductsTask, syncProductTask } from './shopify/sync'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,10 +32,11 @@ export default buildConfig({
   },
   i18n: { supportedLanguages: { ja }, fallbackLanguage: 'ja' },
   collections: [Products, Brands, ProductPhotos, Posts, Banners, Categories, Media, Users],
-  endpoints: [...shopifyEndpoints, ...crmEndpoints],
-  // Shopify への同期はジョブで行う（失敗したらやり直す）。保存の直後に実行し、取りこぼしは1分ごとに拾う
+  endpoints: shopifyEndpoints,
+  // Shopify との同期はジョブで行う（失敗したらやり直す）。保存の直後に送り、取りこぼしは1分ごとに拾う。
+  // Shopify で変わった商品は10分ごとに取り込む（商品の正は Shopify）
   jobs: {
-    tasks: [syncProductTask],
+    tasks: [syncProductTask, refreshProductsTask],
     autoRun: [{ cron: '* * * * *', queue: 'shopify', limit: 10 }],
     shouldAutoRun: () => process.env.SHOPIFY_SYNC_MODE !== 'off',
   },
@@ -44,6 +45,8 @@ export default buildConfig({
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: sqliteAdapter({
     client: { url: process.env.DATABASE_URL || 'file:./data/payload.db' },
+    // 本番（85pi）は起動時に src/migrations を適用する。コレクションを変えたら npm run payload migrate:create <名前>
+    prodMigrations: migrations,
   }),
   sharp,
   plugins: [
@@ -57,11 +60,6 @@ export default buildConfig({
           prefix: 'media',
           disablePayloadAccessControl: true,
           generateFileURL: ({ filename, prefix }) => publicUrl(`${prefix ?? 'media'}/${filename}`),
-        },
-        productPhotos: {
-          prefix: 'products',
-          disablePayloadAccessControl: true,
-          generateFileURL: ({ filename, prefix }) => publicUrl(`${prefix ?? 'products'}/${filename}`),
         },
       },
     }),

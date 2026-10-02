@@ -2,8 +2,11 @@ import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { loggedIn } from '../access'
 import { productBeforeChange, productAfterChange } from '../shopify/product-hooks'
+import { productRefreshEndpoint } from '../shopify/import'
+import { describeEndpoint } from '../crm/endpoints'
 
-// 商品。Payload が正で、保存すると Shopify に書き出す（src/shopify/sync.ts）。
+// 商品。正は Shopify で、Payload は入力画面（src/shopify/sync.ts）。
+// 画面を開いたときと10分ごとに Shopify から取り込み、保存すると Shopify に送る。
 // 在庫数の増減は 85crm と Shopify（注文）の担当なので、ここでは表示だけ。原価・SKU・初期在庫は作成時だけ使う。
 const MEASUREMENT_NAMES = '着丈・身幅・肩幅・袖丈（トップス）、ウエスト・股上・股下・もも周り・裾周り（パンツ）'
 
@@ -16,8 +19,9 @@ export const Products: CollectionConfig = {
     group: '商品',
     defaultColumns: ['title', 'kind', 'status', 'shopify.syncStatus', 'updatedAt'],
     listSearchableFields: ['title', 'shopify.handle'],
-    description: '保存すると Shopify に反映されます。商品を消すときは「状態」をアーカイブにしてください。',
+    description: 'Shopify の商品の入力画面です。開いたときに Shopify の最新の内容を取り込み、保存すると Shopify に反映します。商品を消すときは「状態」をアーカイブにしてください。',
   },
+  endpoints: [productRefreshEndpoint, describeEndpoint],
   hooks: {
     beforeChange: [productBeforeChange],
     afterChange: [productAfterChange],
@@ -225,6 +229,7 @@ export const Products: CollectionConfig = {
       type: 'group',
       admin: { position: 'sidebar' },
       fields: [
+        { name: 'refresher', type: 'ui', admin: { components: { Field: '/components/ShopifyRefresher#ShopifyRefresher' } } },
         {
           name: 'syncStatus',
           label: '同期',

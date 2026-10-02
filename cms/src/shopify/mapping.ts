@@ -1,5 +1,4 @@
 import type { Brand, Product, ProductPhoto } from '../payload-types'
-import { publicUrl } from '../lib/bucket'
 import {
   type CanonicalProduct,
   type Metafield,
@@ -140,9 +139,9 @@ export function metafieldsFromDoc(doc: Partial<Product>, brands: Map<number, Bra
   return { metafields: merged, deleted }
 }
 
-// 商品写真の公開 URL（R2）。ローカルでの開発時は Payload の URL
+// 商品写真の URL（85pi の CMS。85crm の AI が説明文を作るときに読む。tailnet 内）
 export const photoUrl = (photo: ProductPhoto) =>
-  photo.filename && process.env.R2_BUCKET ? publicUrl(`products/${photo.filename}`) : (photo.url ?? '')
+  photo.filename ? `${(process.env.CMS_SERVER_URL || 'http://localhost:3001').replace(/\/$/, '')}/api/productPhotos/file/${encodeURIComponent(photo.filename)}` : ''
 
 // Payload の商品 → 比べられる形
 export function canonicalFromDoc(doc: Partial<Product>, brands: Map<number, Brand>): CanonicalProduct {
@@ -164,7 +163,7 @@ export function canonicalFromDoc(doc: Partial<Product>, brands: Map<number, Bran
     })),
     media: (doc.images ?? []).flatMap((image) => {
       if (image.shopifyMediaId) return [image.shopifyMediaId]
-      if (image.photo && typeof image.photo === 'object') return [`new:${photoUrl(image.photo)}`]
+      if (image.photo) return [`new:${typeof image.photo === 'object' ? image.photo.id : image.photo}`]
       return []
     }),
     metafields: metafieldsFromDoc(doc, brands).metafields,

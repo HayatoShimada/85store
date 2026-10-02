@@ -101,8 +101,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'payload-jobs-stats': PayloadJobsStat;
+  };
+  globalsSelect: {
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -111,6 +115,7 @@ export interface Config {
   jobs: {
     tasks: {
       syncProduct: TaskSyncProduct;
+      refreshProducts: TaskRefreshProducts;
       inline: {
         input: unknown;
         output: unknown;
@@ -138,7 +143,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * 保存すると Shopify に反映されます。商品を消すときは「状態」をアーカイブにしてください。
+ * Shopify の商品の入力画面です。開いたときに Shopify の最新の内容を取り込み、保存すると Shopify に反映します。商品を消すときは「状態」をアーカイブにしてください。
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
@@ -361,6 +366,8 @@ export interface Media {
   id: number;
   alt?: string | null;
   sourceUrl?: string | null;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -552,7 +559,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'syncProduct';
+        taskSlug: 'inline' | 'syncProduct' | 'refreshProducts';
         taskID: string;
         input?:
           | {
@@ -585,10 +592,19 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'syncProduct') | null;
+  taskSlug?: ('inline' | 'syncProduct' | 'refreshProducts') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -834,6 +850,8 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   sourceUrl?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -977,6 +995,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  meta?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1014,6 +1033,34 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: number;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -1030,6 +1077,14 @@ export interface TaskSyncProduct {
   input: {
     id: number;
   };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskRefreshProducts".
+ */
+export interface TaskRefreshProducts {
+  input?: unknown;
   output?: unknown;
 }
 /**

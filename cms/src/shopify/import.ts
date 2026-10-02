@@ -3,7 +3,7 @@ import { isAdmin } from '../access'
 import { shopifyConfigured, shopifyGraphQL } from './client'
 import { type ShopifyProduct, PRODUCT_FIELDS, diffProducts, fromShopify } from './canonical'
 import { canonicalFromDoc } from './mapping'
-import { importIntoDoc } from './sync'
+import { importIntoDoc, refreshProduct } from './sync'
 
 // Shopify の商品をすべて Payload に取り込む（Shopify の ID で上書き。何度実行しても重複しない）
 export async function importAllProducts(payload: Payload): Promise<{ created: number; updated: number }> {
@@ -97,3 +97,19 @@ export const shopifyEndpoints: Endpoint[] = [
     },
   },
 ]
+
+// 商品コレクションのエンドポイント（/api/products/:id/refresh）
+export const productRefreshEndpoint: Endpoint = {
+    // 商品の画面を開いたときに呼ぶ（Shopify の最新の内容を取り込む）
+    path: '/:id/refresh',
+    method: 'post',
+    handler: async (req) => {
+      if (!req.user) return Response.json({ error: 'ログインしてください' }, { status: 401 })
+      if (!shopifyConfigured()) return Response.json({ changed: false })
+      try {
+        return Response.json(await refreshProduct(req.payload, Number(req.routeParams?.id)))
+      } catch (error) {
+        return Response.json({ changed: false, message: error instanceof Error ? error.message : String(error) }, { status: 502 })
+      }
+    },
+  }

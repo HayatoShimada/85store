@@ -12,6 +12,7 @@ import {
   fromShopify,
 } from './canonical'
 import { canonicalFromDoc, docFromShopify, metafieldsFromDoc } from './mapping'
+import { stagePhoto } from './upload'
 import { htmlToDescription } from '../lib/description'
 
 // 商品を Shopify に書き出す。
@@ -198,10 +199,15 @@ async function productSetInput(doc: Product, desired: CanonicalProduct, creating
           : {}),
       }
     }),
-    files: desired.media.map((m, i) => {
-      const alt = images[i]?.alt ?? undefined
-      return m.startsWith('new:') ? { originalSource: m.slice(4), contentType: 'IMAGE', ...(alt ? { alt } : {}) } : { id: m, ...(alt ? { alt } : {}) }
-    }),
+    files: await Promise.all(
+      desired.media.map(async (m, i) => {
+        const alt = images[i]?.alt ?? undefined
+        if (!m.startsWith('new:')) return { id: m, ...(alt ? { alt } : {}) }
+        const photo = images[i]?.photo
+        if (!photo || typeof photo !== 'object') throw new Error('写真のファイルが見つかりません')
+        return { originalSource: await stagePhoto(photo), contentType: 'IMAGE', ...(alt ? { alt } : {}) }
+      }),
+    ),
     metafields: Object.entries(desired.metafields).map(([key, { type, value }]) => {
       const [namespace, ...rest] = key.split('.')
       return { namespace, key: rest.join('.'), type, value }
@@ -227,12 +233,12 @@ export async function syncProduct(payload: Payload, id: number): Promise<void> {
         await importIntoDoc(payload, id, product)
         return
       }
-      // 前回の同期のあとに、Payload 以外（Shopify の管理画面・85crm など）で変わっていたら止める
+      // 画面を開いたとき（または前回の同期）のあとに、Shopify 側で変わっていたら止める（両方で同時に編集された）
       if (fingerprint(current) !== doc.shopify?.fingerprint && doc.shopify?.resolve !== 'overwrite') {
         const diffs = diffProducts(current, desired)
         await record(payload, id, {
           syncStatus: 'conflict',
-          syncMessage: `前回の同期のあとに Shopify 側で変更されています。どちらを残すか選んでください。\n今の Shopify との違い:\n${summarize(diffs) || '（なし）'}`,
+          syncMessage: `編集している間に、Shopify 側（管理画面・85crm・POS など）でも変更されました。どちらを残すか選んでください。\n今の Shopify との違い:\n${summarize(diffs) || '（なし）'}`,
         })
         return
       }
@@ -304,7 +310,7 @@ async function push(payload: Payload, doc: Product, desired: CanonicalProduct, b
   if (!product) throw new Error('同期した商品を読み直せません')
   const images = (doc.images ?? []).map((image, i) => ({
     ...image,
-    photo: typeof image.photo === 'object' && image.photo ? image.photo.id : image.photo,
+    photo: null,
     shopifyMediaId: product.media.nodes[i]?.id ?? image.shopifyMediaId,
     shopifyUrl: product.media.nodes[i]?.image?.url ?? product.media.nodes[i]?.preview?.image?.url ?? image.shopifyUrl,
   }))
@@ -328,6 +334,75 @@ async function push(payload: Payload, doc: Product, desired: CanonicalProduct, b
     },
     { images, variants, ...(typeof doc.brand === 'object' && doc.brand ? { brand: doc.brand.id } : {}) },
   )
+  // Shopify に上げた写真は、85pi の手元から消す（写真の正は Shopify）
+  for (const image of doc.images ?? []) {
+    const photoId = typeof image.photo === 'object' && image.photo ? image.photo.id : image.photo
+    if (photoId) await payload.delete({ collection: 'productPhotos', id: photoId, overrideAccess: true }).catch(() => {})
+  }
   // 85-store.com の New Arrivals を作り直す
   await revalidateSite(['shopify-products']).catch((error) => payload.logger.warn({ err: error }, 'サイトの再検証に失敗しました'))
+}
+
+// ---------------------------------------------------------------------------
+// Shopify → Payload（Shopify が正。編集する前と、10分ごとに取り込む）
+// ---------------------------------------------------------------------------
+
+// Payload で保存したが、まだ Shopify に送れていない変更がある（取り込むと消えてしまう）
+const hasUnsyncedChanges = (doc: Product) => ['pending', 'dry-run', 'conflict', 'error'].includes(doc.shopify?.syncStatus ?? '')
+
+// 商品の画面を開いたときに、Shopify の最新の内容を取り込む
+export async function refreshProduct(payload: Payload, id: number): Promise<{ changed: boolean; message?: string }> {
+  const doc = await payload.findByID({ collection: 'products', id, depth: 0, overrideAccess: true })
+  if (!doc.shopify?.productId) return { changed: false }
+  if (hasUnsyncedChanges(doc)) return { changed: false, message: 'Shopify にまだ送っていない変更があるため、取り込みませんでした。' }
+  const product = await fetchShopifyProduct(doc.shopify.productId)
+  if (!product) {
+    await record(payload, id, { syncStatus: 'error', syncMessage: 'Shopify でこの商品が削除されています。' })
+    return { changed: true }
+  }
+  if (fingerprint(fromShopify(product)) === doc.shopify.fingerprint) return { changed: false }
+  await importIntoDoc(payload, id, product)
+  return { changed: true }
+}
+
+// Shopify で変わった商品（新しく作られたものを含む）をまとめて取り込む
+export async function refreshChangedProducts(payload: Payload): Promise<{ imported: number; skipped: number }> {
+  // 取り込んだ商品のうち、Shopify の更新日時がいちばん新しいもの以降を探す
+  const latest = await payload.find({ collection: 'products', sort: '-shopify.updatedAt', limit: 1, depth: 0, overrideAccess: true })
+  const since = latest.docs[0]?.shopify?.updatedAt
+  let after: string | null = null
+  let imported = 0
+  let skipped = 0
+  do {
+    const data: { products: { nodes: ShopifyProduct[]; pageInfo: { hasNextPage: boolean; endCursor: string } } } = await shopifyGraphQL(
+      `query($after: String, $query: String) { products(first: 25, after: $after, query: $query) { pageInfo { hasNextPage endCursor } nodes { ${PRODUCT_FIELDS} } } }`,
+      { after, query: since ? `updated_at:>='${since}'` : null },
+    )
+    for (const product of data.products.nodes) {
+      const found = await payload.find({ collection: 'products', where: { 'shopify.productId': { equals: product.id } }, limit: 1, depth: 0, overrideAccess: true })
+      const doc = found.docs[0]
+      if (doc && (hasUnsyncedChanges(doc) || fingerprint(fromShopify(product)) === doc.shopify?.fingerprint)) {
+        if (doc && hasUnsyncedChanges(doc)) skipped++
+        continue
+      }
+      await importIntoDoc(payload, doc?.id ?? null, product)
+      imported++
+    }
+    after = data.products.pageInfo.hasNextPage ? data.products.pageInfo.endCursor : null
+  } while (after)
+  if (imported || skipped) payload.logger.info(`Shopify から取り込み: ${imported} 件（未送信の変更があり見送り ${skipped} 件）`)
+  return { imported, skipped }
+}
+
+export const refreshProductsTask: TaskConfig<{ input: object; output: object }> = {
+  slug: 'refreshProducts',
+  label: 'Shopify で変わった商品を取り込む',
+  inputSchema: [],
+  retries: 1,
+  // 10分ごと（秒・分・時・日・月・曜日）
+  schedule: [{ cron: '0 */10 * * * *', queue: 'shopify' }],
+  handler: async ({ req }) => {
+    await refreshChangedProducts(req.payload)
+    return { output: {} }
+  },
 }

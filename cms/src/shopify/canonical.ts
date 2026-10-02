@@ -64,7 +64,7 @@ export type CanonicalProduct = {
   categoryId: string | null
   options: { name: string; values: string[] }[]
   variants: { id: string | null; options: string[]; price: string; compareAtPrice: string | null }[]
-  media: string[] // 既存は Shopify の media ID、新しい写真は "new:<URL>"
+  media: string[] // 既存は Shopify の media ID、新しく撮った写真は "new:<productPhotos の ID>"
   metafields: Record<string, Metafield> // "namespace.key"
 }
 

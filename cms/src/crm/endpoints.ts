@@ -4,9 +4,8 @@ import { type GeneratedDescription, crmFetch } from './client'
 import { photoUrl } from '../shopify/mapping'
 
 // 「説明文を作る」: 保存済みの商品データを 85crm に渡して説明文を作り、説明文の欄に入れて保存する
-export const crmEndpoints: Endpoint[] = [
-  {
-    path: '/products/:id/describe',
+export const describeEndpoint: Endpoint = {
+    path: '/:id/describe',
     method: 'post',
     handler: async (req) => {
       if (!req.user) return Response.json({ error: 'ログインしてください' }, { status: 401 })
@@ -61,5 +60,4 @@ export const crmEndpoints: Endpoint[] = [
         return Response.json({ error: error instanceof Error ? error.message : String(error) }, { status: 502 })
       }
     },
-  },
-]
+  }

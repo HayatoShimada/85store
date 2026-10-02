@@ -28,6 +28,8 @@ services:
     env_file: .env
     environment:
       - DATABASE_URL=file:/data/payload.db
+      # 新しく撮った商品写真の一時置き場（Shopify に上げたら消す）
+      - PRODUCT_PHOTOS_DIR=/data/product-photos
     volumes:
       - cms-data:/data
     # ポートはホストに出さない。tailscale と同じネットワークで 127.0.0.1:3000 だけで待ち受ける
