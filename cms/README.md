@@ -65,9 +65,12 @@
 ### 3. 85pi に配置する
 
 ```bash
-./deploy.sh            # ソースを 85pi に送り、85pi の上でビルドして起動（初回は10分ほど）
+./deploy.sh            # この PC で arm64 向けにビルドし、イメージを 85pi に送って起動（15分ほど）
 ./deploy.sh logs       # ログを見る
 ```
+
+- 85pi の上ではビルドしません（immich などと合わせてメモリが足りなくなり、85pi が落ちたことがあるため）。
+- この PC で初めてビルドするときだけ、arm64 のエミュレーションを入れます: `docker run --privileged --rm tonistiigi/binfmt --install arm64`
 
 `~/85store-cms/.env` の残りの値（`PAYLOAD_SECRET`・`CMS_WEBHOOK_SECRET` など）は作成済みです。`CMS_WEBHOOK_SECRET` は Vercel の環境変数にも同じ値が入っています。
 

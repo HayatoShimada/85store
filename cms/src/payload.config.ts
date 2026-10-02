@@ -45,6 +45,9 @@ export default buildConfig({
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   db: sqliteAdapter({
     client: { url: process.env.DATABASE_URL || 'file:./data/payload.db' },
+    // Litestream（バックアップ）が DB を読んでいる間に書き込むと "database is locked" になるので、待つ
+    busyTimeout: 10_000,
+    wal: true,
     // 本番（85pi）は起動時に src/migrations を適用する。コレクションを変えたら npm run payload migrate:create <名前>
     prodMigrations: migrations,
   }),

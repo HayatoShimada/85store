@@ -23,6 +23,8 @@ services:
       - net_admin
 
   payload:
+    # イメージは手元の PC で arm64 向けにビルドして送る（deploy.sh）。85pi でビルドすると負荷で落ちることがあるため
+    image: 85store-cms-payload:latest
     build: .
     restart: unless-stopped
     env_file: .env
