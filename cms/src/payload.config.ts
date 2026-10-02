@@ -14,11 +14,17 @@ import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
 import { ProductPhotos } from './collections/ProductPhotos'
 import { Products } from './collections/Products'
+import { ShopifyCollections } from './collections/store/ShopifyCollections'
+import { StoreArticles } from './collections/store/StoreArticles'
+import { StoreBlogs } from './collections/store/StoreBlogs'
+import { StoreMenus } from './collections/store/StoreMenus'
+import { StorePages } from './collections/store/StorePages'
 import { Users } from './collections/Users'
 import { migrations } from './migrations'
 import { publicUrl, r2Enabled, s3Config } from './lib/bucket'
 import { shopifyEndpoints } from './shopify/import'
 import { refreshProductsTask, syncProductTask } from './shopify/sync'
+import { deleteStoreResourceTask, refreshStoreTask, storeEndpoints, syncStoreResourceTask } from './shopify/store'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,14 +37,28 @@ export default buildConfig({
     meta: { titleSuffix: ' | 85-Store CMS' },
   },
   i18n: { supportedLanguages: { ja }, fallbackLanguage: 'ja' },
-  collections: [Products, Brands, ProductPhotos, Posts, Banners, Categories, Media, Users],
-  endpoints: shopifyEndpoints,
+  collections: [
+    Products,
+    ShopifyCollections,
+    Brands,
+    ProductPhotos,
+    StorePages,
+    StoreArticles,
+    StoreBlogs,
+    StoreMenus,
+    Posts,
+    Banners,
+    Categories,
+    Media,
+    Users,
+  ],
+  endpoints: [...shopifyEndpoints, ...storeEndpoints],
   // Shopify との同期はジョブで行う（失敗したらやり直す）。保存の直後に送り、取りこぼしは1分ごとに拾う。
-  // Shopify で変わった商品は10分ごとに取り込む（商品の正は Shopify）
+  // Shopify で変わった商品・ストアの内容は10分ごとに取り込む（正は Shopify）
   jobs: {
-    tasks: [syncProductTask, refreshProductsTask],
+    tasks: [syncProductTask, refreshProductsTask, syncStoreResourceTask, deleteStoreResourceTask, refreshStoreTask],
     autoRun: [{ cron: '* * * * *', queue: 'shopify', limit: 10 }],
-    shouldAutoRun: () => process.env.SHOPIFY_SYNC_MODE !== 'off',
+    shouldAutoRun: () => process.env.SHOPIFY_SYNC_MODE !== 'off' || process.env.SHOPIFY_STORE_SYNC_MODE !== 'off',
   },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
