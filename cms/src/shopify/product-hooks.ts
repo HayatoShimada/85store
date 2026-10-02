@@ -1,6 +1,5 @@
 import type { CollectionAfterChangeHook, CollectionBeforeChangeHook } from 'payload'
-import { convertLexicalToHTML } from '@payloadcms/richtext-lexical/html'
-import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+import { descriptionToHTML } from '../lib/description'
 import type { Brand, Product } from '../payload-types'
 import { KIND_TAGS, type Kind, NEW_ARRIVAL_TAG } from './mapping'
 import { queueProductSync, syncMode } from './sync'
@@ -44,14 +43,11 @@ export const productBeforeChange: CollectionBeforeChangeHook<Product> = async ({
     data.title = titleFrom((data.kind ?? 'used') as Kind, brand, data.name, data.titleSuffix)
   }
 
-  // 説明文を編集したら、Shopify に送る HTML を作り直す
-  if (data.description && changed(data, original, 'description')) {
-    data.descriptionHtml = convertLexicalToHTML({
-      data: data.description as unknown as SerializedEditorState,
-      disableContainer: true,
-      disableIndent: true,
-      disableTextAlign: true,
-    })
+  // 説明文を編集したら、Shopify に送る HTML を作り直す。
+  // 内容が変わっていないとき（エディタが JSON の形だけ整えた場合など）は、取り込んだ HTML をそのまま残す
+  if (data.description && changed(data, original, 'description') && !context.keepDescriptionHtml) {
+    const html = descriptionToHTML(data.description)
+    if (html !== descriptionToHTML(original?.description)) data.descriptionHtml = html
   }
 
   if (syncMode() !== 'off') data.shopify = { ...(data.shopify ?? original?.shopify), syncStatus: 'pending' }

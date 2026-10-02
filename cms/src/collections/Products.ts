@@ -87,18 +87,20 @@ export const Products: CollectionConfig = {
               labels: { singular: '写真', plural: '写真' },
               admin: { description: '1枚目が商品の代表画像になります。ドラッグで並べ替えできます。' },
               fields: [
+                { name: 'preview', type: 'ui', admin: { components: { Field: '/components/ShopifyImagePreview#ShopifyImagePreview' } } },
                 { name: 'photo', label: '写真', type: 'upload', relationTo: 'productPhotos', admin: { condition: (_d, s) => !s?.shopifyMediaId } },
-                { name: 'shopifyUrl', label: 'Shopify の画像', type: 'text', admin: { readOnly: true, condition: (_d, s) => Boolean(s?.shopifyMediaId) } },
+                { name: 'shopifyUrl', type: 'text', admin: { hidden: true } },
                 { name: 'alt', label: '代替テキスト', type: 'text' },
                 { name: 'shopifyMediaId', type: 'text', admin: { hidden: true } },
               ],
             },
+            { name: 'describe', type: 'ui', admin: { components: { Field: '/components/DescribeButton#DescribeButton' } } },
             {
               name: 'description',
               label: '説明文',
               type: 'richText',
               editor: lexicalEditor(),
-              admin: { description: '編集すると、下の HTML が作り直されて Shopify に送られます。' },
+              admin: { description: '編集すると、下の HTML が作り直されて Shopify に送られます。説明文の中に埋め込まれた画像は、編集すると消えます（商品の写真は「写真」に入れてください）。' },
             },
             {
               name: 'descriptionHtml',

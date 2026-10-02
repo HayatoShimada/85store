@@ -12,6 +12,8 @@ services:
       - TS_STATE_DIR=/var/lib/tailscale
       - TS_SERVE_CONFIG=/config/serve.json
       - TS_EXTRA_ARGS=--advertise-tags=tag:cms
+      # 85crm の内部 API（85pi.<tailnet>.ts.net）を名前で引くため、MagicDNS を使う
+      - TS_ACCEPT_DNS=true
     volumes:
       - tailscale-state:/var/lib/tailscale
       - ./tailscale:/config:ro

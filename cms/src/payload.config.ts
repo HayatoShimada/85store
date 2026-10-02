@@ -16,6 +16,7 @@ import { ProductPhotos } from './collections/ProductPhotos'
 import { Products } from './collections/Products'
 import { Users } from './collections/Users'
 import { publicUrl, r2Enabled, s3Config } from './lib/bucket'
+import { crmEndpoints } from './crm/endpoints'
 import { shopifyEndpoints } from './shopify/import'
 import { syncProductTask } from './shopify/sync'
 
@@ -31,7 +32,7 @@ export default buildConfig({
   },
   i18n: { supportedLanguages: { ja }, fallbackLanguage: 'ja' },
   collections: [Products, Brands, ProductPhotos, Posts, Banners, Categories, Media, Users],
-  endpoints: shopifyEndpoints,
+  endpoints: [...shopifyEndpoints, ...crmEndpoints],
   // Shopify への同期はジョブで行う（失敗したらやり直す）。保存の直後に実行し、取りこぼしは1分ごとに拾う
   jobs: {
     tasks: [syncProductTask],

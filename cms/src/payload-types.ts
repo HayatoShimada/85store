@@ -172,7 +172,7 @@ export interface Product {
       }[]
     | null;
   /**
-   * 編集すると、下の HTML が作り直されて Shopify に送られます。
+   * 編集すると、下の HTML が作り直されて Shopify に送られます。説明文の中に埋め込まれた画像は、編集すると消えます（商品の写真は「写真」に入れてください）。
    */
   description?: {
     root: {

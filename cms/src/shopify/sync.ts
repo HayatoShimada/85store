@@ -12,6 +12,7 @@ import {
   fromShopify,
 } from './canonical'
 import { canonicalFromDoc, docFromShopify, metafieldsFromDoc } from './mapping'
+import { htmlToDescription } from '../lib/description'
 
 // 商品を Shopify に書き出す。
 // SHOPIFY_SYNC_MODE: off（何もしない）/ dry-run（送る内容を記録するだけ。既定）/ live（送る）
@@ -128,6 +129,8 @@ export async function importIntoDoc(payload: Payload, id: number | null, product
   }
   const doc = {
     ...data,
+    // 編集用に、説明文の HTML を Lexical にもしておく（送るのは取り込んだ HTML のまま）
+    description: htmlToDescription(payload, data.descriptionHtml) as never,
     brand,
     shopify: {
       ...data.shopify,
