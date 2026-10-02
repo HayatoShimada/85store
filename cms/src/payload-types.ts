@@ -751,7 +751,7 @@ export interface StoreMenu {
         tags?: string[] | null;
         resourceId?: string | null;
         itemId?: string | null;
-        items?:
+        subItems?:
           | {
               title: string;
               type:
@@ -793,7 +793,7 @@ export interface StoreMenu {
               tags?: string[] | null;
               resourceId?: string | null;
               itemId?: string | null;
-              items?:
+              subSubItems?:
                 | {
                     title: string;
                     type:
@@ -1422,7 +1422,7 @@ export interface StoreMenusSelect<T extends boolean = true> {
         tags?: T;
         resourceId?: T;
         itemId?: T;
-        items?:
+        subItems?:
           | T
           | {
               title?: T;
@@ -1432,7 +1432,7 @@ export interface StoreMenusSelect<T extends boolean = true> {
               tags?: T;
               resourceId?: T;
               itemId?: T;
-              items?:
+              subSubItems?:
                 | T
                 | {
                     title?: T;

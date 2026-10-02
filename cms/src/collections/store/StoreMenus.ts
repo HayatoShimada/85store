@@ -1,7 +1,7 @@
 import type { CollectionConfig, Field } from 'payload'
 import { adminOnly, loggedIn } from '../../access'
 import { storeHooks, storeRefreshEndpoint, syncSidebar } from '../../shopify/store'
-import { RESOURCE_TYPES } from '../../shopify/store/menus'
+import { CHILD_KEYS, RESOURCE_TYPES } from '../../shopify/store/menus'
 
 // ストアのメニュー（main-menu・footer など）
 const TYPES = [
@@ -46,7 +46,7 @@ function itemFields(depth: number): Field[] {
     ...(depth < 3
       ? [
           {
-            name: 'items',
+            name: CHILD_KEYS[depth],
             label: depth === 1 ? '下の項目' : 'さらに下の項目',
             type: 'array',
             labels: { singular: '項目', plural: '項目' },

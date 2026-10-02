@@ -32,6 +32,10 @@ const canonicalItems = (items: ShopifyMenuItem[]): CanonicalItem[] =>
     items: canonicalItems(i.items ?? []),
   }))
 
+// Payload の項目の入れ子の欄の名前（同じ名前にすると DB の関連の名前がぶつかる）
+export const CHILD_KEYS = ['items', 'subItems', 'subSubItems'] as const
+const children = (item: DocItem | undefined, depth: number) => (item?.[CHILD_KEYS[depth]] as DocItem[] | null | undefined) ?? []
+
 type DocItem = {
   title?: string
   type?: string
@@ -41,9 +45,11 @@ type DocItem = {
   tags?: string[] | null
   itemId?: string | null
   items?: DocItem[] | null
+  subItems?: DocItem[] | null
+  subSubItems?: DocItem[] | null
 }
 
-async function desiredItems(items: DocItem[] | null | undefined, lookup: Lookup): Promise<CanonicalItem[]> {
+async function desiredItems(items: DocItem[] | null | undefined, lookup: Lookup, depth = 1): Promise<CanonicalItem[]> {
   const out: CanonicalItem[] = []
   for (const i of items ?? []) {
     const type = i.type ?? 'HTTP'
@@ -54,13 +60,13 @@ async function desiredItems(items: DocItem[] | null | undefined, lookup: Lookup)
       resourceId: RESOURCE_TYPES[type] || type !== 'HTTP' ? resourceId || null : null,
       url: type === 'HTTP' ? i.url || null : null,
       tags: [...(i.tags ?? [])].sort(),
-      items: await desiredItems(i.items, lookup),
+      items: depth < 3 ? await desiredItems(children(i, depth), lookup, depth + 1) : [],
     })
   }
   return out
 }
 
-async function docItems(items: ShopifyMenuItem[], lookup: Lookup): Promise<DocItem[]> {
+async function docItems(items: ShopifyMenuItem[], lookup: Lookup, depth = 1): Promise<DocItem[]> {
   const out: DocItem[] = []
   for (const i of items) {
     const collection = RESOURCE_TYPES[i.type]
@@ -74,14 +80,14 @@ async function docItems(items: ShopifyMenuItem[], lookup: Lookup): Promise<DocIt
       url: i.type === 'HTTP' ? i.url : null,
       tags: i.tags,
       itemId: i.id,
-      items: await docItems(i.items ?? [], lookup),
+      ...(depth < 3 ? { [CHILD_KEYS[depth]]: await docItems(i.items ?? [], lookup, depth + 1) } : {}),
     })
   }
   return out
 }
 
 // 送る項目（既存の項目は ID を付けて更新し、付けなかった項目は Shopify が消す）
-function inputItems(desired: CanonicalItem[], doc: DocItem[] | null | undefined, withIds: boolean): unknown[] {
+function inputItems(desired: CanonicalItem[], doc: DocItem[] | null | undefined, withIds: boolean, depth = 1): unknown[] {
   return desired.map((item, i) => {
     const source = doc?.[i]
     return {
@@ -91,7 +97,7 @@ function inputItems(desired: CanonicalItem[], doc: DocItem[] | null | undefined,
       ...(item.resourceId ? { resourceId: item.resourceId } : {}),
       ...(item.url ? { url: item.url } : {}),
       tags: item.tags,
-      items: inputItems(item.items, source?.items, withIds),
+      items: inputItems(item.items, children(source, depth), withIds, depth + 1),
     }
   })
 }
