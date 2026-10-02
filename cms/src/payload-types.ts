@@ -68,8 +68,13 @@ export interface Config {
   blocks: {};
   collections: {
     products: Product;
+    shopifyCollections: ShopifyCollection;
     brands: Brand;
     productPhotos: ProductPhoto;
+    storePages: StorePage;
+    storeArticles: StoreArticle;
+    storeBlogs: StoreBlog;
+    storeMenus: StoreMenu;
     posts: Post;
     banners: Banner;
     categories: Category;
@@ -84,8 +89,13 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     products: ProductsSelect<false> | ProductsSelect<true>;
+    shopifyCollections: ShopifyCollectionsSelect<false> | ShopifyCollectionsSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     productPhotos: ProductPhotosSelect<false> | ProductPhotosSelect<true>;
+    storePages: StorePagesSelect<false> | StorePagesSelect<true>;
+    storeArticles: StoreArticlesSelect<false> | StoreArticlesSelect<true>;
+    storeBlogs: StoreBlogsSelect<false> | StoreBlogsSelect<true>;
+    storeMenus: StoreMenusSelect<false> | StoreMenusSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -116,6 +126,9 @@ export interface Config {
     tasks: {
       syncProduct: TaskSyncProduct;
       refreshProducts: TaskRefreshProducts;
+      syncStoreResource: TaskSyncStoreResource;
+      deleteStoreResource: TaskDeleteStoreResource;
+      refreshStore: TaskRefreshStore;
       inline: {
         input: unknown;
         output: unknown;
@@ -320,13 +333,30 @@ export interface ProductPhoto {
   focalY?: number | null;
 }
 /**
+ * Shopify のコレクションの入力画面です。開いたときに Shopify の最新の内容を取り込み、保存すると Shopify に反映します。
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "shopifyCollections".
  */
-export interface Post {
+export interface ShopifyCollection {
   id: number;
+  /**
+   * 作ったあとは変えられません。
+   */
+  kind: 'smart' | 'manual';
   title: string;
-  content?: {
+  /**
+   * URL の末尾です。変えると、古い URL から新しい URL へ自動で転送されます。
+   */
+  handle?: string | null;
+  /**
+   * 画像や埋め込みのある既存の本文は「HTML を直接」で取り込んでいます。「見たまま」に切り替えると、見たままで扱えない部分（画像・埋め込み・装飾）は消えます。
+   */
+  descriptionHtmlMode?: ('visual' | 'html') | null;
+  /**
+   * 写真は「画像」から入れられます（85-store.com と同じ R2 に置かれます）。
+   */
+  descriptionHtmlRich?: {
     root: {
       type: string;
       children: {
@@ -341,22 +371,81 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
-  eyecatch?: (number | null) | Media;
-  description?: string | null;
-  excerpt?: string | null;
+  descriptionHtml?: string | null;
   /**
-   * 半角英数とハイフン。空なら日付から作ります。
+   * 選んで保存すると Shopify の画像を差し替えます（画像は Shopify にコピーされます）。
    */
-  slug: string;
-  publishedAt?: string | null;
-  categories?: (number | Category)[] | null;
-  tags?: string[] | null;
-  featured?: boolean | null;
-  author?: string | null;
-  legacyId?: string | null;
+  image?: (number | null) | Media;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+  sortOrder:
+    'BEST_SELLING' | 'CREATED_DESC' | 'CREATED' | 'PRICE_DESC' | 'PRICE_ASC' | 'ALPHA_ASC' | 'ALPHA_DESC' | 'MANUAL';
+  appliedDisjunctively?: boolean | null;
+  /**
+   * 商品名で判定する条件（[BRAND] や USED）は、商品名の付け方と合わせてください。サイズ・カテゴリの条件は、値が Shopify の ID になります（右の名前で確認できます）。
+   */
+  rules?:
+    | {
+        column:
+          | 'TITLE'
+          | 'TAG'
+          | 'TYPE'
+          | 'VENDOR'
+          | 'PRODUCT_CATEGORY_ID'
+          | 'PRODUCT_CATEGORY_ID_WITH_DESCENDANTS'
+          | 'PRODUCT_METAFIELD_DEFINITION'
+          | 'VARIANT_PRICE'
+          | 'VARIANT_COMPARE_AT_PRICE'
+          | 'IS_PRICE_REDUCED'
+          | 'VARIANT_INVENTORY'
+          | 'VARIANT_WEIGHT'
+          | 'VARIANT_TITLE'
+          | 'VARIANT_METAFIELD_DEFINITION'
+          | 'PRODUCT_TAXONOMY_NODE_ID';
+        relation:
+          | 'CONTAINS'
+          | 'NOT_CONTAINS'
+          | 'EQUALS'
+          | 'NOT_EQUALS'
+          | 'STARTS_WITH'
+          | 'ENDS_WITH'
+          | 'GREATER_THAN'
+          | 'LESS_THAN'
+          | 'IS_SET'
+          | 'IS_NOT_SET';
+        condition: string;
+        conditionLabel?: string | null;
+        /**
+         * 既存のサイズの条件の行からコピーしてください。
+         */
+        conditionObjectId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * 並び順が「手動」のときは、この順番で並びます。
+   */
+  products?: (number | Product)[] | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  /**
+   * テーマのテンプレート（例: contact）。ふつうは空のままにします。
+   */
+  templateSuffix?: string | null;
+  shopify?: {
+    syncStatus?: ('synced' | 'pending' | 'dry-run' | 'conflict' | 'error') | null;
+    syncMessage?: string | null;
+    /**
+     * 選んで保存すると実行します。
+     */
+    resolve?: ('overwrite' | 'import') | null;
+    id?: string | null;
+    updatedAt?: string | null;
+    lastSyncedAt?: string | null;
+    fingerprint?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -445,6 +534,369 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * Shopify のストアのページです。保存すると Shopify に反映します。
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storePages".
+ */
+export interface StorePage {
+  id: number;
+  title: string;
+  /**
+   * URL の末尾です。変えると、古い URL から新しい URL へ自動で転送されます。
+   */
+  handle?: string | null;
+  /**
+   * 画像や埋め込みのある既存の本文は「HTML を直接」で取り込んでいます。「見たまま」に切り替えると、見たままで扱えない部分（画像・埋め込み・装飾）は消えます。
+   */
+  bodyMode?: ('visual' | 'html') | null;
+  /**
+   * 写真は「画像」から入れられます（85-store.com と同じ R2 に置かれます）。
+   */
+  bodyRich?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  body?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  isPublished?: boolean | null;
+  /**
+   * テーマのテンプレート（例: contact）。ふつうは空のままにします。
+   */
+  templateSuffix?: string | null;
+  shopify?: {
+    syncStatus?: ('synced' | 'pending' | 'dry-run' | 'conflict' | 'error') | null;
+    syncMessage?: string | null;
+    /**
+     * 選んで保存すると実行します。
+     */
+    resolve?: ('overwrite' | 'import') | null;
+    id?: string | null;
+    updatedAt?: string | null;
+    lastSyncedAt?: string | null;
+    fingerprint?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Shopify のストアのブログの記事です（85-store.com の記事は「サイト」の「記事」）。保存すると Shopify に反映します。
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeArticles".
+ */
+export interface StoreArticle {
+  id: number;
+  title: string;
+  /**
+   * 画像や埋め込みのある既存の本文は「HTML を直接」で取り込んでいます。「見たまま」に切り替えると、見たままで扱えない部分（画像・埋め込み・装飾）は消えます。
+   */
+  bodyMode?: ('visual' | 'html') | null;
+  /**
+   * 写真は「画像」から入れられます（85-store.com と同じ R2 に置かれます）。
+   */
+  bodyRich?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  body?: string | null;
+  /**
+   * 一覧に出る短い紹介文です。例: <p>…</p>
+   */
+  summary?: string | null;
+  /**
+   * 選んで保存すると Shopify の画像を差し替えます（画像は Shopify にコピーされます）。
+   */
+  image?: (number | null) | Media;
+  imageUrl?: string | null;
+  imageAlt?: string | null;
+  /**
+   * URL の末尾です。変えると、古い URL から新しい URL へ自動で転送されます。
+   */
+  handle?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  blog: number | StoreBlog;
+  isPublished?: boolean | null;
+  author?: string | null;
+  tags?: string[] | null;
+  /**
+   * テーマのテンプレート（例: contact）。ふつうは空のままにします。
+   */
+  templateSuffix?: string | null;
+  shopify?: {
+    syncStatus?: ('synced' | 'pending' | 'dry-run' | 'conflict' | 'error') | null;
+    syncMessage?: string | null;
+    /**
+     * 選んで保存すると実行します。
+     */
+    resolve?: ('overwrite' | 'import') | null;
+    id?: string | null;
+    updatedAt?: string | null;
+    lastSyncedAt?: string | null;
+    fingerprint?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeBlogs".
+ */
+export interface StoreBlog {
+  id: number;
+  title: string;
+  /**
+   * URL の末尾です。変えると、古い URL（記事を含む）から新しい URL へ自動で転送されます。
+   */
+  handle?: string | null;
+  commentPolicy: 'CLOSED' | 'MODERATED' | 'AUTO_PUBLISHED';
+  /**
+   * テーマのテンプレート（例: contact）。ふつうは空のままにします。
+   */
+  templateSuffix?: string | null;
+  shopify?: {
+    syncStatus?: ('synced' | 'pending' | 'dry-run' | 'conflict' | 'error') | null;
+    syncMessage?: string | null;
+    /**
+     * 選んで保存すると実行します。
+     */
+    resolve?: ('overwrite' | 'import') | null;
+    id?: string | null;
+    updatedAt?: string | null;
+    lastSyncedAt?: string | null;
+    fingerprint?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Shopify のストアのメニューです。保存すると Shopify に反映します。
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeMenus".
+ */
+export interface StoreMenu {
+  id: number;
+  title: string;
+  /**
+   * テーマがメニューを探すときの名前です（main-menu・footer など）。
+   */
+  handle?: string | null;
+  isDefault?: boolean | null;
+  items?:
+    | {
+        title: string;
+        type:
+          | 'COLLECTION'
+          | 'PRODUCT'
+          | 'PAGE'
+          | 'BLOG'
+          | 'ARTICLE'
+          | 'HTTP'
+          | 'FRONTPAGE'
+          | 'CATALOG'
+          | 'COLLECTIONS'
+          | 'SEARCH'
+          | 'SHOP_POLICY'
+          | 'METAOBJECT'
+          | 'CUSTOMER_ACCOUNT_PAGE';
+        resource?:
+          | ({
+              relationTo: 'shopifyCollections';
+              value: number | ShopifyCollection;
+            } | null)
+          | ({
+              relationTo: 'products';
+              value: number | Product;
+            } | null)
+          | ({
+              relationTo: 'storePages';
+              value: number | StorePage;
+            } | null)
+          | ({
+              relationTo: 'storeBlogs';
+              value: number | StoreBlog;
+            } | null)
+          | ({
+              relationTo: 'storeArticles';
+              value: number | StoreArticle;
+            } | null);
+        url?: string | null;
+        tags?: string[] | null;
+        resourceId?: string | null;
+        itemId?: string | null;
+        items?:
+          | {
+              title: string;
+              type:
+                | 'COLLECTION'
+                | 'PRODUCT'
+                | 'PAGE'
+                | 'BLOG'
+                | 'ARTICLE'
+                | 'HTTP'
+                | 'FRONTPAGE'
+                | 'CATALOG'
+                | 'COLLECTIONS'
+                | 'SEARCH'
+                | 'SHOP_POLICY'
+                | 'METAOBJECT'
+                | 'CUSTOMER_ACCOUNT_PAGE';
+              resource?:
+                | ({
+                    relationTo: 'shopifyCollections';
+                    value: number | ShopifyCollection;
+                  } | null)
+                | ({
+                    relationTo: 'products';
+                    value: number | Product;
+                  } | null)
+                | ({
+                    relationTo: 'storePages';
+                    value: number | StorePage;
+                  } | null)
+                | ({
+                    relationTo: 'storeBlogs';
+                    value: number | StoreBlog;
+                  } | null)
+                | ({
+                    relationTo: 'storeArticles';
+                    value: number | StoreArticle;
+                  } | null);
+              url?: string | null;
+              tags?: string[] | null;
+              resourceId?: string | null;
+              itemId?: string | null;
+              items?:
+                | {
+                    title: string;
+                    type:
+                      | 'COLLECTION'
+                      | 'PRODUCT'
+                      | 'PAGE'
+                      | 'BLOG'
+                      | 'ARTICLE'
+                      | 'HTTP'
+                      | 'FRONTPAGE'
+                      | 'CATALOG'
+                      | 'COLLECTIONS'
+                      | 'SEARCH'
+                      | 'SHOP_POLICY'
+                      | 'METAOBJECT'
+                      | 'CUSTOMER_ACCOUNT_PAGE';
+                    resource?:
+                      | ({
+                          relationTo: 'shopifyCollections';
+                          value: number | ShopifyCollection;
+                        } | null)
+                      | ({
+                          relationTo: 'products';
+                          value: number | Product;
+                        } | null)
+                      | ({
+                          relationTo: 'storePages';
+                          value: number | StorePage;
+                        } | null)
+                      | ({
+                          relationTo: 'storeBlogs';
+                          value: number | StoreBlog;
+                        } | null)
+                      | ({
+                          relationTo: 'storeArticles';
+                          value: number | StoreArticle;
+                        } | null);
+                    url?: string | null;
+                    tags?: string[] | null;
+                    resourceId?: string | null;
+                    itemId?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  shopify?: {
+    syncStatus?: ('synced' | 'pending' | 'dry-run' | 'conflict' | 'error') | null;
+    syncMessage?: string | null;
+    /**
+     * 選んで保存すると実行します。
+     */
+    resolve?: ('overwrite' | 'import') | null;
+    id?: string | null;
+    updatedAt?: string | null;
+    lastSyncedAt?: string | null;
+    fingerprint?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  eyecatch?: (number | null) | Media;
+  description?: string | null;
+  excerpt?: string | null;
+  /**
+   * 半角英数とハイフン。空なら日付から作ります。
+   */
+  slug: string;
+  publishedAt?: string | null;
+  categories?: (number | Category)[] | null;
+  tags?: string[] | null;
+  featured?: boolean | null;
+  author?: string | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * 名前はサイトの URL になります。Event1st / Event2nd は Reserve ページのイベント一覧に使っています。
@@ -559,7 +1011,8 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'syncProduct' | 'refreshProducts';
+        taskSlug:
+          'inline' | 'syncProduct' | 'refreshProducts' | 'syncStoreResource' | 'deleteStoreResource' | 'refreshStore';
         taskID: string;
         input?:
           | {
@@ -592,7 +1045,9 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'syncProduct' | 'refreshProducts') | null;
+  taskSlug?:
+    | ('inline' | 'syncProduct' | 'refreshProducts' | 'syncStoreResource' | 'deleteStoreResource' | 'refreshStore')
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -620,12 +1075,32 @@ export interface PayloadLockedDocument {
         value: number | Product;
       } | null)
     | ({
+        relationTo: 'shopifyCollections';
+        value: number | ShopifyCollection;
+      } | null)
+    | ({
         relationTo: 'brands';
         value: number | Brand;
       } | null)
     | ({
         relationTo: 'productPhotos';
         value: number | ProductPhoto;
+      } | null)
+    | ({
+        relationTo: 'storePages';
+        value: number | StorePage;
+      } | null)
+    | ({
+        relationTo: 'storeArticles';
+        value: number | StoreArticle;
+      } | null)
+    | ({
+        relationTo: 'storeBlogs';
+        value: number | StoreBlog;
+      } | null)
+    | ({
+        relationTo: 'storeMenus';
+        value: number | StoreMenu;
       } | null)
     | ({
         relationTo: 'posts';
@@ -773,6 +1248,50 @@ export interface ProductsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shopifyCollections_select".
+ */
+export interface ShopifyCollectionsSelect<T extends boolean = true> {
+  kind?: T;
+  title?: T;
+  handle?: T;
+  descriptionHtmlMode?: T;
+  descriptionHtmlRich?: T;
+  descriptionHtml?: T;
+  image?: T;
+  imageUrl?: T;
+  imageAlt?: T;
+  sortOrder?: T;
+  appliedDisjunctively?: T;
+  rules?:
+    | T
+    | {
+        column?: T;
+        relation?: T;
+        condition?: T;
+        conditionLabel?: T;
+        conditionObjectId?: T;
+        id?: T;
+      };
+  products?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  templateSuffix?: T;
+  shopify?:
+    | T
+    | {
+        syncStatus?: T;
+        syncMessage?: T;
+        resolve?: T;
+        id?: T;
+        updatedAt?: T;
+        lastSyncedAt?: T;
+        fingerprint?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "brands_select".
  */
 export interface BrandsSelect<T extends boolean = true> {
@@ -798,6 +1317,150 @@ export interface ProductPhotosSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storePages_select".
+ */
+export interface StorePagesSelect<T extends boolean = true> {
+  title?: T;
+  handle?: T;
+  bodyMode?: T;
+  bodyRich?: T;
+  body?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  isPublished?: T;
+  templateSuffix?: T;
+  shopify?:
+    | T
+    | {
+        syncStatus?: T;
+        syncMessage?: T;
+        resolve?: T;
+        id?: T;
+        updatedAt?: T;
+        lastSyncedAt?: T;
+        fingerprint?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeArticles_select".
+ */
+export interface StoreArticlesSelect<T extends boolean = true> {
+  title?: T;
+  bodyMode?: T;
+  bodyRich?: T;
+  body?: T;
+  summary?: T;
+  image?: T;
+  imageUrl?: T;
+  imageAlt?: T;
+  handle?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  blog?: T;
+  isPublished?: T;
+  author?: T;
+  tags?: T;
+  templateSuffix?: T;
+  shopify?:
+    | T
+    | {
+        syncStatus?: T;
+        syncMessage?: T;
+        resolve?: T;
+        id?: T;
+        updatedAt?: T;
+        lastSyncedAt?: T;
+        fingerprint?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeBlogs_select".
+ */
+export interface StoreBlogsSelect<T extends boolean = true> {
+  title?: T;
+  handle?: T;
+  commentPolicy?: T;
+  templateSuffix?: T;
+  shopify?:
+    | T
+    | {
+        syncStatus?: T;
+        syncMessage?: T;
+        resolve?: T;
+        id?: T;
+        updatedAt?: T;
+        lastSyncedAt?: T;
+        fingerprint?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "storeMenus_select".
+ */
+export interface StoreMenusSelect<T extends boolean = true> {
+  title?: T;
+  handle?: T;
+  isDefault?: T;
+  items?:
+    | T
+    | {
+        title?: T;
+        type?: T;
+        resource?: T;
+        url?: T;
+        tags?: T;
+        resourceId?: T;
+        itemId?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              type?: T;
+              resource?: T;
+              url?: T;
+              tags?: T;
+              resourceId?: T;
+              itemId?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    type?: T;
+                    resource?: T;
+                    url?: T;
+                    tags?: T;
+                    resourceId?: T;
+                    itemId?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  shopify?:
+    | T
+    | {
+        syncStatus?: T;
+        syncMessage?: T;
+        resolve?: T;
+        id?: T;
+        updatedAt?: T;
+        lastSyncedAt?: T;
+        fingerprint?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1084,6 +1747,36 @@ export interface TaskSyncProduct {
  * via the `definition` "TaskRefreshProducts".
  */
 export interface TaskRefreshProducts {
+  input?: unknown;
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSyncStoreResource".
+ */
+export interface TaskSyncStoreResource {
+  input: {
+    collection: string;
+    id: number;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskDeleteStoreResource".
+ */
+export interface TaskDeleteStoreResource {
+  input: {
+    collection: string;
+    shopifyId: string;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskRefreshStore".
+ */
+export interface TaskRefreshStore {
   input?: unknown;
   output?: unknown;
 }

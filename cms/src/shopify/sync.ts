@@ -168,18 +168,18 @@ async function allPublicationIds(): Promise<string[]> {
   return (cachedPublications = data.publications.nodes.map((p) => p.id))
 }
 
-// まだ出ていない販売チャネルすべてに出す（既存の商品は全チャネルに出している。表示するかは「状態」で決まる）。
+// まだ出ていない販売チャネルすべてに出す（既存の商品・コレクションは全チャネルに出している。表示するかは「状態」で決まる）。
 // 失敗したチャネルは同期を止めずに知らせる
-async function publishToAllChannels(productId: string): Promise<string | null> {
+export async function publishToAllChannels(id: string): Promise<string | null> {
   const data = await shopifyGraphQL<{
-    product: { resourcePublicationsV2: { nodes: { publication: { id: string } }[] } } | null
-  }>(`query($id: ID!) { product(id: $id) { resourcePublicationsV2(first: 50, onlyPublished: false) { nodes { publication { id } } } } }`, { id: productId })
-  const current = new Set(data.product?.resourcePublicationsV2.nodes.map((n) => n.publication.id) ?? [])
-  const missing = (await allPublicationIds()).filter((id) => !current.has(id))
+    node: { resourcePublicationsV2?: { nodes: { publication: { id: string } }[] } } | null
+  }>(`query($id: ID!) { node(id: $id) { ... on Publishable { resourcePublicationsV2(first: 50, onlyPublished: false) { nodes { publication { id } } } } } }`, { id })
+  const current = new Set(data.node?.resourcePublicationsV2?.nodes.map((n) => n.publication.id) ?? [])
+  const missing = (await allPublicationIds()).filter((p) => !current.has(p))
   if (!missing.length) return null
   const res = await shopifyGraphQL<{ publishablePublish: { userErrors: { field: string[] | null; message: string }[] } }>(
     `mutation($id: ID!, $input: [PublicationInput!]!) { publishablePublish(id: $id, input: $input) { userErrors { field message } } }`,
-    { id: productId, input: missing.map((publicationId) => ({ publicationId })) },
+    { id, input: missing.map((publicationId) => ({ publicationId })) },
   )
   const errors = res.publishablePublish.userErrors
   return errors.length ? `一部の販売チャネルに出せませんでした: ${errors.map((e) => e.message).join(' / ')}` : null
