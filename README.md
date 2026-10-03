@@ -8,7 +8,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 
 ## ✨ 主な機能
 
-- 📝 **ブログ**: CMS（`cms/`、Payload）で記事を管理（カテゴリ・タグ・注目記事・下書き・写真の横並び・埋め込み）。スタッフも Tailscale のアカウントで書ける
+- 📝 **ブログ**: CMS（Payload、[85store-cms](https://github.com/HayatoShimada/85store-cms)）で記事を管理（カテゴリ・タグ・注目記事・下書き・写真の横並び・埋め込み）。スタッフも Tailscale のアカウントで書ける
 - ⚡ **キャッシュと即時反映**: `use cache` でキャッシュし、CMS の公開通知で更新されたデータだけを再検証
 - 🖼️ **バナー管理**: トップページのヒーロー・Pick Up のバナーを CMS で並び替え
 - ✍️ **note連携**: note.com の記事をトップページに表示
@@ -27,7 +27,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 | フレームワーク | Next.js 16（App Router / Turbopack / Cache Components） |
 | 言語 | TypeScript 5 / React 19.3 |
 | スタイル | Tailwind CSS v4 |
-| CMS | Payload 3（`cms/`、85pi の docker compose・SQLite）。画像と書き出しは Cloudflare R2 |
+| CMS | Payload 3（別リポジトリ [85store-cms](https://github.com/HayatoShimada/85store-cms)、85pi の docker compose・SQLite）。画像と書き出しは Cloudflare R2 |
 | EC連携 | Shopify Storefront API（@shopify/storefront-api-client） |
 | メール送信 | nodemailer |
 | デプロイ | Vercel |
@@ -83,9 +83,9 @@ npm run dev
 | `SHOPIFY_ADMIN_ACCESS_TOKEN` | Admin API アクセストークン |
 | `NEXT_PUBLIC_SHOPIFY_ONLINE_STORE_DOMAIN` | オンラインストアのカスタムドメイン（商品URL生成に使用） |
 
-## 📊 CMS（`cms/`）
+## 📊 CMS（85store-cms）
 
-記事・バナーは 85pi で動かす Payload CMS で管理します。管理画面は `https://cms.taila713c8.ts.net`（tailnet 内からのみ）。セットアップ・メンバーの追加・バックアップは [cms/README.md](cms/README.md) を参照してください。
+記事・バナーは 85pi で動かす Payload CMS で管理します。管理画面は `https://cms.85-store.com`（tailnet 内からのみ）。コードは別リポジトリ [HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms) にあり、セットアップ・メンバーの追加・バックアップはそちらの README を参照してください。
 
 | コレクション | 主な項目 |
 |---|---|
@@ -127,7 +127,6 @@ lib/
 
 types/                 # 型定義（CMS / Shopify）
 utils/                 # ユーティリティ
-cms/                   # CMS（Payload）。85pi で動かす（cms/README.md）
 ```
 
 ## 🧪 開発コマンド
