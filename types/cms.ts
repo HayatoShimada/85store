@@ -1,4 +1,4 @@
-// CMS（Payload、cms/）が R2 に書き出す JSON の型。cms/src/publish/export.ts と合わせる
+// CMS（Payload。HayatoShimada/85store-cms）が R2 に書き出す JSON の型。85store-cms の src/publish/export.ts と合わせる
 
 // 画像。avif / webp はサイズ別の srcset（"url 480w, url 800w, …"）
 export interface CmsImage {

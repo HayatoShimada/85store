@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-// ローカルで CMS（cms/、http://localhost:3001）と組み合わせて確かめるときだけ、その画像を許可する
+// ローカルで CMS（85store-cms、http://localhost:3001）と組み合わせて確かめるときだけ、その画像を許可する
 const localCms = process.env.CMS_CONTENT_URL?.startsWith('http://localhost:3001');
 
 const nextConfig: NextConfig = {
