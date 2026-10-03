@@ -89,6 +89,8 @@ export const STRUCTURED_FIELDS: StructuredField[] = [
     },
     write: (v) => JSON.stringify(Object.fromEntries((v as { name: string; value: number }[]).map((r) => [r.name, r.value]))),
   },
+  // 状態メモ（自由記入）。商品ページの「この商品の状態」に表示する。説明文ではなくメタフィールドで管理する
+  { key: 'custom.condition_note', type: 'multi_line_text_field', read: text, fromDoc: (d) => text(d.conditionNote), write: (v) => v as string },
   { key: 'custom.supplier', type: 'single_line_text_field', read: text, fromDoc: (d) => text(d.supplier), write: (v) => v as string },
   {
     key: 'custom.delivery_number',
@@ -199,6 +201,7 @@ export function docFromShopify(product: ShopifyProduct) {
       categoryName: product.category?.name ?? null,
       tags: product.tags,
       condition: read('custom.condition') as Product['condition'],
+      conditionNote: read('custom.condition_note') as string | null,
       era: read('custom.era') as string | null,
       style: (read('custom.style') as string[] | null) ?? [],
       features: (read('custom.features') as string[] | null) ?? [],

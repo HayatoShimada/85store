@@ -173,7 +173,12 @@ export const Products: CollectionConfig = {
                 { name: 'era', label: '年代', type: 'text', admin: { description: '例: 80s、ヴィンテージ' } },
               ],
             },
-            { name: 'conditionNote', label: '状態のメモ（説明文の生成に使う）', type: 'textarea' },
+            {
+              name: 'conditionNote',
+              label: '状態メモ',
+              type: 'textarea',
+              admin: { description: '傷・汚れ・ほつれなど、この商品だけの状態。実物を確認して書く。商品ページの「この商品の状態」に出ます（説明文には書かない）' },
+            },
             {
               name: 'measurements',
               label: '採寸（cm）',
