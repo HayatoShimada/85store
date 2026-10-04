@@ -91,6 +91,11 @@ export async function getBlogPostsByCategory(categoryName: string, limit?: numbe
   return limit ? posts.slice(0, limit) : posts;
 }
 
+// いずれかのカテゴリに入るブログ記事（ブログの区分のページ用）
+export async function getBlogPostsByCategories(categoryNames: readonly string[]): Promise<Blog[]> {
+  return (await loadIndex()).filter((post) => post.category.some((c) => categoryNames.includes(c)));
+}
+
 // タグ別のブログ記事
 export async function getBlogPostsByTag(tag: string, limit?: number): Promise<Blog[]> {
   const posts = (await loadIndex()).filter((post) => post.tags.includes(tag));

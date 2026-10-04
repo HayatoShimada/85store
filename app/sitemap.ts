@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllBlogPosts } from "@/lib/cms";
-import { getBlogPostPath } from "@/utils/blog";
+import { BLOG_SECTIONS, getBlogCategoryPath, getBlogPostPath, getBlogSectionPath } from "@/utils/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
@@ -52,12 +52,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  const categoryEntries: MetadataRoute.Sitemap = Array.from(categoryDates, ([category, date]) => ({
-    url: `${siteUrl}/blog/category/${encodeURIComponent(category)}`,
-    lastModified: date,
-    changeFrequency: "weekly",
-    priority: 0.5,
-  }));
+  // 区分のページ（記事が無い区分も出す）。区分に入るカテゴリのうち、区分と同じもの（Products など）は転送するので出さない
+  const sectionEntries: MetadataRoute.Sitemap = BLOG_SECTIONS.map((section) => {
+    const dates = section.categories.flatMap((c) => categoryDates.get(c) ?? []);
+    return {
+      url: `${siteUrl}${getBlogSectionPath(section)}`,
+      lastModified: dates.length > 0 ? new Date(Math.max(...dates.map((d) => d.getTime()))) : undefined,
+      changeFrequency: "weekly",
+      priority: 0.6,
+    };
+  });
+  const redirected = new Set(BLOG_SECTIONS.filter((s) => s.categories.length === 1).map((s) => s.categories[0] as string));
 
-  return [...staticEntries, ...postEntries, ...categoryEntries];
+  const categoryEntries: MetadataRoute.Sitemap = Array.from(categoryDates)
+    .filter(([category]) => !redirected.has(category))
+    .map(([category, date]) => ({
+      url: `${siteUrl}${getBlogCategoryPath(category)}`,
+      lastModified: date,
+      changeFrequency: "weekly",
+      priority: 0.5,
+    }));
+
+  return [...staticEntries, ...postEntries, ...sectionEntries, ...categoryEntries];
 }

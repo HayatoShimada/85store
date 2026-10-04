@@ -5,7 +5,7 @@ import NoteCard from "@/components/NoteCard";
 import Pagination from "@/components/Pagination";
 import SectionHeading from "@/components/SectionHeading";
 import StructuredData from "@/components/StructuredData";
-import { getAllCategories, getBlogPostsPage } from "@/lib/cms";
+import { getBlogPostsPage } from "@/lib/cms";
 import { getNoteArticles } from "@/lib/note";
 import { STORE } from "@/lib/store-info";
 
@@ -29,9 +29,8 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const [{ posts, totalPages }, categories, noteArticles] = await Promise.all([
+  const [{ posts, totalPages }, noteArticles] = await Promise.all([
     getBlogPostsPage(1),
-    getAllCategories(),
     getNoteArticles(),
   ]);
 
@@ -42,7 +41,7 @@ export default async function BlogPage() {
         title="Blog"
         description="入荷、イベント、営業日のお知らせ"
         posts={posts}
-        categories={categories}
+        currentPath="/blog"
         pagination={<Pagination currentPage={1} totalPages={totalPages} />}
       >
         {noteArticles.length > 0 && (

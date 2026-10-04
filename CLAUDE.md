@@ -56,6 +56,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 | `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
 | `/blog/[slug]` | 記事（スラッグ）。microCMS から移した記事は、そのコンテンツIDがスラッグ。`id`（旧コンテンツID）でアクセスされ、スラッグと違う場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
+| `/blog/products`, `/blog/styling`, `/blog/event` | ブログの区分（`utils/blog.ts` の `BLOG_SECTIONS` でカテゴリをまとめる。0件でも出す）。ショップのメニューからリンクしている。区分と同じ1つのカテゴリ（Products・Styling）の `/blog/category/...` は区分へ 308 |
 | `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml` | `app/sitemap.ts` 等で動的生成 |
 | `/about`, `/reserve`, `/upstore`, `/contact`, `/hakoneko` | 固定ページ（hakoneko は独自デザインのゲーム紹介ページ） |
 | `/shipping`, `/returns`, `/terms`, `/privacy` | Shopify のポリシーを表示 |

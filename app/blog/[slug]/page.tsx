@@ -12,7 +12,7 @@ import { buildTableOfContents } from "@/lib/toc";
 import { optimizeContentImages } from "@/lib/content-images";
 import { largestFromSrcset } from "@/lib/cms-image";
 import { formatDate } from "@/utils/date";
-import { getBlogPostPath } from "@/utils/blog";
+import { getBlogPostPath, getCategoryListPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
@@ -151,7 +151,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {primaryCategory && (
                 <>
                   <span aria-hidden="true">　／　</span>
-                  <Link href={`/blog/category/${encodeURIComponent(primaryCategory)}`} className="underline underline-offset-4">
+                  <Link href={getCategoryListPath(primaryCategory)} className="underline underline-offset-4">
                     {primaryCategory}
                   </Link>
                 </>

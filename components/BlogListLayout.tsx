@@ -2,13 +2,13 @@ import Link from "next/link";
 import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
 import SectionHeading from "@/components/SectionHeading";
 import type { Blog } from "@/types/cms";
+import { BLOG_NAV } from "@/utils/blog";
 
 interface BlogListLayoutProps {
   title: string;
   description: string;
   posts: Blog[];
-  categories?: string[];
-  currentCategory?: string;
+  currentPath?: string; // 絞り込みを出すときの今のページ（BLOG_NAV の href と比べる）
   pagination?: React.ReactNode;
   children?: React.ReactNode; // 一覧の後に続くセクション
 }
@@ -18,8 +18,7 @@ export default function BlogListLayout({
   title,
   description,
   posts,
-  categories,
-  currentCategory,
+  currentPath,
   pagination,
   children,
 }: BlogListLayoutProps) {
@@ -28,20 +27,13 @@ export default function BlogListLayout({
       <section className="pt-12" aria-labelledby="list-heading">
         <SectionHeading as="h1" id="list-heading" title={title} description={description} />
 
-        {categories && categories.length > 0 && (
-          <nav aria-label="カテゴリ" className="-mt-4 mb-8">
+        {currentPath !== undefined && (
+          <nav aria-label="記事の種類" className="-mt-4 mb-8">
             <ul className="flex flex-wrap gap-2">
-              <li>
-                <Link href="/blog" className="chip" aria-current={currentCategory ? undefined : "page"}>すべて</Link>
-              </li>
-              {categories.map((category) => (
-                <li key={category}>
-                  <Link
-                    href={`/blog/category/${encodeURIComponent(category)}`}
-                    className="chip"
-                    aria-current={category === currentCategory ? "page" : undefined}
-                  >
-                    {category}
+              {BLOG_NAV.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="chip" aria-current={href === currentPath ? "page" : undefined}>
+                    {label}
                   </Link>
                 </li>
               ))}
