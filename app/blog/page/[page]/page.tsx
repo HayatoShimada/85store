@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import BlogListLayout from "@/components/BlogListLayout";
 import Pagination, { getBlogPagePath } from "@/components/Pagination";
-import { getAllCategories, getBlogPostsPage } from "@/lib/cms";
+import { getBlogPostsPage } from "@/lib/cms";
 
 interface BlogPageProps {
   params: Promise<{
@@ -42,10 +42,7 @@ export default async function BlogPaginatedPage({ params }: BlogPageProps) {
   if (!page) notFound();
   if (page === 1) permanentRedirect("/blog");
 
-  const [{ posts, totalPages }, categories] = await Promise.all([
-    getBlogPostsPage(page),
-    getAllCategories(),
-  ]);
+  const { posts, totalPages } = await getBlogPostsPage(page);
   if (posts.length === 0) notFound();
 
   return (
@@ -53,7 +50,7 @@ export default async function BlogPaginatedPage({ params }: BlogPageProps) {
       title="Blog"
       description={`${page}ページ目`}
       posts={posts}
-      categories={categories}
+      currentPath="/blog"
       pagination={<Pagination currentPage={page} totalPages={totalPages} />}
     />
   );

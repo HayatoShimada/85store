@@ -1,7 +1,8 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import BlogListLayout from "@/components/BlogListLayout";
 import { getBlogPostsByCategory, getAllCategories } from "@/lib/cms";
+import { BLOG_SECTIONS, getBlogCategoryPath, getBlogSectionPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
 
 interface CategoryPageProps {
@@ -18,7 +19,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const categoryName = decodeURIComponent((await params).category);
-  const path = `/blog/category/${encodeURIComponent(categoryName)}`;
+  const path = getBlogCategoryPath(categoryName);
   const description = `85-Store（ハコストア）のブログから「${categoryName}」の記事をまとめています。`;
 
   return {
@@ -32,10 +33,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const categoryName = decodeURIComponent((await params).category);
 
-  const [posts, categories] = await Promise.all([
-    getBlogPostsByCategory(categoryName),
-    getAllCategories(),
-  ]);
+  // そのカテゴリだけの区分（Products・Styling）は区分のページへ
+  const section = BLOG_SECTIONS.find((s) => s.categories.length === 1 && s.categories[0] === categoryName);
+  if (section) permanentRedirect(getBlogSectionPath(section));
+
+  const posts = await getBlogPostsByCategory(categoryName);
 
   if (posts.length === 0) {
     notFound();
@@ -46,8 +48,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       title={categoryName}
       description={`カテゴリ「${categoryName}」の記事 ${posts.length}件`}
       posts={posts}
-      categories={categories}
-      currentCategory={categoryName}
+      currentPath={getBlogCategoryPath(categoryName)}
     />
   );
 }
