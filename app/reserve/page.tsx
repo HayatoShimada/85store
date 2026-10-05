@@ -4,14 +4,16 @@ import BlogCard, { BlogCardGrid } from "@/components/BlogCard";
 import BusinessCalendar from "@/components/BusinessCalendar";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import SectionHeading from "@/components/SectionHeading";
+import UpcomingSpecialDays from "@/components/UpcomingSpecialDays";
 import { STORE } from "@/lib/store-info";
 import { getBlogPostsByCategory } from "@/lib/cms";
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 export const metadata: Metadata = {
   title: "Reserve（来店予約）",
-  alternates: { canonical: "/reserve" },
+  alternates: pageAlternates("/reserve"),
   description: "85-Storeの予約ページ。Limited Store、1st Floor(85-Store)、2nd Floor(85-UpStore)の予約と空き状況をご確認いただけます。",
   openGraph: {
     type: "website",
@@ -89,6 +91,7 @@ export default async function ReservePage() {
         各フロアの空き状況をご確認のうえ、ご予約ください。営業時間は{STORE.hours.label}（{STORE.hours.closedLabel}）です。{STORE.hours.note}
         <IrregularHolidayNote className="mt-1" />
       </p>
+      <UpcomingSpecialDays className="mt-4 max-w-[40em] text-ink-2" />
       <nav aria-label="フロア" className="mt-6 flex flex-wrap gap-2">
         {stores.map((store) => (
           <a key={store.id} href={`#${store.id}`} className="btn btn-secondary">{store.name}　{store.nameEn}</a>

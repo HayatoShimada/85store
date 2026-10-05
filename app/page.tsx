@@ -15,6 +15,7 @@ import { getLatestProducts } from "@/lib/shopify-storefront";
 import { STORE } from "@/lib/store-info";
 import { WORKS } from "@/lib/works";
 import type { Banner } from "@/types/cms";
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 const TITLE = "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ";
@@ -23,7 +24,7 @@ const DESCRIPTION = "もう一度、洋服を好きになれる場所。富山�
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
-  alternates: { canonical: "/" },
+  alternates: pageAlternates("/"),
   openGraph: {
     type: "website",
     locale: "ja_JP",
@@ -129,7 +130,7 @@ export default async function Home() {
               const body = (
                 <>
                   <div className="media-frame aspect-[4/3]">
-                    <Image src={banner.image.url} alt="" fill sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw" />
+                    <Image src={banner.image.url} alt={banner.title || banner.subtitle ? "" : "85-Store のおすすめ"} fill sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 33vw" />
                   </div>
                   {(banner.title || banner.subtitle) && (
                     <div className="p-4">

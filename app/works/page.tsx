@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import StructuredData from "@/components/StructuredData";
 import WorkCard from "@/components/WorkCard";
 import { isExternalWork, WORKS } from "@/lib/works";
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://85-store.com";
 
@@ -9,7 +10,7 @@ const description = "85-Store（ハコストア）がつくったもの。ゲー
 
 export const metadata: Metadata = {
   title: "Works",
-  alternates: { canonical: "/works" },
+  alternates: pageAlternates("/works"),
   description,
   openGraph: {
     type: "website",

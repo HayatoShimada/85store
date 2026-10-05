@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { pageAlternates } from "@/lib/metadata";
 
 export const metadata: Metadata = {
   title: '85-UpStore（2F 共創スペース）',
   description: '85-Store の2階にある共創スペース「85-UpStore」。ポップアップ、展示、ワークショップなど、井波で活動する事業者やクリエイターが使える場所です。',
-  alternates: { canonical: '/upstore' },
+  alternates: pageAlternates('/upstore'),
 };
 
 export default function UpStore() {

@@ -70,6 +70,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 - 休業日・その日だけの営業時間・通常の営業時間は、Cloudflare Worker の管理画面（`calendar-admin.85-store.com`）で入力し、D1 に保存する。
 - 管理画面は Cloudflare Access で保護し、ログイン方法は 85pi で動かす **tsidp**（Tailscale の ID で入る OIDC）だけ。tsidp は tailnet 外からのログインを拒否するので、tailnet 内の info@85-store.com だけが使える。Worker 側でも Access の JWT とメールを検証する。
 - サイトはブラウザから公開API（`https://calendar.85-store.com/v1/calendar`、`NEXT_PUBLIC_CALENDAR_API_URL` で変更可）を直接読む（`components/useBusinessCalendar.ts`）。**再デプロイ・キャッシュの再検証なしで即反映**される（表示時・60秒ごと・タブ復帰時）。
+- クローラーや AI にも見えるよう、今後60日の臨時休業・営業時間の変更はサーバーでも読み（`lib/business-calendar-server.ts`、1時間ごとに取り直す。失敗してもページは止めない）、文字の一覧（`components/UpcomingSpecialDays.tsx`）と店舗の構造化データの `specialOpeningHoursSpecification`（`components/StoreStructuredData.tsx`）に出す。休業日を Event として載せない。
 - 判定ロジックは `lib/business-calendar.ts`（`resolveDay` / `getStatusAt`、日本時間）。APIが使えないときは `STORE.hours`（通常ルール）で表示する。
 - 「営業中」表示は `components/StoreStatus.tsx`、カレンダーは `components/BusinessCalendar.tsx`（トップの店舗情報・About・Reserve）。時刻に依存する表示はブラウザでだけ描く（`useNow`）。
 - カレンダーの「共有」ボタンは `components/ShareCalendarButton.tsx`。画像は Worker が配信する `calendar-image.js`（canvas で描く ES モジュール）をブラウザで読み込んで作り、Web Share API（iOS の共有シート・Android の Sharesheet）で渡す。使えないブラウザでは画像を保存してリンクをコピーする。共有シートはタップ直後にしか開けないので、画像は先に作っておく。
@@ -97,7 +98,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 ### SEO
 
-- 各ページで `alternates.canonical` を指定する。タイトルは `app/layout.tsx` のテンプレート（`%s | 85-Store（ハコストア）`）に任せ、ページ側で店名を重ねない。
+- 各ページで canonical を `alternates: pageAlternates("/path")`（`lib/metadata.ts`）で指定する。`alternates: { canonical }` と直接書くと、レイアウトの RSS / Atom の案内が消える。タイトルは `app/layout.tsx` のテンプレート（`%s | 85-Store（ハコストア）`）に任せ、ページ側で店名を重ねない。
 - 構造化データは `components/StructuredData.tsx`。店舗の事実（住所・電話・支払い方法・価格帯・取り扱い）は `lib/store-info.ts` を唯一の定義元にし、表示・構造化データ・FAQ・llms.txt で同じ値を使う（AI や地図の検索で店の情報が食い違わないように）。
 - Google マップへのリンクは Maps URLs（`https://www.google.com/maps/search/?api=1&query=…`）で書く。`maps.app.goo.gl` の短縮リンクはスマホでアプリが開かないことがある。
 

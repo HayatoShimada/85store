@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import BlogListLayout from "@/components/BlogListLayout";
 import Pagination, { getBlogPagePath } from "@/components/Pagination";
 import { getBlogPostsPage } from "@/lib/cms";
+import { pageAlternates } from "@/lib/metadata";
 
 interface BlogPageProps {
   params: Promise<{
@@ -31,9 +32,7 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
   return {
     title: `Blog（${page}ページ目）`,
     description: `富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ記事一覧（${page}ページ目）。`,
-    alternates: {
-      canonical: getBlogPagePath(page),
-    },
+    alternates: pageAlternates(getBlogPagePath(page)),
   };
 }
 

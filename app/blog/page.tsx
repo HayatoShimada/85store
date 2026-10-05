@@ -8,6 +8,7 @@ import StructuredData from "@/components/StructuredData";
 import { getBlogPostsPage } from "@/lib/cms";
 import { getNoteArticles } from "@/lib/note";
 import { STORE } from "@/lib/store-info";
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 const DESCRIPTION = "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のブログ。入荷情報やイベント、営業日のお知らせをお届けします。";
@@ -15,9 +16,7 @@ const DESCRIPTION = "富山県南砺市井波の古着・セレクトショッ�
 export const metadata: Metadata = {
   title: "Blog",
   description: DESCRIPTION,
-  alternates: {
-    canonical: "/blog",
-  },
+  alternates: pageAlternates("/blog"),
   openGraph: {
     type: "website",
     locale: "ja_JP",

@@ -4,6 +4,7 @@ import BusinessCalendar from "@/components/BusinessCalendar";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import ParkingNote from "@/components/ParkingNote";
 import StoreActions from "@/components/StoreActions";
+import UpcomingSpecialDays from "@/components/UpcomingSpecialDays";
 import { STORE } from "@/lib/store-info";
 
 // 店舗情報（深緑のパネル + 店内写真 + フロア案内）
@@ -20,7 +21,7 @@ export default function StoreInfoSection() {
             {[
               { label: "住所", value: <>〒{STORE.address.postalCode}<br />{STORE.address.region}{STORE.address.locality}{STORE.address.street}</> },
               { label: "営業時間", value: <><span className="num">{STORE.hours.label}</span><span className="block text-sm opacity-85">{STORE.hours.note}</span></> },
-              { label: "定休日", value: <>{STORE.hours.closedDays}<IrregularHolidayNote className="opacity-85" /></> },
+              { label: "定休日", value: <>{STORE.hours.closedDays}<IrregularHolidayNote className="opacity-85" /><UpcomingSpecialDays className="mt-3" /></> },
               { label: "電話", value: <a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a> },
               { label: "駐車場", value: <ParkingNote /> },
               { label: "取り扱い", value: `${STORE.brands.join("、")} ほか` },

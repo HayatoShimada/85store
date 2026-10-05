@@ -1,10 +1,11 @@
 import { Metadata } from 'next';
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 export const metadata: Metadata = {
   title: "Contact（お問い合わせ）",
-  alternates: { canonical: "/contact" },
+  alternates: pageAlternates("/contact"),
   description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」へのお問い合わせ。店舗情報、営業時間、アクセス方法をご案内します。",
   openGraph: {
     type: "website",
