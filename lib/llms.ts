@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { getUpcomingSpecialDays } from "@/lib/business-calendar-server";
 import { getBlogPosts } from "@/lib/cms";
 import { FAQS } from "@/lib/faq";
 import { STORE, STORE_FULL_ADDRESS, STORE_PAYMENT_LABEL } from "@/lib/store-info";
@@ -9,13 +10,22 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 const absolute = (href: string) => (href.startsWith("http") ? href : `${siteUrl}${href}`);
 
-// AI（LLM）向けのサイトの要約（https://llmstxt.org/ の形式）。記事と同じ "blogs" タグで再検証される
+const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
+
+// AI（LLM）向けのサイトの要約（https://llmstxt.org/ の形式）。記事と同じ "blogs" タグと、
+// 営業日カレンダーの "business-calendar" タグで再検証される（カレンダーは保存のたびに webhook で知らせてくる）
 export async function getLlmsTxt(): Promise<string> {
   "use cache";
-  cacheTag("blogs");
-  cacheLife("days");
+  cacheTag("blogs", "business-calendar");
+  cacheLife("hours");
 
-  const posts = await getBlogPosts(10);
+  const [posts, specialDays] = await Promise.all([getBlogPosts(10), getUpcomingSpecialDays()]);
+  const specialLines = specialDays.map((day) => {
+    const [, month, date] = day.date.split("-").map(Number);
+    const label = `${month}月${date}日（${WEEKDAYS[day.weekday]}）`;
+    const what = day.closed ? "休業" : `${day.opens}〜${day.closes}に営業時間を変更`;
+    return `- ${label}: ${what}${day.note ? `（${day.note}）` : ""}`;
+  });
 
   return `# ${STORE.name}
 
@@ -37,6 +47,10 @@ export async function getLlmsTxt(): Promise<string> {
 - Google マップ: ${STORE.mapUrl}
 - オンラインストア: ${STORE.onlineShopUrl}（全国・海外へ発送）
 - Instagram: ${STORE.sns.instagram}（営業時間の変更や急なお休みはストーリーでお知らせ）
+
+## 今後の臨時休業・営業時間の変更（60日先まで）
+
+${specialLines.length ? specialLines.join("\n") : "今のところありません（通常どおり営業）。"}
 
 ## ページ
 
