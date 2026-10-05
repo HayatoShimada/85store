@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/blog", label: "Blog", ja: "ブログ" },
   { href: "/about", label: "About", ja: "お店について" },
   { href: "/reserve", label: "Reserve", ja: "来店予約" },
+  { href: "/works", label: "Works", ja: "つくったもの" },
   { href: "/contact", label: "Contact", ja: "お問い合わせ" },
 ];
 
@@ -27,7 +28,7 @@ export default function Header() {
         </Link>
 
         <nav aria-label="メインメニュー" className="hidden min-[900px]:block">
-          <ul className="flex gap-8 text-sm font-medium">
+          <ul className="flex gap-6 text-sm font-medium min-[1100px]:gap-8">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <Link
@@ -44,7 +45,7 @@ export default function Header() {
 
         <div className="flex items-center gap-2 justify-self-end">
           <ThemeSwitcher />
-          <a href={STORE.onlineShopUrl} className="btn btn-primary hidden min-[900px]:inline-flex">
+          <a href={STORE.onlineShopUrl} className="btn btn-primary hidden whitespace-nowrap min-[900px]:inline-flex">
             Online Store
           </a>
           <button
