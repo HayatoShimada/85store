@@ -322,6 +322,12 @@ export default function HakonekoPage() {
           >
             85-Store 公式サイト
           </Link>
+          <Link
+            href="/works"
+            className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl border border-[#ff8d1f]/40 bg-black/60 text-[#ff8d1f] hover:bg-[#ff8d1f]/20 hover:border-[#ff8d1f]/80 hover:shadow-[0_0_20px_rgba(255,141,31,0.2)] transition-all duration-300 font-bold tracking-widest overflow-hidden"
+          >
+            ほかの作品
+          </Link>
         </div>
 
         <div className="border-t border-[#ff8d1f]/20 pt-12 w-full max-w-[400px] mx-auto">

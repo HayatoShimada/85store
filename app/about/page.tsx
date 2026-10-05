@@ -8,6 +8,7 @@ import IrregularHolidayNote from '@/components/IrregularHolidayNote';
 import ParkingNote from '@/components/ParkingNote';
 import StoreActions from '@/components/StoreActions';
 import { STORE } from '@/lib/store-info';
+import { WORKS, isExternalWork } from '@/lib/works';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
@@ -100,6 +101,28 @@ export default function About() {
 
       <AboutSection en="Our Team" ja="スタッフ紹介">
         <AboutTeam />
+      </AboutSection>
+
+      <AboutSection en="Works" ja="つくったもの">
+        <p className="leading-loose text-ink-2">洋服のほかに、ゲームや道具もつくっています。</p>
+        <dl className="facts mt-6">
+          {WORKS.map((work) => (
+            <div key={work.slug}>
+              <dt>{work.kind}</dt>
+              <dd>
+                {isExternalWork(work) ? (
+                  <a href={work.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    {work.name}<span className="sr-only">（別のサイトで開きます）</span>
+                  </a>
+                ) : (
+                  <Link href={work.href} className={linkClass}>{work.name}</Link>
+                )}
+                <span className="block text-sm text-muted">{work.description}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <Link href="/works" className="btn btn-secondary mt-6">Works を見る</Link>
       </AboutSection>
 
       <AboutSection en="Information" ja="店舗情報">

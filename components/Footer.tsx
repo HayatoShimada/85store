@@ -18,6 +18,7 @@ const COLUMNS = [
       { href: "/about", label: "お店について" },
       { href: "/upstore", label: "85-UpStore（2F）" },
       { href: "/blog", label: "ブログ" },
+      { href: "/works", label: "つくったもの" },
       { href: "/contact", label: "お問い合わせ" },
     ],
   },

@@ -7,11 +7,13 @@ import SectionHeading from "@/components/SectionHeading";
 import StoreActions from "@/components/StoreActions";
 import StoreInfoSection from "@/components/StoreInfoSection";
 import StoreStatus from "@/components/StoreStatus";
+import WorkCard from "@/components/WorkCard";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import { getBanners, getBlogPosts } from "@/lib/cms";
 import { getNoteArticles } from "@/lib/note";
 import { getLatestProducts } from "@/lib/shopify-storefront";
 import { STORE } from "@/lib/store-info";
+import { WORKS } from "@/lib/works";
 import type { Banner } from "@/types/cms";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
@@ -206,6 +208,20 @@ export default async function Home() {
           // ページ（ダーク・猫）と配色がずれると、ブラウザが iframe の下地を白で塗り、角丸の外側が白く見える
           className="block border-0 [color-scheme:light]"
         />
+      </section>
+
+      <section className="section" aria-labelledby="works-heading">
+        <SectionHeading
+          id="works-heading"
+          title="Works"
+          description="85-Store がつくったゲームや道具"
+          link={{ href: "/works", label: "すべて見る" }}
+        />
+        <ul className="grid-lines grid-cols-4 max-[900px]:grid-cols-2">
+          {WORKS.map((work) => (
+            <WorkCard key={work.slug} work={work} sizes="(max-width: 900px) 50vw, 25vw" showDescription={false} />
+          ))}
+        </ul>
       </section>
 
       <StoreInfoSection />
