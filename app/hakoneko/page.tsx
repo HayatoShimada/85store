@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { pageAlternates } from "@/lib/metadata";
 
 const APP_STORE_URL =
   'https://apps.apple.com/jp/app/%E3%83%8F%E3%82%B3%E3%83%8D%E3%82%B3%E3%81%AF%E8%A6%8B%E3%81%A6%E3%81%84%E3%82%8B/id6782921863';
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
     title: 'ハコネコはこちらを見ている｜可愛い猫の、宇宙的恐怖パズル',
     description: SHARE_DESCRIPTION,
   },
-  alternates: { canonical: '/hakoneko' },
+  alternates: pageAlternates('/hakoneko'),
 };
 
 export default function HakonekoPage() {

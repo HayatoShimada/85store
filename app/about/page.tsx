@@ -7,14 +7,16 @@ import BusinessCalendar from '@/components/BusinessCalendar';
 import IrregularHolidayNote from '@/components/IrregularHolidayNote';
 import ParkingNote from '@/components/ParkingNote';
 import StoreActions from '@/components/StoreActions';
+import UpcomingSpecialDays from '@/components/UpcomingSpecialDays';
 import { STORE } from '@/lib/store-info';
 import { WORKS, isExternalWork } from '@/lib/works';
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 export const metadata: Metadata = {
   title: "About Us",
-  alternates: { canonical: "/about" },
+  alternates: pageAlternates("/about"),
   description: "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」について。オーセンティックな古着とニューアイテムを提案するセレクトショップです。",
   openGraph: {
     type: "website",
@@ -89,7 +91,7 @@ const history = [
 export default function About() {
   return (
     <div className="wrap pt-12">
-      <p className="wordmark mb-12 text-[clamp(3rem,1rem+9vw,9rem)] leading-[0.85]" aria-hidden="true">About</p>
+      <h1 className="wordmark mb-12 text-[clamp(3rem,1rem+9vw,9rem)] leading-[0.85]">About</h1>
 
       <AboutSection en="About Us" ja="わたしたちについて">
         <AboutUs />
@@ -138,6 +140,7 @@ export default function About() {
                 {STORE.hours.note}
                 <Link href="/reserve" className={`ml-1 ${linkClass}`}>事前予約はこちら</Link>
               </span>
+              <UpcomingSpecialDays className="mt-3" />
             </dd>
           </div>
           <div><dt>電話</dt><dd><a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a></dd></div>

@@ -14,6 +14,7 @@ import { largestFromSrcset } from "@/lib/cms-image";
 import { formatDate } from "@/utils/date";
 import { getBlogPostPath, getCategoryListPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
@@ -54,9 +55,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   return {
     title: post.title,
     description: description,
-    alternates: {
-      canonical: getBlogPostPath(post),
-    },
+    alternates: pageAlternates(getBlogPostPath(post)),
     keywords: [
       "富山",
       "南砺市",
@@ -188,7 +187,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               >
                 <Image
                   src={eyecatch.url}
-                  alt=""
+                  alt={post.title}
                   width={eyecatch.width ?? 1200}
                   height={eyecatch.height ?? 1200}
                   sizes="(max-width: 800px) 100vw, 42vw"

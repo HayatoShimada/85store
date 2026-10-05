@@ -3,6 +3,7 @@ import Link from "next/link";
 import SectionHeading from "@/components/SectionHeading";
 import StructuredData from "@/components/StructuredData";
 import { FAQS } from "@/lib/faq";
+import { pageAlternates } from "@/lib/metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://85-store.com";
 
@@ -10,7 +11,7 @@ const description = "富山県南砺市井波の古着・セレクトショッ�
 
 export const metadata: Metadata = {
   title: "よくある質問",
-  alternates: { canonical: "/faq" },
+  alternates: pageAlternates("/faq"),
   description,
   openGraph: {
     type: "website",

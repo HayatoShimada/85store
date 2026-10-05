@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import PolicyPage from "@/components/PolicyPage";
+import { pageAlternates } from "@/lib/metadata";
 
 export const metadata: Metadata = {
   title: "返品・交換について",
   description: "85-Store（ハコストア）の返品・交換についてです。オンラインストアと共通の内容です。",
-  alternates: { canonical: "/returns" },
+  alternates: pageAlternates("/returns"),
 };
 
 export default function Page() {

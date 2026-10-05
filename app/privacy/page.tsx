@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import PolicyPage from "@/components/PolicyPage";
+import { pageAlternates } from "@/lib/metadata";
 
 export const metadata: Metadata = {
   title: "プライバシーポリシー",
   description: "85-Store（ハコストア）のプライバシーポリシーです。オンラインストアと共通の内容です。",
-  alternates: { canonical: "/privacy" },
+  alternates: pageAlternates("/privacy"),
 };
 
 export default function Page() {

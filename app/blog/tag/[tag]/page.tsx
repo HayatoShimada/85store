@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import BlogListLayout from "@/components/BlogListLayout";
 import { getAllTags, getBlogPostsByTag } from "@/lib/cms";
 import { nonEmptyParams } from "@/utils/static-params";
+import { pageAlternates } from "@/lib/metadata";
 
 interface TagPageProps {
   params: Promise<{
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
   return {
     title: `#${tag} | Blog`,
     description,
-    alternates: { canonical: path },
+    alternates: pageAlternates(path),
     openGraph: { type: "website", locale: "ja_JP", url: path, title: `#${tag} | Blog`, description },
   };
 }

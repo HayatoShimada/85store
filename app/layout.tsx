@@ -4,11 +4,13 @@ import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SnooEasterEgg from "@/components/SnooEasterEgg";
+import StoreStructuredData from "@/components/StoreStructuredData";
 import StructuredData from "@/components/StructuredData";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
+import { siteAlternates } from "@/lib/metadata";
 
 // 英字・数字: Archivo（幅の可変軸でロゴタイプを横に広げる）
 const archivo = Archivo({
@@ -86,12 +88,7 @@ export const metadata: Metadata = {
     apple: '/apple-icon',
   },
   manifest: '/manifest.json',
-  alternates: {
-    types: {
-      'application/rss+xml': '/feed.xml',
-      'application/atom+xml': '/atom.xml',
-    },
-  },
+  alternates: siteAlternates,
   ...(process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION && {
     other: {
       'facebook-domain-verification': process.env.NEXT_PUBLIC_FACEBOOK_DOMAIN_VERIFICATION,
@@ -135,7 +132,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <StructuredData type="Organization" />
-        <StructuredData type="LocalBusiness" />
+        <StoreStructuredData />
         <StructuredData type="WebSite" />
         <Header />
         <main id="main" className="min-h-[60vh]">

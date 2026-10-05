@@ -4,6 +4,7 @@ import BlogListLayout from "@/components/BlogListLayout";
 import { getBlogPostsByCategory, getAllCategories } from "@/lib/cms";
 import { BLOG_SECTIONS, getBlogCategoryPath, getBlogSectionPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
+import { pageAlternates } from "@/lib/metadata";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   return {
     title: `${categoryName} | Blog`,
     description,
-    alternates: { canonical: path },
+    alternates: pageAlternates(path),
     openGraph: { type: "website", locale: "ja_JP", url: path, title: `${categoryName} | Blog`, description },
   };
 }
