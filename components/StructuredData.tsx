@@ -1,7 +1,7 @@
-import { STORE, STORE_OPEN_DAYS_SCHEMA } from "@/lib/store-info";
+import { STORE, STORE_OPEN_DAYS_SCHEMA, STORE_TELEPHONE_INTL } from "@/lib/store-info";
 
 interface StructuredDataProps {
-  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog' | 'BlogPosting' | 'BreadcrumbList';
+  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog' | 'BlogPosting' | 'BreadcrumbList' | 'FAQPage' | 'ItemList';
   data?: Record<string, any>;
 }
 
@@ -21,8 +21,14 @@ const sameAs = [
   STORE.sns.facebook,
   STORE.sns.tiktok,
   STORE.sns.note,
+  STORE.sns.spotify,
   STORE.onlineShopUrl,
 ];
+
+// 取り扱っているもの（AI や検索が「何の店か」を判断する手がかり）
+const knowsAbout = ['古着', 'セレクトショップ', 'ヴィンテージ', ...STORE.vintage, ...STORE.brands];
+
+const paymentAccepted = ['現金', 'クレジットカード', ...STORE.payment.creditCards, '電子マネー', ...STORE.payment.eMoney, 'QRコード決済', ...STORE.payment.qr].join(', ');
 
 function getStructuredData(type: StructuredDataProps['type']) {
   switch (type) {
@@ -36,7 +42,10 @@ function getStructuredData(type: StructuredDataProps['type']) {
         url: baseUrl,
         logo: `${baseUrl}/logo.svg`,
         description: STORE.description,
+        email: STORE.email,
+        telephone: STORE_TELEPHONE_INTL,
         address: postalAddress,
+        knowsAbout,
         sameAs,
       };
 
@@ -47,9 +56,29 @@ function getStructuredData(type: StructuredDataProps['type']) {
         '@id': `${baseUrl}/#store`,
         name: STORE.name,
         url: baseUrl,
+        alternateName: ['ハコストア', STORE.shortName],
         image: `${baseUrl}/images/shop.jpg`,
-        priceRange: '¥¥',
+        logo: `${baseUrl}/logo.svg`,
+        telephone: STORE_TELEPHONE_INTL,
+        email: STORE.email,
+        priceRange: STORE.priceRange,
+        currenciesAccepted: 'JPY',
+        paymentAccepted,
         address: postalAddress,
+        hasMap: STORE.mapUrl,
+        areaServed: STORE.areaServed.map((name) => ({ '@type': 'AdministrativeArea', name })),
+        knowsAbout,
+        keywords: '古着, 古着屋, セレクトショップ, 富山, 南砺市, 井波, ヴィンテージ',
+        amenityFeature: [
+          { '@type': 'LocationFeatureSpecification', name: '駐車場', value: true },
+        ],
+        // 2階の共創スペース
+        containsPlace: {
+          '@type': 'Place',
+          name: '85-UpStore',
+          url: `${baseUrl}/upstore`,
+          description: '85-Store の2階にある共創スペース。ポップアップ、展示、ワークショップに使える。',
+        },
         geo: {
           '@type': 'GeoCoordinates',
           latitude: STORE.geo.latitude,
@@ -102,6 +131,21 @@ function getStructuredData(type: StructuredDataProps['type']) {
       return {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
+      };
+
+    // mainEntity（質問と回答）は data で渡す
+    case 'FAQPage':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        inLanguage: 'ja',
+      };
+
+    // itemListElement は data で渡す
+    case 'ItemList':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
       };
   }
 }

@@ -126,6 +126,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           datePublished: new Date(publishedAt).toISOString(),
           dateModified: new Date(modifiedAt).toISOString(),
           ...(eyecatch && { image: eyecatch.url }),
+          ...(primaryCategory && { articleSection: primaryCategory }),
+          ...(post.tags?.length && { keywords: post.tags.join(", ") }),
+          about: { "@id": `${siteUrl}/#store` },
           author: post.author
             ? { "@type": "Person", name: post.author }
             : { "@id": `${siteUrl}/#organization` },

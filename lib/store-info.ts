@@ -23,9 +23,26 @@ export const STORE = {
     closedLabel: "木曜定休（不定休あり）",
     note: "事前予約で木曜と18:00〜20:00の延長営業が可能です。",
   },
+  telephone: "070-8447-0934",
+  email: "info@85-store.com",
+  // 店頭の価格帯（構造化データの priceRange・FAQ）
+  priceRange: "3,000〜30,000円",
+  // 店頭で使える支払い方法
+  payment: {
+    creditCards: ["Visa", "Mastercard", "JCB", "American Express", "Diners Club", "Discover"],
+    eMoney: ["交通系IC", "iD", "QUICPay"],
+    qr: ["PayPay", "楽天ペイ", "d払い", "WeChat Pay", "Alipay+"],
+  },
+  // 取り扱い（新品のブランドと古着の種類）
+  brands: ["River", "VOIRY", "SOWBOW", "Macmahon Knitting Mills", "Building"],
+  vintage: ["アメリカ古着", "ヨーロッパ古着", "国内ドメブラ古着"],
+  // 対象エリア（構造化データの areaServed）
+  areaServed: ["南砺市", "砺波市", "富山県"],
   onlineShopUrl: "https://shop.85-store.com/",
-  mapUrl: "https://maps.app.goo.gl/ZfyGqHvE4fZJY7He7",
-  parkingUrl: "https://maps.app.goo.gl/tGRFs9VSyNqXdyfMA",
+  // Google マップの Maps URLs（https://developers.google.com/maps/documentation/urls）。
+  // スマホでは Google マップのアプリで開く。maps.app.goo.gl の短縮リンクは Firebase Dynamic Links の終了でアプリが開かないことがある
+  mapUrl: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("85-Store 富山県南砺市本町4丁目100"),
+  parkingUrl: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("井波児童公園 富山県南砺市"),
   // お店の前は道幅が狭いため、近くの駐車場を案内する
   parkingNote: "お店の前にも駐車場がありますが、道幅が狭く大きめの車は難しいため、「井波社会福祉センター」か「井波児童公園」の駐車場がおすすめです（お店まで徒歩30秒）。",
   mapEmbedUrl: "https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1s36.5657509,136.9704516!6i18!3m1!1sja!5m1!1sja",
@@ -37,6 +54,13 @@ export const STORE = {
     spotify: "https://open.spotify.com/show/6tA2ppEmxZEzvraua6zLFV",
   },
 } as const;
+
+// schema.org 用の国際形式の電話番号
+export const STORE_TELEPHONE_INTL = `+81-${STORE.telephone.replace(/^0/, "")}`;
+
+// 支払い方法の一文（FAQ・llms.txt）
+export const STORE_PAYMENT_LABEL =
+  `現金、クレジットカード（${STORE.payment.creditCards.join("・")}）、電子マネー（${STORE.payment.eMoney.join("・")}）、QRコード決済（${STORE.payment.qr.join("・")} など）`;
 
 export const STORE_FULL_ADDRESS =
   `〒${STORE.address.postalCode} ${STORE.address.region}${STORE.address.locality}${STORE.address.street}`;

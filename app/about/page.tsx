@@ -140,6 +140,7 @@ export default function About() {
               </span>
             </dd>
           </div>
+          <div><dt>電話</dt><dd><a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a></dd></div>
           <div><dt>駐車場</dt><dd><ParkingNote /></dd></div>
           <div><dt>オンラインストア</dt><dd><a href={STORE.onlineShopUrl} className={linkClass}>shop.85-store.com</a></dd></div>
         </dl>
