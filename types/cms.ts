@@ -23,6 +23,8 @@ export interface Blog {
   excerpt?: string;
   description?: string;
   featured: boolean;
+  // イベントの記事の日時と会場（CMS の「イベント情報」。開始の日時があるときだけ。会場が無ければお店）
+  event?: { startDate: string; endDate?: string; venueName?: string; venueAddress?: string };
   publishedAt: string;
   createdAt: string;
   updatedAt: string;
