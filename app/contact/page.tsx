@@ -100,6 +100,10 @@ export default function ContactPage() {
               </dl>
             </div>
           ))}
+          <dl className="facts">
+            <div><dt>電話</dt><dd><a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a></dd></div>
+            <div><dt>メール</dt><dd><a href={`mailto:${STORE.email}`} className="underline underline-offset-4">{STORE.email}</a></dd></div>
+          </dl>
           <StoreActions showOnlineStore={false} />
         </div>
 

@@ -19,6 +19,7 @@ const COLUMNS = [
       { href: "/upstore", label: "85-UpStore（2F）" },
       { href: "/blog", label: "ブログ" },
       { href: "/works", label: "つくったもの" },
+      { href: "/faq", label: "よくある質問" },
       { href: "/contact", label: "お問い合わせ" },
     ],
   },
@@ -45,6 +46,8 @@ export default function Footer() {
               {STORE_FULL_ADDRESS}
               <br />
               <span className="num">{STORE.hours.label}</span>　{STORE.hours.closedLabel}
+              <br />
+              TEL <a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num hover:underline">{STORE.telephone}</a>
             </p>
             <IrregularHolidayNote className="mt-1 text-footer-muted" />
           </div>

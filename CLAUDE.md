@@ -57,7 +57,8 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 | `/blog/[slug]` | 記事（スラッグ）。microCMS から移した記事は、そのコンテンツIDがスラッグ。`id`（旧コンテンツID）でアクセスされ、スラッグと違う場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
 | `/blog/products`, `/blog/styling`, `/blog/event` | ブログの区分（`utils/blog.ts` の `BLOG_SECTIONS` でカテゴリをまとめる。0件でも出す）。ショップのメニューからリンクしている。区分と同じ1つのカテゴリ（Products・Styling）の `/blog/category/...` は区分へ 308 |
-| `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml` | `app/sitemap.ts` 等で動的生成 |
+| `/faq` | よくある質問（`lib/faq.ts`。表示・FAQPage の構造化データ・llms.txt で共有） |
+| `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml`, `/llms.txt` | `app/sitemap.ts` 等で動的生成。llms.txt は AI 向けの要約（`lib/llms.ts`）、robots.txt は AI のクローラーを明示的に許可 |
 | `/about`, `/reserve`, `/upstore`, `/contact`, `/hakoneko` | 固定ページ（hakoneko は独自デザインのゲーム紹介ページ） |
 | `/works` | 85-Store がつくったもの（ハコネコ・VividAtmos・BlackBullet・foxtrotdesign）。定義は `lib/works.ts`、画像は `public/images/works/`（4:3 のスクリーンショット）。トップ・About・フッターからも導線あり |
 | `/shipping`, `/returns`, `/terms`, `/privacy` | Shopify のポリシーを表示 |
@@ -97,7 +98,8 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 ### SEO
 
 - 各ページで `alternates.canonical` を指定する。タイトルは `app/layout.tsx` のテンプレート（`%s | 85-Store（ハコストア）`）に任せ、ページ側で店名を重ねない。
-- 構造化データは `components/StructuredData.tsx`。
+- 構造化データは `components/StructuredData.tsx`。店舗の事実（住所・電話・支払い方法・価格帯・取り扱い）は `lib/store-info.ts` を唯一の定義元にし、表示・構造化データ・FAQ・llms.txt で同じ値を使う（AI や地図の検索で店の情報が食い違わないように）。
+- Google マップへのリンクは Maps URLs（`https://www.google.com/maps/search/?api=1&query=…`）で書く。`maps.app.goo.gl` の短縮リンクはスマホでアプリが開かないことがある。
 
 ## デザインシステム「モダングリッド」
 

@@ -21,8 +21,9 @@ export default function StoreInfoSection() {
               { label: "住所", value: <>〒{STORE.address.postalCode}<br />{STORE.address.region}{STORE.address.locality}{STORE.address.street}</> },
               { label: "営業時間", value: <><span className="num">{STORE.hours.label}</span><span className="block text-sm opacity-85">{STORE.hours.note}</span></> },
               { label: "定休日", value: <>{STORE.hours.closedDays}<IrregularHolidayNote className="opacity-85" /></> },
+              { label: "電話", value: <a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a> },
               { label: "駐車場", value: <ParkingNote /> },
-              { label: "取り扱い", value: "River、VOIRY、SOWBOW、Macmahon Knitting Mills、Building ほか" },
+              { label: "取り扱い", value: `${STORE.brands.join("、")} ほか` },
             ].map((row) => (
               <div key={row.label} className="grid grid-cols-[7em_minmax(0,1fr)] gap-4 border-t border-on-accent-2/30 py-4 max-[900px]:grid-cols-[5.5em_minmax(0,1fr)]">
                 <dt className="pt-0.5 text-sm opacity-85">{row.label}</dt>
