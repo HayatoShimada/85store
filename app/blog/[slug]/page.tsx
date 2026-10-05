@@ -144,6 +144,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           ],
         }}
       />
+      {post.event && (
+        <StructuredData
+          type="Event"
+          data={{
+            name: post.title,
+            description: post.description || post.excerpt || extractExcerpt(post.content),
+            url: postUrl,
+            startDate: post.event.startDate,
+            ...(post.event.endDate && { endDate: post.event.endDate }),
+            ...(eyecatch && { image: eyecatch.url }),
+            // 会場が無ければお店（ClothingStore）
+            location: post.event.venueName
+              ? {
+                  "@type": "Place",
+                  name: post.event.venueName,
+                  ...(post.event.venueAddress && { address: post.event.venueAddress }),
+                }
+              : { "@id": `${siteUrl}/#store` },
+          }}
+        />
+      )}
 
       <article className="wrap">
         {/* タイトルとアイキャッチ（アイキャッチは比率を保ったまま高さの上限まで縮める） */}
