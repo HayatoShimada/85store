@@ -60,7 +60,7 @@ export const STORE_TELEPHONE_INTL = `+81-${STORE.telephone.replace(/^0/, "")}`;
 
 // 支払い方法の一文（FAQ・llms.txt）
 export const STORE_PAYMENT_LABEL =
-  `現金、クレジットカード（${STORE.payment.creditCards.join("・")}）、電子マネー（${STORE.payment.eMoney.join("・")}）、QRコード決済（${STORE.payment.qr.join("・")} など）`;
+  `現金、クレジットカード（${STORE.payment.creditCards.join("・")}）、電子マネー（${STORE.payment.eMoney.join("・")}）、QRコード決済（${STORE.payment.qr.join("・")}）`;
 
 export const STORE_FULL_ADDRESS =
   `〒${STORE.address.postalCode} ${STORE.address.region}${STORE.address.locality}${STORE.address.street}`;
