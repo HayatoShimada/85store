@@ -5,7 +5,7 @@
 ## プロジェクト概要
 
 富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイト（https://85-store.com）。
-ブログ・バナーは自前の CMS（**Payload**、`cms/`、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
+ブログ・バナーは自前の CMS（**Payload**、別リポジトリ [HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms)、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
 Shopify の商品・コレクション・ストアのページ・ブログ・メニューも、同じ Payload を入力画面にしている（正は Shopify）。
 
 - Next.js 16（App Router / Turbopack / **Cache Components**）
@@ -132,25 +132,14 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 配送・返品・利用規約・プライバシーポリシーのページは、オンラインストア（Shopify）のポリシーを Storefront API で取得して表示している（`components/PolicyPage.tsx`）。内容の変更は Shopify 管理画面で行う。
 
-## CMS（`cms/`、Payload）
+## CMS（Payload、別リポジトリ）
 
-- 85pi の docker compose で動かす（Payload 3・SQLite。Litestream で R2 の `85store-cms-backup` へ随時バックアップ）。手順は `cms/README.md`、配置は `cms/deploy.sh`。
-- 管理画面は `https://cms.85-store.com`。DNS は CMS の端末（tailscale のサイドカー）の tailnet のアドレスを指すので、tailnet の外からは届かない。tailscale serve が 443 番を PROXY プロトコル付きで Caddy に転送し、Caddy が TLS を終端（証明書は Let's Encrypt から Cloudflare の DNS で取る）。Payload のカスタム認証（`cms/src/lib/tailscale-auth.ts`）が、接続元のアドレスを tailscaled に whois で問い合わせ、「メンバー」に登録されたメールだけを通す。Payload と Caddy は 127.0.0.1 でだけ待ち受け、ホストにポートを出さない（接続元を偽装できないようにするため）。
-- コレクション（サイト）: `posts`（下書き/公開・Lexical 本文に写真・写真の横並び・埋め込み）、`banners`（並び替え）、`categories`、`media`（R2 に保存、avif/webp の 480〜1600）、`users`（管理者/編集者）。
-- コレクション（Shopify）: `products`・`brands`・`productPhotos`、`shopifyCollections`、`storePages`・`storeBlogs`・`storeArticles`・`storeMenus`。
-- 公開・更新・削除のたびに `cms/src/publish/` が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。書き出す形は `types/cms.ts` と `cms/src/publish/export.ts` で合わせる。
+- CMS のコードは **[HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms)** にある（このリポジトリには無い）。構成・Shopify との同期・配置・マイグレーションは 85store-cms の README・CLAUDE.md を見る。
+- 85pi の docker compose で動かし、管理画面は `https://cms.85-store.com`（tailnet 内からのみ）。
+- 公開・更新・削除のたびに、CMS が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。商品を Shopify に送ったあとは `shopify-products` を送って New Arrivals を作り直す。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。
+- サイトと CMS の約束は書き出す JSON の形だけ。`types/cms.ts` と 85store-cms の `src/publish/export.ts` を合わせ、変えるときは両方のリポジトリに PR を出す。
 - 本文の HTML は microCMS と同じ構造（`<figure><img width height>`、埋め込みは padding の div + iframe）で出すので、`lib/toc.ts`・`groupPortraitFigures`・`.article-body` の CSS がそのまま使える。
 - Event1st / Event2nd のカテゴリは Reserve ページのイベント一覧に使っている（名前を変えない）。
-- `cms/` は独立した package.json・tsconfig を持ち、サイトの tsc・eslint の対象外。
-
-### Shopify との同期（`cms/src/shopify/`）
-
-- **正は Shopify**。Payload は入力画面で、画面を開いたときと10分ごとに Shopify から取り込み、保存すると Shopify に送る（Payload Jobs）。前回の同期のあとに Shopify 側でも変わっていたら送らずに止め、どちらを残すか選んでもらう（指紋で比べる）。
-- 商品は `sync.ts`（productSet。新しい商品は全販売チャネルに出す）、ストアの内容は `store/`（コレクション・ページ・ブログ・記事・メニューの定義と共通の `engine.ts`）。
-- モードは 85pi の `.env` の `SHOPIFY_SYNC_MODE`（商品）・`SHOPIFY_STORE_SYNC_MODE`（ストア）。新しく同期の対象を足したら、dry-run で全件を取り込み、差分ゼロ（`/api/shopify/diff-*`）を確かめてから live にする。
-- 商品を送ったら、サイトの `/api/revalidate` に `shopify-products` を送り、New Arrivals を作り直す。
-- 本番の DB はマイグレーション（`cms/src/migrations/`）で変える。作り方は `cms/README.md`。
-- 説明文の AI 生成は 85crm の内部 API（tailnet 内の `:11443/internal`、`X-Internal-Token`）を呼ぶ。
 
 ## プロジェクト固有のルール
 

@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import type { Banner, Blog, BlogPost } from "@/types/cms";
 
-// 記事・バナーは CMS（85pi の Payload、cms/）が公開のたびに R2 へ書き出した JSON を読む。
+// 記事・バナーは CMS（85pi の Payload。HayatoShimada/85store-cms）が公開のたびに R2 へ書き出した JSON を読む。
 //   posts/index.json   記事の一覧（本文なし・公開日の新しい順）
 //   posts/<slug>.json  記事（本文の HTML 込み）
 //   banners.json       バナー（並び順どおり）

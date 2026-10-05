@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 
-// CMS（cms/、85pi の Payload）が記事・バナーを R2 に書き出したあと、または商品を Shopify に送ったあとに呼び、
+// CMS（85pi の Payload。HayatoShimada/85store-cms）が記事・バナーを R2 に書き出したあと、または商品を Shopify に送ったあとに呼び、
 // キャッシュ（blogs / banners / shopify-products）を破棄する。
 // 署名は x-cms-signature（本文の HMAC-SHA256、16進）。秘密は CMS と同じ CMS_WEBHOOK_SECRET。
 const REVALIDATABLE_APIS = new Set(["blogs", "banners", "shopify-products"]);
