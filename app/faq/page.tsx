@@ -5,6 +5,8 @@ import StructuredData from "@/components/StructuredData";
 import { FAQS } from "@/lib/faq";
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
+import { SHORT_TEXT_LENGTH } from "@/lib/phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://85-store.com";
 
 const description = "富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」のよくある質問。場所・営業時間・駐車場・予約・支払い方法・価格帯・オンラインストアについて。";
@@ -43,9 +45,9 @@ export default function FaqPage() {
       <dl className="max-w-3xl">
         {FAQS.map((faq) => (
           <div key={faq.question} className="border-t border-rule py-8">
-            <dt className="text-lg font-semibold">{faq.question}</dt>
+            <dt className="text-lg font-semibold"><Phrase>{faq.question}</Phrase></dt>
             <dd className="mt-3 leading-loose text-ink-2">
-              {faq.answer}
+              <Phrase max={SHORT_TEXT_LENGTH}>{faq.answer}</Phrase>
               {faq.link && (
                 <span className="mt-2 block">
                   {faq.link.href.startsWith("http") ? (
@@ -60,7 +62,7 @@ export default function FaqPage() {
         ))}
       </dl>
       <p className="max-w-3xl border-t border-rule pt-8 text-sm text-muted">
-        ほかにご不明な点があれば、<Link href="/contact" className={linkClass}>お問い合わせ</Link>からご連絡ください。
+        <Phrase>{"ほかにご不明な点があれば、"}</Phrase><Link href="/contact" className={linkClass}><Phrase>{"お問い合わせ"}</Phrase></Link><Phrase>{"からご連絡ください。"}</Phrase>
       </p>
     </div>
   );

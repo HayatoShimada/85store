@@ -1,5 +1,7 @@
 import Image from 'next/image';
 
+import Phrase from "@/components/Phrase";
+import { SHORT_TEXT_LENGTH } from "@/lib/phrase";
 const members = [
   {
     name: 'ゆいまる',
@@ -60,18 +62,18 @@ export default function AboutTeam() {
             </div>
             <div>
               <p className="text-xs tracking-[0.2em] text-muted">
-                {member.role}
+                <Phrase>{member.role}</Phrase>
               </p>
               <h3 className="mt-1 text-lg font-bold text-ink">
                 {member.name}
               </h3>
               <div className="mt-4 space-y-3 text-sm text-ink-2 leading-relaxed">
                 {member.paragraphs.map((text, i) => (
-                  <p key={i}>{text}</p>
+                  <p key={i}><Phrase max={SHORT_TEXT_LENGTH}>{text}</Phrase></p>
                 ))}
               </div>
               <p className="mt-4 text-sm text-muted leading-relaxed">
-                {member.note}
+                <Phrase max={SHORT_TEXT_LENGTH}>{member.note}</Phrase>
               </p>
             </div>
           </div>

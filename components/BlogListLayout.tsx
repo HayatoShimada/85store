@@ -4,6 +4,7 @@ import SectionHeading from "@/components/SectionHeading";
 import type { Blog } from "@/types/cms";
 import { BLOG_NAV } from "@/utils/blog";
 
+import Phrase from "@/components/Phrase";
 interface BlogListLayoutProps {
   title: string;
   description: string;
@@ -46,7 +47,7 @@ export default function BlogListLayout({
             {posts.map((post) => <BlogCard key={post.id} post={post} />)}
           </BlogCardGrid>
         ) : (
-          <p className="text-muted">まだ記事がありません。</p>
+          <p className="text-muted"><Phrase>{"まだ記事がありません。"}</Phrase></p>
         )}
 
         {pagination}

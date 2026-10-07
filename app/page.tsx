@@ -94,7 +94,7 @@ export default async function Home() {
           <div className="bg-accent p-[clamp(20px,2.5vw,36px)] text-on-accent">
             <h1 className="text-2xl font-bold tracking-tight"><Phrase>もう一度、洋服を好きになれる場所</Phrase></h1>
             <p className="mt-4 max-w-[26em]">
-              富山県南砺市のセレクトショップ、85-Store（ハコストア）です。今好きな服と、ずっと着られる服を。
+              <Phrase>{"富山県南砺市のセレクトショップ、85-Store（ハコストア）です。今好きな服と、ずっと着られる服を。"}</Phrase>
             </p>
           </div>
           <div className="grid content-between gap-6 bg-bg p-[clamp(20px,2.5vw,36px)]">
@@ -107,15 +107,15 @@ export default async function Home() {
                         <rect x="3.5" y="5" width="17" height="15" />
                         <path d="M3.5 10h17M8 3v4M16 3v4" />
                       </svg>
-                      営業日カレンダー
+                      <Phrase>{"営業日カレンダー"}</Phrase>
                     </a>
                   }
                 />
               </div>
               <dl className="facts">
-                <div><dt>営業時間</dt><dd className="num text-xl font-semibold">{STORE.hours.label}</dd></div>
-                <div><dt>定休日</dt><dd>{STORE.hours.closedDays}<IrregularHolidayNote className="text-muted" /></dd></div>
-                <div><dt>住所</dt><dd>{STORE.address.region}{STORE.address.locality}{STORE.address.street}</dd></div>
+                <div><dt><Phrase>{"営業時間"}</Phrase></dt><dd className="num text-xl font-semibold">{STORE.hours.label}</dd></div>
+                <div><dt><Phrase>{"定休日"}</Phrase></dt><dd>{STORE.hours.closedDays}<IrregularHolidayNote className="text-muted" /></dd></div>
+                <div><dt><Phrase>{"住所"}</Phrase></dt><dd>{STORE.address.region}{STORE.address.locality}{STORE.address.street}</dd></div>
               </dl>
             </div>
             <StoreActions />
@@ -175,7 +175,7 @@ export default async function Home() {
             {posts.map((post) => <BlogCard key={post.id} post={post} />)}
           </BlogCardGrid>
         ) : (
-          <p className="text-muted">ただいま記事を準備中です。</p>
+          <p className="text-muted"><Phrase>{"ただいま記事を準備中です。"}</Phrase></p>
         )}
       </section>
 

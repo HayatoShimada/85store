@@ -33,7 +33,7 @@ export default function NoteCard({ article }: NoteCardProps) {
           </p>
           <h3 className="text-lg leading-normal group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px] max-[560px]:text-base">
             <Phrase>{article.title}</Phrase>
-            <span className="sr-only">（note.com で開きます）</span>
+            <span className="sr-only"><Phrase>{"（note.com で開きます）"}</Phrase></span>
           </h3>
         </div>
       </a>

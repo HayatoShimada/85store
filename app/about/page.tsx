@@ -12,6 +12,8 @@ import { STORE } from '@/lib/store-info';
 import { WORKS, isExternalWork } from '@/lib/works';
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
+import { SHORT_TEXT_LENGTH } from "@/lib/phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 export const metadata: Metadata = {
@@ -37,7 +39,7 @@ function SectionHeading({ en, ja }: { en: string; ja: string }) {
   return (
     <div>
       <h2 className="font-display text-2xl font-bold tracking-tight">{en}</h2>
-      <p className="mt-1 text-sm text-muted">{ja}</p>
+      <p className="mt-1 text-sm text-muted"><Phrase>{ja}</Phrase></p>
     </div>
   );
 }
@@ -62,7 +64,7 @@ const history = [
     date: '2025.11.15',
     body: (
       <>
-        <Link href="https://shop.85-store.com/" className={linkClass}>オンラインストア</Link>
+        <Link href="https://shop.85-store.com/" className={linkClass}><Phrase>{"オンラインストア"}</Phrase></Link>
         をオープン。
       </>
     ),
@@ -71,7 +73,7 @@ const history = [
     date: '2025.11.16',
     body: (
       <>
-        <Link href="https://85-store.com/blog/limitedstore" className={linkClass}>週末限定のストア</Link>
+        <Link href="https://85-store.com/blog/limitedstore" className={linkClass}><Phrase>{"週末限定のストア"}</Phrase></Link>
         の予約開始。
       </>
     ),
@@ -80,7 +82,7 @@ const history = [
     date: '2026.01.19',
     body: (
       <>
-        <Link href="/upstore" className={linkClass}>2nd Floor構想</Link>
+        <Link href="/upstore" className={linkClass}><Phrase>{"2nd Floor構想"}</Phrase></Link>
         の立ち上げ。
       </>
     ),
@@ -106,53 +108,53 @@ export default function About() {
       </AboutSection>
 
       <AboutSection en="Works" ja="つくったもの">
-        <p className="leading-loose text-ink-2">洋服のほかに、ゲームや道具もつくっています。</p>
+        <p className="leading-loose text-ink-2"><Phrase>{"洋服のほかに、ゲームや道具もつくっています。"}</Phrase></p>
         <dl className="facts mt-6">
           {WORKS.map((work) => (
             <div key={work.slug}>
-              <dt>{work.kind}</dt>
+              <dt><Phrase>{work.kind}</Phrase></dt>
               <dd>
                 {isExternalWork(work) ? (
                   <a href={work.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
-                    {work.name}<span className="sr-only">（別のサイトで開きます）</span>
+                    {work.name}<span className="sr-only"><Phrase>{"（別のサイトで開きます）"}</Phrase></span>
                   </a>
                 ) : (
                   <Link href={work.href} className={linkClass}>{work.name}</Link>
                 )}
-                <span className="block text-sm text-muted">{work.description}</span>
+                <span className="block text-sm text-muted"><Phrase max={SHORT_TEXT_LENGTH}>{work.description}</Phrase></span>
               </dd>
             </div>
           ))}
         </dl>
-        <Link href="/works" className="btn btn-secondary mt-6">Works を見る</Link>
+        <Link href="/works" className="btn btn-secondary mt-6"><Phrase>{"Works を見る"}</Phrase></Link>
       </AboutSection>
 
       <AboutSection en="Information" ja="店舗情報">
         <dl className="facts">
-          <div><dt>店名</dt><dd>{STORE.name}</dd></div>
-          <div><dt>住所</dt><dd>〒{STORE.address.postalCode}<br />{STORE.address.region}{STORE.address.locality}{STORE.address.street}</dd></div>
+          <div><dt><Phrase>{"店名"}</Phrase></dt><dd>{STORE.name}</dd></div>
+          <div><dt><Phrase>{"住所"}</Phrase></dt><dd>〒{STORE.address.postalCode}<br />{STORE.address.region}{STORE.address.locality}{STORE.address.street}</dd></div>
           <div>
-            <dt>営業時間</dt>
+            <dt><Phrase>{"営業時間"}</Phrase></dt>
             <dd>
               <span className="num">{STORE.hours.label}</span>（{STORE.hours.closedLabel}）
               <IrregularHolidayNote className="text-muted" />
               <span className="block text-sm text-muted">
-                {STORE.hours.note}
-                <Link href="/reserve" className={`ml-1 ${linkClass}`}>事前予約はこちら</Link>
+                <Phrase max={SHORT_TEXT_LENGTH}>{STORE.hours.note}</Phrase>
+                <Link href="/reserve" className={`ml-1 ${linkClass}`}><Phrase>{"事前予約はこちら"}</Phrase></Link>
               </span>
               <UpcomingSpecialDays className="mt-3" />
             </dd>
           </div>
-          <div><dt>電話</dt><dd><a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a></dd></div>
-          <div><dt>駐車場</dt><dd><ParkingNote /></dd></div>
-          <div><dt>オンラインストア</dt><dd><a href={STORE.onlineShopUrl} className={linkClass}>shop.85-store.com</a></dd></div>
+          <div><dt><Phrase>{"電話"}</Phrase></dt><dd><a href={`tel:${STORE.telephone.replaceAll("-", "")}`} className="num underline underline-offset-4">{STORE.telephone}</a></dd></div>
+          <div><dt><Phrase>{"駐車場"}</Phrase></dt><dd><ParkingNote /></dd></div>
+          <div><dt><Phrase>{"オンラインストア"}</Phrase></dt><dd><a href={STORE.onlineShopUrl} className={linkClass}>shop.85-store.com</a></dd></div>
         </dl>
         <div className="mt-6">
           <StoreActions showOnlineStore={false} />
         </div>
         <div className="mt-10">
           <h3 className="mb-4 font-display text-lg font-bold">
-            Calendar<span className="ml-2 font-sans text-sm font-normal text-muted">営業日カレンダー</span>
+            Calendar<span className="ml-2 font-sans text-sm font-normal text-muted"><Phrase>{"営業日カレンダー"}</Phrase></span>
           </h3>
           <BusinessCalendar />
         </div>
@@ -175,7 +177,7 @@ export default function About() {
             <li key={item.date} className="relative">
               <span className="absolute top-2 left-[-37px] h-2 w-2 rounded-full bg-accent-2 md:left-[-53px]" />
               <time className="num block text-sm text-muted">{item.date}</time>
-              <p className="mt-2">{item.body}</p>
+              <p className="mt-2"><Phrase max={SHORT_TEXT_LENGTH}>{item.body}</Phrase></p>
             </li>
           ))}
         </ol>
