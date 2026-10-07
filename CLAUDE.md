@@ -12,7 +12,7 @@ Shopify の商品・コレクション・ストアのページ・ブログ・メ
 - React 19 / TypeScript 5
 - Tailwind CSS v4（CSSファーストの設定。`tailwind.config.ts` は無い）
 - CMS（Payload。サイトは R2 に書き出された JSON を読む）、note.com RSS、Shopify Storefront API（新着商品・ポリシー）
-- Vercel にデプロイ
+- Vercel にデプロイ（関数は東京 `hnd1`、Node 24。`vercel.json` の `regions` と `package.json` の `engines`。`85store.vercel.app` は 85-store.com へ転送）
 
 ## コマンド
 
@@ -93,7 +93,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 ### 画像
 
 - `next/image` で `fill` を使うときは必ず `sizes` を指定する（未指定だと100vw扱いで過大な画像を取得する）。
-- `public/` の写真は長辺1600px程度・EXIF削除済みで置く。
+- `public/` の写真は長辺1600px程度・EXIF削除済みで置く。差し替えるときはファイル名を変える（最適化した画像を `minimumCacheTTL` で31日キャッシュするため、同じ名前だと古い画像が出る）。
 - リモート画像は `next.config.ts` の `images.remotePatterns` に登録されたホストのみ。
 
 ### SEO
