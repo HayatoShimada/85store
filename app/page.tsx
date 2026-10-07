@@ -162,10 +162,10 @@ export default async function Home() {
         </section>
       )}
 
-      <section className="section" aria-labelledby="journal-heading">
+      <section className="section" aria-labelledby="blog-heading">
         <SectionHeading
-          id="journal-heading"
-          title="Journal"
+          id="blog-heading"
+          title="Blog"
           description="入荷、イベント、営業日のお知らせ"
           link={{ href: "/blog", label: "すべての記事" }}
         />

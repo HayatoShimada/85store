@@ -52,7 +52,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 
 | パス | 内容 |
 |---|---|
-| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事・note・Podcast・Works・店舗情報） |
+| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事（Blog）・note・Podcast・Works・店舗情報） |
 | `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
 | `/blog/[slug]` | 記事（スラッグ）。microCMS から移した記事は、そのコンテンツIDがスラッグ。`id`（旧コンテンツID）でアクセスされ、スラッグと違う場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
@@ -127,7 +127,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 | ヒーローの写真2枚 | CMS の **縦長のバナー**（先頭から2枚）。足りない分は `public/images` の写真 |
 | Pick Up | CMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
 | New Arrivals | Shopify Storefront API の新着・在庫ありの商品（`lib/shopify-storefront.ts`） |
-| Journal / note / Podcast | CMS の最新記事 / note RSS / Spotify 埋め込み |
+| Blog / note / Podcast | CMS の最新記事 / note RSS / Spotify 埋め込み |
 | Store | `lib/store-info.ts`（店舗情報の唯一の定義元。住所・地図・駐車場のURL・通常の営業時間）＋ 営業日カレンダー |
 
 配送・返品・利用規約・プライバシーポリシーのページは、オンラインストア（Shopify）のポリシーを Storefront API で取得して表示している（`components/PolicyPage.tsx`）。内容の変更は Shopify 管理画面で行う。
