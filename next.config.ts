@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   agentRules: false,
   images: {
     qualities: [75, 90, 100],
+    // 最適化した画像を31日キャッシュする（既定は4時間）。CMS と Shopify の画像は URL が変わらない限り中身も変わらない。
+    // public/images の写真を差し替えるときは、ファイル名を変える（同じ名前だと最大31日古い画像が出る）
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       {
         protocol: 'https',

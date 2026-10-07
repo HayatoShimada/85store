@@ -1,10 +1,12 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm install",
-  "devCommand": "npm run dev",
-  "env": {
-    "NODE_ENV": "production"
-  }
+  "regions": ["hnd1"],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "85store.vercel.app" }],
+      "destination": "https://85-store.com/:path*",
+      "permanent": true
+    }
+  ]
 }
