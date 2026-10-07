@@ -22,6 +22,7 @@ npm run build    # 本番ビルド
 npm run start    # 本番サーバー
 npx eslint .     # Lint（next lint は Next 16 で廃止）
 npx tsc --noEmit # 型チェック
+npm run check:linebreaks  # 日本語の見出しが文節の途中で改行されていないか（サイトとショップ。Chrome と WebKit）
 ```
 
 環境変数は `.env.local`（`.env.example` 参照）。記事・バナーは本番の R2（`https://media.85-store.com/content`）を読むので、ローカルでも設定なしで表示できる。
@@ -83,6 +84,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 1. `lib/content-images.ts` — `<img data-avif data-webp>`（CMS が書き出すサイズ別の srcset）を `<picture>`（AVIF優先・WebP、`loading="lazy"`）に変換
 2. `lib/toc.ts` — h2/h3 にIDを付け、目次データを抽出（目次をSSRしてCLSを防ぐ）
+3. `lib/phrase.ts` の `phraseHeadingsHtml` — h2〜h4 と figcaption に、文節の境目の `<wbr>` を入れる（目次が見出しの文字を読んだあと）
 
 ### サーバー / クライアントコンポーネント
 
@@ -113,6 +115,11 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
   - 最初の描画前に `lib/theme.ts` の `THEME_INIT_SCRIPT`（`<head>` のインラインスクリプト）で反映し、ちらつきを防ぐ
   - 新しい色を足すときは、3テーマすべてでAA（4.5:1）を満たすか確認する
 - **書体**: 和文・本文は IBM Plex Sans JP（`font-sans`）、英字・数字・ロゴは Archivo（`font-display`、数字は `.num`）
+- **日本語の改行と文字組み**（ショップのテーマ `snippets/site-ja-typography.liquid`・`assets/site-ja-linebreak.js` と同じ決まり）:
+  - ページ全体: 禁則 `line-break: strict`、和文と英数字の間 `text-autospace: normal`（`app/globals.css` の `html`）
+  - **見出し・短い文（題名・リード・カードの題名など）は文節で改行する**。文字列は `<Phrase>`（`components/Phrase.tsx`）で囲む。BudouX で文節に分け、境目に `<wbr>` を入れて `.ja-phrase`（`keep-all`）で包む（サーバーで実行。Chrome は `word-break: auto-phrase` でも同じになるが、Safari は対応していないため）。CMS の本文の HTML は `phraseHeadingsHtml`
+  - 見出しは `text-wrap: balance` と `font-feature-settings: "palt"`（約物を詰める）。本文（`p`・`li`）は文字単位のまま `text-wrap: pretty`（最後の行が1〜2文字にならない）
+  - 意図のある改行（セリフの並び・住所）以外で `<br />` を足さない。直したら `npm run check:linebreaks`
 - **文字サイズ**: `text-xs`〜`text-2xl`、`text-display`（ロゴタイプ）。すべて `clamp()` で画面幅に応じて変わる
 - **形**: 角丸なし（営業状況とチップだけピル型）。影・すりガラス（backdrop-filter）は使わない
 - **見出し**: セクション見出しは英語（`SectionHeading` の `title`）＋日本語の補足（`description`）

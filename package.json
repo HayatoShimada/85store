@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:linebreaks": "node scripts/check-ja-linebreaks.mjs"
   },
   "dependencies": {
     "@shopify/storefront-api-client": "^1.0.9",
@@ -14,6 +15,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.12.2",
+    "budoux": "^0.9.3",
     "dotenv": "^17.2.2",
     "feed": "^5.1.0",
     "next": "^16.3.7",
@@ -31,6 +33,7 @@
     "@types/react-dom": "^19.3.0",
     "eslint": "^9",
     "eslint-config-next": "^16.3.7",
+    "playwright-core": "^1.63.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.20.5",
