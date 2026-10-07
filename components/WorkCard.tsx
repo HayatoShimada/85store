@@ -3,6 +3,7 @@ import Link from "next/link";
 import { isExternalWork, type Work } from "@/lib/works";
 
 import Phrase from "@/components/Phrase";
+import { SHORT_TEXT_LENGTH } from "@/lib/phrase";
 interface WorkCardProps {
   work: Work;
   sizes?: string;
@@ -28,9 +29,9 @@ export default function WorkCard({
         </p>
         <h3 className="font-semibold group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px]">
           <Phrase>{work.name}</Phrase>
-          {external && <span className="sr-only">（別のサイトで開きます）</span>}
+          {external && <span className="sr-only"><Phrase>{"（別のサイトで開きます）"}</Phrase></span>}
         </h3>
-        {showDescription && <p className="mt-2 text-sm text-ink-2 leading-relaxed">{work.description}</p>}
+        {showDescription && <p className="mt-2 text-sm text-ink-2 leading-relaxed"><Phrase max={SHORT_TEXT_LENGTH}>{work.description}</Phrase></p>}
       </div>
     </>
   );

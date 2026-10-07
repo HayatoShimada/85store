@@ -84,7 +84,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 1. `lib/content-images.ts` — `<img data-avif data-webp>`（CMS が書き出すサイズ別の srcset）を `<picture>`（AVIF優先・WebP、`loading="lazy"`）に変換
 2. `lib/toc.ts` — h2/h3 にIDを付け、目次データを抽出（目次をSSRしてCLSを防ぐ）
-3. `lib/phrase.ts` の `phraseHeadingsHtml` — h2〜h4 と figcaption に、文節の境目の `<wbr>` を入れる（目次が見出しの文字を読んだあと）
+3. `lib/phrase.ts` の `phraseShortTextHtml` — h2〜h4・figcaption と、短い段落・箇条書き（`<br>` で区切った1行が80文字以内の p・li）に、文節の境目の `<wbr>` を入れる（目次が見出しの文字を読んだあと）。長い段落は文字単位のまま
 
 ### サーバー / クライアントコンポーネント
 
@@ -117,7 +117,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 - **書体**: 和文・本文は IBM Plex Sans JP（`font-sans`）、英字・数字・ロゴは Archivo（`font-display`、数字は `.num`）
 - **日本語の改行と文字組み**（ショップのテーマ `snippets/site-ja-typography.liquid`・`assets/site-ja-linebreak.js` と同じ決まり）:
   - ページ全体: 禁則 `line-break: strict`、和文と英数字の間 `text-autospace: normal`（`app/globals.css` の `html`）
-  - **見出し・短い文（題名・リード・カードの題名など）は文節で改行する**。文字列は `<Phrase>`（`components/Phrase.tsx`）で囲む。BudouX で文節に分け、境目に `<wbr>` を入れて `.ja-phrase`（`keep-all`）で包む（サーバーで実行。Chrome は `word-break: auto-phrase` でも同じになるが、Safari は対応していないため）。CMS の本文の HTML は `phraseHeadingsHtml`
+  - **見出しと短い文（題名・リード・カードの題名・80文字以内の段落や箇条書き）は文節で改行する**。長い段落は文字単位のまま（文節単位にすると行末が凸凹になり、半分近く空く行が出る）。文字列は `<Phrase>`（`components/Phrase.tsx`）で囲む（ページに直接書く80文字以内の文も）。BudouX で文節に分け、境目に `<wbr>` を入れて `.ja-phrase`（`keep-all`）で包む（サーバーで実行。Chrome は `word-break: auto-phrase` でも同じになるが、Safari は対応していないため）。CMS の本文の HTML は `phraseShortTextHtml`
   - 見出しは `text-wrap: balance` と `font-feature-settings: "palt"`（約物を詰める）。本文（`p`・`li`）は文字単位のまま `text-wrap: pretty`（最後の行が1〜2文字にならない）
   - 意図のある改行（セリフの並び・住所）以外で `<br />` を足さない。直したら `npm run check:linebreaks`
 - **文字サイズ**: `text-xs`〜`text-2xl`、`text-display`（ロゴタイプ）。すべて `clamp()` で画面幅に応じて変わる

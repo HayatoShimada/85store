@@ -1,5 +1,6 @@
 import { STORE } from "@/lib/store-info";
 
+import Phrase from "@/components/Phrase";
 interface StoreActionsProps {
   variant?: "default" | "inverse"; // inverse は深緑の面の上で使う
   showOnlineStore?: boolean;
@@ -15,14 +16,14 @@ export default function StoreActions({ variant = "default", showOnlineStore = tr
       {leading}
       {showOnlineStore && (
         <a href={STORE.onlineShopUrl} className={variant === "inverse" ? sub : "btn btn-primary"}>
-          オンラインストア
+          <Phrase>{"オンラインストア"}</Phrase>
         </a>
       )}
       <a href={STORE.mapUrl} target="_blank" rel="noopener noreferrer" className={sub}>
-        地図を開く
+        <Phrase>{"地図を開く"}</Phrase>
       </a>
       <a href={STORE.parkingUrl} target="_blank" rel="noopener noreferrer" className={sub}>
-        駐車場
+        <Phrase>{"駐車場"}</Phrase>
       </a>
     </div>
   );
