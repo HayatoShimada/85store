@@ -16,6 +16,8 @@ import { getBlogPostPath, getCategoryListPath } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
+import { phraseHeadingsHtml } from "@/lib/phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 interface BlogPostPageProps {
@@ -110,7 +112,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const eyecatch = post.eyecatch;
   const publishedAt = post.publishedAt || post.createdAt;
   const modifiedAt = post.updatedAt || publishedAt;
-  const { html: contentHtml, headings } = buildTableOfContents(optimizeContentImages(post.content));
+  const { html: tocHtml, headings } = buildTableOfContents(optimizeContentImages(post.content));
+  // 目次が見出しの文字を読んだあとに、見出しと写真の説明を文節で改行できるようにする
+  const contentHtml = phraseHeadingsHtml(tocHtml);
   const postUrl = `${siteUrl}${getBlogPostPath(post)}`;
 
   return (
@@ -181,7 +185,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               )}
             </nav>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">{post.title}</h1>
+              <h1 className="text-2xl font-bold tracking-tight"><Phrase>{post.title}</Phrase></h1>
               <p className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
                 <time dateTime={publishedAt} className="num">{formatDate(publishedAt)}</time>
                 {post.author && <span>{post.author}</span>}

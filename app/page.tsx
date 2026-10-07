@@ -17,6 +17,7 @@ import { WORKS } from "@/lib/works";
 import type { Banner } from "@/types/cms";
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 const TITLE = "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ";
 const DESCRIPTION = "もう一度、洋服を好きになれる場所。富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とトレンド感のある新品を、実店舗とオンラインストアでご紹介しています。";
@@ -91,7 +92,7 @@ export default async function Home() {
 
         <div className="col-span-4 grid grid-rows-[auto_1fr] gap-px bg-rule max-[1000px]:order-first max-[1000px]:col-span-12 max-[1000px]:grid-cols-2 max-[1000px]:grid-rows-none max-[640px]:grid-cols-1">
           <div className="bg-accent p-[clamp(20px,2.5vw,36px)] text-on-accent">
-            <h1 className="text-2xl font-bold tracking-tight">もう一度、洋服を好きになれる場所</h1>
+            <h1 className="text-2xl font-bold tracking-tight"><Phrase>もう一度、洋服を好きになれる場所</Phrase></h1>
             <p className="mt-4 max-w-[26em]">
               富山県南砺市のセレクトショップ、85-Store（ハコストア）です。今好きな服と、ずっと着られる服を。
             </p>
@@ -134,8 +135,8 @@ export default async function Home() {
                   </div>
                   {(banner.title || banner.subtitle) && (
                     <div className="p-4">
-                      {banner.title && <p className="font-semibold">{banner.title}</p>}
-                      {banner.subtitle && <p className="text-sm text-muted">{banner.subtitle}</p>}
+                      {banner.title && <p className="font-semibold"><Phrase>{banner.title}</Phrase></p>}
+                      {banner.subtitle && <p className="text-sm text-muted"><Phrase>{banner.subtitle}</Phrase></p>}
                     </div>
                   )}
                 </>
