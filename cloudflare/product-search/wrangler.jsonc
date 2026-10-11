@@ -1,0 +1,23 @@
+{
+  // オンラインストアの AI 検索（README.md）
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "85store-product-search",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "routes": [{ "pattern": "search.85-store.com", "custom_domain": true }],
+  // Workers AI（Clef）
+  "ai": { "binding": "AI" },
+  // 商品の属性・ブランド・素材（キー attributes に、ハンドルごとの JSON）
+  "kv_namespaces": [
+    { "binding": "ATTRIBUTES", "id": "6d975e91f92d426f8481d2f1b8590297", "remote": true }
+  ],
+  // 1つの IP から 1分に20回まで（キャッシュに当たった検索は数えない）
+  "ratelimits": [
+    { "name": "LIMITER", "namespace_id": "8501", "simple": { "limit": 20, "period": 60 } }
+  ],
+  "vars": {
+    "STORE_DOMAIN": "ctixqe-p0.myshopify.com",
+    "ALLOWED_ORIGINS": "https://shop.85-store.com,https://ctixqe-p0.myshopify.com"
+  },
+  "observability": { "enabled": true }
+}
