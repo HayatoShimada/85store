@@ -31,14 +31,21 @@ test("buildRequest は商品ごとに noul を1つ聞く", () => {
 test("rank は商品を分けて聞き、確率の高い順に並べる", async () => {
   const products = Array.from({ length: CHUNK + 5 }, (_, i) => product(`h${i}`));
   const requests: ClefRequest[] = [];
-  const ranked = await rank("冬", products, async (req) => {
+  const { meaningful, ranked } = await rank("冬", products, async (req) => {
     requests.push(req);
     const offset = requests.length === 1 ? 0 : CHUNK;
     return Object.fromEntries(
-      Object.keys(req.questions).map((id) => [id, { noul: (Number(id.slice(1)) + offset) / 100 }]),
+      Object.keys(req.questions).map((id) => [
+        id,
+        { noul: id === "meaningful" ? 0.9 : (Number(id.slice(1)) + offset) / 100 },
+      ]),
     );
   });
   assert.equal(requests.length, 2);
+  // 検索語が意味のあることばかは、1つ目のリクエストでだけ聞く
+  assert.ok("meaningful" in requests[0].questions);
+  assert.ok(!("meaningful" in requests[1].questions));
+  assert.equal(meaningful, 0.9);
   assert.equal(ranked.length, CHUNK + 5);
   assert.equal(ranked[0].handle, `h${CHUNK + 4}`);
   assert.equal(ranked.at(-1)?.handle, "h0");

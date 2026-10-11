@@ -13,6 +13,7 @@ export type Product = {
 };
 
 export type Ranked = { handle: string; score: number };
+export type RankResult = { meaningful: number; ranked: Ranked[] };
 
 type NoulAnswer = { noul: number };
 export type ClefRequest = {
@@ -40,8 +41,19 @@ export function chunks<T>(items: T[], size: number): T[][] {
   return out;
 }
 
-export function buildRequest(query: string, products: Product[]): ClefRequest {
+// 検索語が、商品を探す意味のあることばか（でたらめな文字列でも商品の確率が 0.8 を超えることがあるため）
+export const MEANINGFUL_ID = "meaningful";
+
+export function buildRequest(query: string, products: Product[], askMeaningful = false): ClefRequest {
   const questions: ClefRequest["questions"] = {};
+  if (askMeaningful) {
+    questions[MEANINGFUL_ID] = {
+      type: "noul",
+      instructions:
+        "検索語は、服・靴・小物・雑貨や、その色・季節・用途・ブランド・サイズなどを表す意味のあることばか。" +
+        "ブランド名（英字）やサイズ（S・M・L・XL）だけでも yes。でたらめな文字列や、商品と関係のない話なら no",
+    };
+  }
   products.forEach((p, i) => {
     questions[`p${i}`] = {
       type: "noul",
@@ -55,10 +67,10 @@ export function buildRequest(query: string, products: Product[]): ClefRequest {
   };
 }
 
-// 全商品の確率を出し、高い順に並べる
-export async function rank(query: string, products: Product[], ask: Ask): Promise<Ranked[]> {
+// 全商品の確率を出し、高い順に並べる。検索語が意味のあることばかの確率（meaningful）も返す
+export async function rank(query: string, products: Product[], ask: Ask): Promise<RankResult> {
   const groups = chunks(products, CHUNK);
-  const answers = await Promise.all(groups.map((g) => ask(buildRequest(query, g))));
+  const answers = await Promise.all(groups.map((g, i) => ask(buildRequest(query, g, i === 0))));
   const ranked: Ranked[] = [];
   groups.forEach((group, gi) => {
     group.forEach((p, i) => {
@@ -66,7 +78,8 @@ export async function rank(query: string, products: Product[], ask: Ask): Promis
       if (typeof score === "number") ranked.push({ handle: p.handle, score });
     });
   });
-  return ranked.sort((a, b) => b.score - a.score);
+  const meaningful = answers[0]?.[MEANINGFUL_ID]?.noul ?? 1;
+  return { meaningful, ranked: ranked.sort((a, b) => b.score - a.score) };
 }
 
 // 検索語をそろえる（キャッシュのキーにする）

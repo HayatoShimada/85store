@@ -20,10 +20,14 @@ const AI_MODEL = "@cf/cloudflare/clef-flash";
 const QUERY_LIMIT = 100;
 // これより低い確率の商品は出さない
 const MIN_SCORE = 0.3;
+// 検索語が意味のあることばかの確率がこれ未満なら、何も返さない
+const MIN_MEANINGFUL = 0.2;
 const MAX_RESULTS = 48;
 const CATALOG_TTL = 300;
 const RESULT_TTL = 3600;
 const CACHE_ORIGIN = "https://product-search.internal";
+// 並べ方（質問・しきい値）を変えたら上げる（前の検索結果のキャッシュを使わない）
+const RANKING_VERSION = 2;
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -40,7 +44,7 @@ export default {
     try {
       const { products, version } = await loadCatalog(env, ctx);
       const cache = caches.default;
-      const key = new Request(`${CACHE_ORIGIN}/search?v=${version}&q=${encodeURIComponent(query)}`);
+      const key = new Request(`${CACHE_ORIGIN}/search?r=${RANKING_VERSION}&v=${version}&q=${encodeURIComponent(query)}`);
       const hit = await cache.match(key);
       if (hit) return withHeaders(hit, cors);
 
@@ -50,12 +54,18 @@ export default {
       if (!success) return json({ error: "少し時間をおいて検索してください" }, 429, cors);
 
       const started = Date.now();
-      const ranked = await rank(query, products, askWorkersAI(env.AI));
-      const results = ranked
+      const { meaningful, ranked } = await rank(query, products, askWorkersAI(env.AI));
+      const results = (meaningful >= MIN_MEANINGFUL ? ranked : [])
         .filter((r) => r.score >= MIN_SCORE)
         .slice(0, MAX_RESULTS)
         .map((r) => ({ handle: r.handle, score: Math.round(r.score * 1000) / 1000 }));
-      const body = { query, results, searched: products.length, ms: Date.now() - started };
+      const body = {
+        query,
+        results,
+        meaningful: Math.round(meaningful * 1000) / 1000,
+        searched: products.length,
+        ms: Date.now() - started,
+      };
       const res = json(body, 200, { "Cache-Control": `public, max-age=${RESULT_TTL}` });
       ctx.waitUntil(cache.put(key, res.clone()));
       return withHeaders(res, cors);
