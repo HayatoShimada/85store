@@ -15,6 +15,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 - 🎙️ **Podcast**: Spotify の埋め込みプレイヤー
 - 📅 **予約ページ**: Limited Store / 1st Floor(85-Store) / 2nd Floor(85-UpStore) の案内
 - 🗓️ **営業日カレンダー**: Cloudflare Worker の管理画面（Tailscale 内の管理者だけがログイン可能）で休業日・営業時間を設定し、サイトに即反映（Worker は [business-calendar](https://github.com/HayatoShimada/business-calendar) として公開。設定は `cloudflare/business-calendar/`）
+- 🌈 **AI 検索**: ショップの検索窓から、ことばの意味で商品を探す。Cloudflare Worker（`search.85-store.com`）が Workers AI の Clef で販売中の商品を並べ替える（`cloudflare/product-search/`）
 - 📧 **お問い合わせフォーム**: nodemailer による自動返信・管理者通知
 - 📈 **アクセス解析**: Vercel Analytics / Speed Insights
 - 🗺️ **SEO**: `app/sitemap.ts` / `app/robots.ts` によるサイトマップ・robots.txt 生成、RSS/Atom フィード、構造化データ

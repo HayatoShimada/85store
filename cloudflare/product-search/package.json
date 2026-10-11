@@ -1,0 +1,23 @@
+{
+  "name": "85store-product-search",
+  "version": "1.0.0",
+  "description": "オンラインストアの商品を、ことばの意味で探す（Workers AI の Clef で並べ替える）Cloudflare Worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --import tsx test/*.test.ts",
+    "upload-attributes": "wrangler kv key put attributes --binding ATTRIBUTES --remote --path"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261001.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5",
+    "wrangler": "^4.145.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
