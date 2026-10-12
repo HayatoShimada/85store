@@ -131,8 +131,8 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 | セクション | データ |
 |---|---|
-| ヒーローの写真2枚 | CMS の **縦長のバナー**（先頭から2枚）。足りない分は `public/images` の写真 |
-| Pick Up | CMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
+| ヒーローの写真2枚 | 固定（`public/images/shop.jpg`・`snoo.jpg`） |
+| Pick Up | CMS のバナーすべて（`detailButtonUrl` があればリンク） |
 | New Arrivals | Shopify Storefront API の新着・在庫ありの商品（`lib/shopify-storefront.ts`） |
 | Blog / note / Podcast | CMS の最新記事 / note RSS / Spotify 埋め込み |
 | Store | `lib/store-info.ts`（店舗情報の唯一の定義元。住所・地図・駐車場のURL・通常の営業時間）＋ 営業日カレンダー |

@@ -14,7 +14,6 @@ import { getNoteArticles } from "@/lib/note";
 import { getLatestProducts } from "@/lib/shopify-storefront";
 import { STORE } from "@/lib/store-info";
 import { WORKS } from "@/lib/works";
-import type { Banner } from "@/types/cms";
 import { pageAlternates } from "@/lib/metadata";
 
 import Phrase from "@/components/Phrase";
@@ -41,15 +40,11 @@ export const metadata: Metadata = {
   },
 };
 
-type HeroPhoto = { url: string; alt: string; href?: string };
-
-// microCMS の縦長バナーが足りないときに使う写真（先頭のバナーと同じ店内写真にならないよう、店長の写真を先に使う）
-const FALLBACK_HERO_PHOTOS: HeroPhoto[] = [
-  { url: "/images/snoo.jpg", alt: "店長のスヌー" },
+// ヒーローの写真は店内と店長のスヌーで固定
+const HERO_PHOTOS = [
   { url: "/images/shop.jpg", alt: "85-Store の店内" },
+  { url: "/images/snoo.jpg", alt: "店長のスヌー" },
 ];
-
-const isPortrait = (banner: Banner) => (banner.image.height ?? 0) > (banner.image.width ?? 0);
 
 export default async function Home() {
   const [banners, posts, noteArticles, products] = await Promise.all([
@@ -59,12 +54,8 @@ export default async function Home() {
     getLatestProducts(8),
   ]);
 
-  // 縦長のバナーはヒーローの写真、それ以外は Pick Up に並べる
-  const heroPhotos: HeroPhoto[] = [
-    ...banners.filter(isPortrait).map((banner) => ({ url: banner.image.url, alt: banner.title ?? "", href: banner.detailButtonUrl })),
-    ...FALLBACK_HERO_PHOTOS,
-  ].slice(0, 2);
-  const pickUps = banners.filter((banner) => !isPortrait(banner));
+  // CMS のバナーはすべて Pick Up に並べる（同じバナーが重複して届いても1つにする）
+  const pickUps = banners.filter((banner, index) => banners.findIndex((b) => b.id === banner.id) === index);
 
   return (
     <div className="wrap">
@@ -72,8 +63,8 @@ export default async function Home() {
 
       {/* ヒーロー: 写真2枚 + ブランドメッセージ + 営業情報 */}
       <div className="grid-lines grid-cols-12">
-        {heroPhotos.map((photo, index) => {
-          const image = (
+        {HERO_PHOTOS.map((photo, index) => (
+          <figure key={photo.url} className="relative col-span-4 min-h-[clamp(420px,44vw,680px)] overflow-hidden bg-surface max-[1000px]:col-span-6 max-[1000px]:aspect-[3/4] max-[1000px]:min-h-0">
             <Image
               src={photo.url}
               alt={photo.alt}
@@ -82,13 +73,8 @@ export default async function Home() {
               sizes="(max-width: 1000px) 50vw, 33vw"
               className="object-cover"
             />
-          );
-          return (
-            <figure key={photo.url} className="relative col-span-4 min-h-[clamp(420px,44vw,680px)] overflow-hidden bg-surface max-[1000px]:col-span-6 max-[1000px]:aspect-[3/4] max-[1000px]:min-h-0">
-              {photo.href ? <a href={photo.href} aria-label={photo.alt || "詳しく見る"}>{image}</a> : image}
-            </figure>
-          );
-        })}
+          </figure>
+        ))}
 
         <div className="col-span-4 grid grid-rows-[auto_1fr] gap-px bg-rule max-[1000px]:order-first max-[1000px]:col-span-12 max-[1000px]:grid-cols-2 max-[1000px]:grid-rows-none max-[640px]:grid-cols-1">
           <div className="bg-accent p-[clamp(20px,2.5vw,36px)] text-on-accent">
