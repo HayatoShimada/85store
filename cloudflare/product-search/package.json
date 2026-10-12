@@ -9,6 +9,7 @@
     "deploy": "wrangler deploy",
     "typecheck": "tsc --noEmit",
     "test": "node --test --import tsx test/*.test.ts",
+    "migrate": "wrangler d1 migrations apply 85store-product-search --remote",
     "upload-attributes": "wrangler kv key put attributes --binding ATTRIBUTES --remote --path"
   },
   "devDependencies": {

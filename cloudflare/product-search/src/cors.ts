@@ -12,7 +12,9 @@ export function corsHeaders(origin: string | null, allowed: string): Record<stri
   }
   if (list.includes(origin) || host.endsWith(".shopifypreview.com")) {
     headers["Access-Control-Allow-Origin"] = origin;
-    headers["Access-Control-Allow-Methods"] = "GET, OPTIONS";
+    headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+    // 写真の検索（POST）で Content-Type: image/jpeg を送るため
+    headers["Access-Control-Allow-Headers"] = "Content-Type";
     headers["Access-Control-Max-Age"] = "86400";
   }
   return headers;
