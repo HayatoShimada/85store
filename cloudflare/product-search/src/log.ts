@@ -28,7 +28,7 @@ export async function logSearch(db: D1Database, kind: Kind, query: string, resul
     .run();
 }
 
-// days 日前（今日を含む）からの集計。zero なら、商品を出せなかった言葉だけ
+// days 日前（今日を含む）からの集計。zero なら、商品を出せなかった言葉だけ（写真の検索は1行にまとめて数えるので含めない）
 export async function listTerms(db: D1Database, days: number, zero: boolean, now = new Date()): Promise<Term[]> {
   const since = tokyoDay(new Date(now.getTime() - (days - 1) * 86400_000));
   const { results } = await db
@@ -38,7 +38,7 @@ export async function listTerms(db: D1Database, days: number, zero: boolean, now
             ORDER BY last_at DESC LIMIT 1) AS results
        FROM search_log s WHERE day >= ?1
        GROUP BY kind, query
-       ${zero ? "HAVING results = 0" : ""}
+       ${zero ? "HAVING kind = 'text' AND results = 0" : ""}
        ORDER BY count DESC, last_at DESC LIMIT 500`,
     )
     .bind(since)
@@ -50,7 +50,7 @@ export function summarize(terms: Term[]): Summary {
   return {
     searches: terms.reduce((n, t) => n + t.count, 0),
     terms: terms.filter((t) => t.kind === "text").length,
-    zero: terms.filter((t) => t.results === 0).length,
+    zero: terms.filter((t) => t.kind === "text" && t.results === 0).length,
     images: terms.filter((t) => t.kind === "image").reduce((n, t) => n + t.count, 0),
   };
 }
