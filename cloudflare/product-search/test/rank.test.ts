@@ -21,7 +21,7 @@ test("describe は商品名・種類・属性・説明の頭を1行にする", (
 });
 
 test("buildRequest は商品ごとに noul を1つ聞く", () => {
-  const req = buildRequest("冬", [product("a"), product("b")]);
+  const req = buildRequest({ query: "冬" }, [product("a"), product("b")]);
   assert.deepEqual(Object.keys(req.questions), ["p0", "p1"]);
   assert.equal(req.questions.p1.type, "noul");
   assert.match(req.questions.p1.instructions, /Title b/);
@@ -31,7 +31,7 @@ test("buildRequest は商品ごとに noul を1つ聞く", () => {
 test("rank は商品を分けて聞き、確率の高い順に並べる", async () => {
   const products = Array.from({ length: CHUNK + 5 }, (_, i) => product(`h${i}`));
   const requests: ClefRequest[] = [];
-  const { meaningful, ranked } = await rank("冬", products, async (req) => {
+  const { meaningful, ranked } = await rank({ query: "冬" }, products, async (req) => {
     requests.push(req);
     const offset = requests.length === 1 ? 0 : CHUNK;
     return Object.fromEntries(
@@ -49,6 +49,15 @@ test("rank は商品を分けて聞き、確率の高い順に並べる", async 
   assert.equal(ranked.length, CHUNK + 5);
   assert.equal(ranked[0].handle, `h${CHUNK + 4}`);
   assert.equal(ranked.at(-1)?.handle, "h0");
+});
+
+test("buildRequest は写真を images に入れ、写真に似ているかを聞く", () => {
+  const image = { content_type: "image/jpeg", base64: "AAAA" };
+  const req = buildRequest({ image }, [product("a")], true);
+  assert.deepEqual(req.images, [image]);
+  assert.equal((req.state as { query?: string }).query, undefined);
+  assert.match(req.questions.meaningful.instructions, /写真/);
+  assert.match(req.questions.p0.instructions, /写真.*似ている.*Title a/);
 });
 
 test("joinAttributes は KV の属性をハンドルでつなぐ（無ければ null）", () => {

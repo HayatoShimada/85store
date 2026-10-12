@@ -11,6 +11,15 @@
   "kv_namespaces": [
     { "binding": "ATTRIBUTES", "id": "6d975e91f92d426f8481d2f1b8590297", "remote": true }
   ],
+  // お客さまが検索した言葉の記録（migrations/。CMS が /v1/admin/terms で読む）
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "85store-product-search",
+      "database_id": "5f37aa5e-2580-42b7-8754-dd2f1ded2c99",
+      "remote": true
+    }
+  ],
   // 1つの IP から 1分に20回まで（キャッシュに当たった検索は数えない）
   "ratelimits": [
     { "name": "LIMITER", "namespace_id": "8501", "simple": { "limit": 20, "period": 60 } }
