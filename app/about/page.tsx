@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import AboutHospitality from '@/components/AboutHospitality';
 import AboutStore from '@/components/AboutStore';
 import AboutUs from '@/components/AboutUs';
 import AboutTeam from '@/components/AboutTeam';
@@ -99,6 +100,10 @@ export default function About() {
 
       <AboutSection en="Concept" ja="セレクト基準">
         <AboutStore />
+      </AboutSection>
+
+      <AboutSection en="Hospitality" ja="接客について">
+        <AboutHospitality />
       </AboutSection>
 
       <AboutSection en="Our Team" ja="スタッフ紹介">
