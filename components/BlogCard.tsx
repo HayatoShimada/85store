@@ -4,6 +4,7 @@ import { formatDate } from "@/utils/date";
 import { getBlogPostPath } from "@/utils/blog";
 import type { Blog } from "@/types/cms";
 
+import Phrase from "@/components/Phrase";
 interface BlogCardProps {
   post: Blog;
 }
@@ -34,7 +35,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             {primaryCategory && <span className="chip">{primaryCategory}</span>}
           </p>
           <h3 className="text-lg leading-normal group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px] max-[560px]:text-base">
-            {post.title}
+            <Phrase>{post.title}</Phrase>
           </h3>
         </div>
       </Link>

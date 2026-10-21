@@ -88,6 +88,9 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth; /* ページ内リンク（営業日カレンダーへ）をなめらかに移動する */
+    /* 日本語の文字組み（ショップのテーマと同じ決まり。CLAUDE.md「日本語の改行と文字組み」） */
+    line-break: strict; /* 行頭に「ゃ」「ー」・句読点を置かない */
+    text-autospace: normal; /* 和文と英数字の間を少しあける */
   }
 
   body {
@@ -102,7 +105,20 @@
     line-height: 1.35;
     font-weight: 600;
     text-wrap: balance;
-    word-break: auto-phrase; /* 日本語を文節で改行する（対応ブラウザのみ） */
+    word-break: auto-phrase; /* 日本語を文節で改行する（Chrome。Safari などは <Phrase> の <wbr>） */
+    font-feature-settings: "palt"; /* 見出しは約物を詰める */
+  }
+
+  /* 段落の最後の行が1〜2文字だけにならないように */
+  p, li {
+    text-wrap: pretty;
+  }
+
+  /* 文節で区切った見出し・短い文（components/Phrase.tsx・lib/phrase.ts の <wbr> の位置でだけ改行する） */
+  .ja-phrase {
+    word-break: keep-all;
+    /* anywhere だと Chrome の text-wrap: balance / pretty が文節の途中を選ぶことがある。はみ出すときだけ折る */
+    overflow-wrap: break-word;
   }
 
   :focus-visible {

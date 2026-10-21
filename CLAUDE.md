@@ -5,14 +5,14 @@
 ## プロジェクト概要
 
 富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイト（https://85-store.com）。
-ブログ・バナーは自前の CMS（**Payload**、`cms/`、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
+ブログ・バナーは自前の CMS（**Payload**、別リポジトリ [HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms)、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
 Shopify の商品・コレクション・ストアのページ・ブログ・メニューも、同じ Payload を入力画面にしている（正は Shopify）。
 
 - Next.js 16（App Router / Turbopack / **Cache Components**）
 - React 19 / TypeScript 5
 - Tailwind CSS v4（CSSファーストの設定。`tailwind.config.ts` は無い）
 - CMS（Payload。サイトは R2 に書き出された JSON を読む）、note.com RSS、Shopify Storefront API（新着商品・ポリシー）
-- Vercel にデプロイ
+- Vercel にデプロイ（関数は東京 `hnd1`、Node 24。`vercel.json` の `regions` と `package.json` の `engines`。`85store.vercel.app` は 85-store.com へ転送）
 
 ## コマンド
 
@@ -22,6 +22,7 @@ npm run build    # 本番ビルド
 npm run start    # 本番サーバー
 npx eslint .     # Lint（next lint は Next 16 で廃止）
 npx tsc --noEmit # 型チェック
+npm run check:linebreaks  # 日本語の見出しが文節の途中で改行されていないか（サイトとショップ。Chrome と WebKit）
 ```
 
 環境変数は `.env.local`（`.env.example` 参照）。記事・バナーは本番の R2（`https://media.85-store.com/content`）を読むので、ローカルでも設定なしで表示できる。
@@ -52,7 +53,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 
 | パス | 内容 |
 |---|---|
-| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事・note・Podcast・Works・店舗情報） |
+| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事（Blog）・note・Podcast・Works・店舗情報） |
 | `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
 | `/blog/[slug]` | 記事（スラッグ）。microCMS から移した記事は、そのコンテンツIDがスラッグ。`id`（旧コンテンツID）でアクセスされ、スラッグと違う場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
@@ -83,6 +84,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 1. `lib/content-images.ts` — `<img data-avif data-webp>`（CMS が書き出すサイズ別の srcset）を `<picture>`（AVIF優先・WebP、`loading="lazy"`）に変換
 2. `lib/toc.ts` — h2/h3 にIDを付け、目次データを抽出（目次をSSRしてCLSを防ぐ）
+3. `lib/phrase.ts` の `phraseHeadingsHtml` — h2〜h4 と figcaption に、文節の境目の `<wbr>` を入れる（目次が見出しの文字を読んだあと）
 
 ### サーバー / クライアントコンポーネント
 
@@ -93,7 +95,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 ### 画像
 
 - `next/image` で `fill` を使うときは必ず `sizes` を指定する（未指定だと100vw扱いで過大な画像を取得する）。
-- `public/` の写真は長辺1600px程度・EXIF削除済みで置く。
+- `public/` の写真は長辺1600px程度・EXIF削除済みで置く。差し替えるときはファイル名を変える（最適化した画像を `minimumCacheTTL` で31日キャッシュするため、同じ名前だと古い画像が出る）。
 - リモート画像は `next.config.ts` の `images.remotePatterns` に登録されたホストのみ。
 
 ### SEO
@@ -113,6 +115,11 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
   - 最初の描画前に `lib/theme.ts` の `THEME_INIT_SCRIPT`（`<head>` のインラインスクリプト）で反映し、ちらつきを防ぐ
   - 新しい色を足すときは、3テーマすべてでAA（4.5:1）を満たすか確認する
 - **書体**: 和文・本文は IBM Plex Sans JP（`font-sans`）、英字・数字・ロゴは Archivo（`font-display`、数字は `.num`）
+- **日本語の改行と文字組み**（ショップのテーマ `snippets/site-ja-typography.liquid`・`assets/site-ja-linebreak.js` と同じ決まり）:
+  - ページ全体: 禁則 `line-break: strict`、和文と英数字の間 `text-autospace: normal`（`app/globals.css` の `html`）
+  - **見出し・短い文（題名・リード・カードの題名など）は文節で改行する**。文字列は `<Phrase>`（`components/Phrase.tsx`）で囲む。BudouX で文節に分け、境目に `<wbr>` を入れて `.ja-phrase`（`keep-all`）で包む（サーバーで実行。Chrome は `word-break: auto-phrase` でも同じになるが、Safari は対応していないため）。CMS の本文の HTML は `phraseHeadingsHtml`
+  - 見出しは `text-wrap: balance` と `font-feature-settings: "palt"`（約物を詰める）。本文（`p`・`li`）は文字単位のまま `text-wrap: pretty`（最後の行が1〜2文字にならない）
+  - 意図のある改行（セリフの並び・住所）以外で `<br />` を足さない。直したら `npm run check:linebreaks`
 - **文字サイズ**: `text-xs`〜`text-2xl`、`text-display`（ロゴタイプ）。すべて `clamp()` で画面幅に応じて変わる
 - **形**: 角丸なし（営業状況とチップだけピル型）。影・すりガラス（backdrop-filter）は使わない
 - **見出し**: セクション見出しは英語（`SectionHeading` の `title`）＋日本語の補足（`description`）
@@ -124,33 +131,22 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 | セクション | データ |
 |---|---|
-| ヒーローの写真2枚 | CMS の **縦長のバナー**（先頭から2枚）。足りない分は `public/images` の写真 |
-| Pick Up | CMS の縦長以外のバナー（`detailButtonUrl` があればリンク） |
+| ヒーローの写真2枚 | 固定（`public/images/shop.jpg`・`snoo.jpg`） |
+| Pick Up | CMS のバナーすべて（`detailButtonUrl` があればリンク） |
 | New Arrivals | Shopify Storefront API の新着・在庫ありの商品（`lib/shopify-storefront.ts`） |
-| Journal / note / Podcast | CMS の最新記事 / note RSS / Spotify 埋め込み |
+| Blog / note / Podcast | CMS の最新記事 / note RSS / Spotify 埋め込み |
 | Store | `lib/store-info.ts`（店舗情報の唯一の定義元。住所・地図・駐車場のURL・通常の営業時間）＋ 営業日カレンダー |
 
 配送・返品・利用規約・プライバシーポリシーのページは、オンラインストア（Shopify）のポリシーを Storefront API で取得して表示している（`components/PolicyPage.tsx`）。内容の変更は Shopify 管理画面で行う。
 
-## CMS（`cms/`、Payload）
+## CMS（Payload、別リポジトリ）
 
-- 85pi の docker compose で動かす（Payload 3・SQLite。Litestream で R2 の `85store-cms-backup` へ随時バックアップ）。手順は `cms/README.md`、配置は `cms/deploy.sh`。
-- 管理画面は `https://cms.85-store.com`。DNS は CMS の端末（tailscale のサイドカー）の tailnet のアドレスを指すので、tailnet の外からは届かない。tailscale serve が 443 番を PROXY プロトコル付きで Caddy に転送し、Caddy が TLS を終端（証明書は Let's Encrypt から Cloudflare の DNS で取る）。Payload のカスタム認証（`cms/src/lib/tailscale-auth.ts`）が、接続元のアドレスを tailscaled に whois で問い合わせ、「メンバー」に登録されたメールだけを通す。Payload と Caddy は 127.0.0.1 でだけ待ち受け、ホストにポートを出さない（接続元を偽装できないようにするため）。
-- コレクション（サイト）: `posts`（下書き/公開・Lexical 本文に写真・写真の横並び・埋め込み）、`banners`（並び替え）、`categories`、`media`（R2 に保存、avif/webp の 480〜1600）、`users`（管理者/編集者）。
-- コレクション（Shopify）: `products`・`brands`・`productPhotos`、`shopifyCollections`、`storePages`・`storeBlogs`・`storeArticles`・`storeMenus`。
-- 公開・更新・削除のたびに `cms/src/publish/` が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。書き出す形は `types/cms.ts` と `cms/src/publish/export.ts` で合わせる。
+- CMS のコードは **[HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms)** にある（このリポジトリには無い）。構成・Shopify との同期・配置・マイグレーションは 85store-cms の README・CLAUDE.md を見る。
+- 85pi の docker compose で動かし、管理画面は `https://cms.85-store.com`（tailnet 内からのみ）。
+- 公開・更新・削除のたびに、CMS が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。商品を Shopify に送ったあとは `shopify-products` を送って New Arrivals を作り直す。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。
+- サイトと CMS の約束は書き出す JSON の形だけ。`types/cms.ts` と 85store-cms の `src/publish/export.ts` を合わせ、変えるときは両方のリポジトリに PR を出す。
 - 本文の HTML は microCMS と同じ構造（`<figure><img width height>`、埋め込みは padding の div + iframe）で出すので、`lib/toc.ts`・`groupPortraitFigures`・`.article-body` の CSS がそのまま使える。
 - Event1st / Event2nd のカテゴリは Reserve ページのイベント一覧に使っている（名前を変えない）。
-- `cms/` は独立した package.json・tsconfig を持ち、サイトの tsc・eslint の対象外。
-
-### Shopify との同期（`cms/src/shopify/`）
-
-- **正は Shopify**。Payload は入力画面で、画面を開いたときと10分ごとに Shopify から取り込み、保存すると Shopify に送る（Payload Jobs）。前回の同期のあとに Shopify 側でも変わっていたら送らずに止め、どちらを残すか選んでもらう（指紋で比べる）。
-- 商品は `sync.ts`（productSet。新しい商品は全販売チャネルに出す）、ストアの内容は `store/`（コレクション・ページ・ブログ・記事・メニューの定義と共通の `engine.ts`）。
-- モードは 85pi の `.env` の `SHOPIFY_SYNC_MODE`（商品）・`SHOPIFY_STORE_SYNC_MODE`（ストア）。新しく同期の対象を足したら、dry-run で全件を取り込み、差分ゼロ（`/api/shopify/diff-*`）を確かめてから live にする。
-- 商品を送ったら、サイトの `/api/revalidate` に `shopify-products` を送り、New Arrivals を作り直す。
-- 本番の DB はマイグレーション（`cms/src/migrations/`）で変える。作り方は `cms/README.md`。
-- 説明文の AI 生成は 85crm の内部 API（tailnet 内の `:11443/internal`、`X-Internal-Token`）を呼ぶ。
 
 ## プロジェクト固有のルール
 

@@ -1,4 +1,4 @@
-// CMS（Payload、cms/）が R2 に書き出す JSON の型。cms/src/publish/export.ts と合わせる
+// CMS（Payload。HayatoShimada/85store-cms）が R2 に書き出す JSON の型。85store-cms の src/publish/export.ts と合わせる
 
 // 画像。avif / webp はサイズ別の srcset（"url 480w, url 800w, …"）
 export interface CmsImage {
@@ -23,6 +23,8 @@ export interface Blog {
   excerpt?: string;
   description?: string;
   featured: boolean;
+  // イベントの記事の日時と会場（CMS の「イベント情報」。開始の日時があるときだけ。会場が無ければお店）
+  event?: { startDate: string; endDate?: string; venueName?: string; venueAddress?: string };
   publishedAt: string;
   createdAt: string;
   updatedAt: string;

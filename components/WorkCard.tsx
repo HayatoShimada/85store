@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { isExternalWork, type Work } from "@/lib/works";
 
+import Phrase from "@/components/Phrase";
 interface WorkCardProps {
   work: Work;
   sizes?: string;
@@ -26,7 +27,7 @@ export default function WorkCard({
           {external && <span>{new URL(work.href).host}</span>}
         </p>
         <h3 className="font-semibold group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px]">
-          {work.name}
+          <Phrase>{work.name}</Phrase>
           {external && <span className="sr-only">（別のサイトで開きます）</span>}
         </h3>
         {showDescription && <p className="mt-2 text-sm text-ink-2 leading-relaxed">{work.description}</p>}

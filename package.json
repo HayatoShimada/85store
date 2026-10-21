@@ -6,31 +6,33 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:linebreaks": "node scripts/check-ja-linebreaks.mjs"
   },
   "dependencies": {
     "@shopify/storefront-api-client": "^1.0.9",
     "@types/nodemailer": "^7.0.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
-    "axios": "^1.12.2",
+    "axios": "^1.20.0",
+    "budoux": "^0.9.3",
     "dotenv": "^17.2.2",
     "feed": "^5.1.0",
-    "next": "^16.3.7",
-    "nodemailer": "^10.0.13",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "swr": "^2.3.6",
-    "vercel": "^61.1.0"
+    "next": "^16.4.2",
+    "nodemailer": "^10.2.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "swr": "^2.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/node": "^20",
+    "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9",
-    "eslint-config-next": "^16.3.7",
+    "eslint-config-next": "^16.4.2",
+    "playwright-core": "^1.63.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.20.5",
@@ -41,5 +43,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "overrides": {
+    "linkedom": "0.18.13"
+  }
 }

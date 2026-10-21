@@ -2,6 +2,7 @@ import FallbackImage from "@/components/FallbackImage";
 import { formatDate } from "@/utils/date";
 import type { NoteArticle } from "@/lib/note";
 
+import Phrase from "@/components/Phrase";
 interface NoteCardProps {
   article: NoteArticle;
 }
@@ -31,7 +32,7 @@ export default function NoteCard({ article }: NoteCardProps) {
             <span className="chip">note</span>
           </p>
           <h3 className="text-lg leading-normal group-hover:underline group-hover:decoration-1 group-hover:underline-offset-[5px] max-[560px]:text-base">
-            {article.title}
+            <Phrase>{article.title}</Phrase>
             <span className="sr-only">（note.com で開きます）</span>
           </h3>
         </div>

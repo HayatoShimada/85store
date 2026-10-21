@@ -12,7 +12,6 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "cloudflare/**",
-    "cms/**",
   ]),
   {
     rules: {

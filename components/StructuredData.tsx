@@ -1,7 +1,7 @@
 import { STORE, STORE_OPEN_DAYS_SCHEMA, STORE_TELEPHONE_INTL } from "@/lib/store-info";
 
 interface StructuredDataProps {
-  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog' | 'BlogPosting' | 'BreadcrumbList' | 'FAQPage' | 'ItemList';
+  type: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Blog' | 'BlogPosting' | 'BreadcrumbList' | 'FAQPage' | 'ItemList' | 'Event';
   data?: Record<string, any>;
 }
 
@@ -139,6 +139,17 @@ function getStructuredData(type: StructuredDataProps['type']) {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
         inLanguage: 'ja',
+      };
+
+    // イベントの記事（CMS の「イベント情報」）。名前・日時・会場は data で渡す
+    case 'Event':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        inLanguage: 'ja',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        eventStatus: 'https://schema.org/EventScheduled',
+        organizer: { '@id': `${baseUrl}/#organization` },
       };
 
     // itemListElement は data で渡す

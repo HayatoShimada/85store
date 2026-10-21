@@ -60,13 +60,3 @@ cloudflare/**/node_modules/
 cloudflare/business-calendar/upstream/
 .wrangler/
 .dev.vars*
-
-# CMS（cms/）の秘密情報・ローカルの DB と画像・生成物
-cms/.env
-cms/data/
-cms/media/
-cms/.local-bucket/
-cms/node_modules/
-cms/.next/
-cms/next-env.d.ts
-cms/*.tsbuildinfo

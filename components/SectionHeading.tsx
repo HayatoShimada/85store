@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import Phrase from "@/components/Phrase";
 interface SectionHeadingProps {
   id?: string;
   title: string; // 英語の見出し
@@ -13,8 +14,8 @@ export default function SectionHeading({ id, title, description, as: Tag = "h2",
   return (
     <div className="sec-head">
       <div>
-        <Tag id={id}>{title}</Tag>
-        {description && <p>{description}</p>}
+        <Tag id={id}><Phrase>{title}</Phrase></Tag>
+        {description && <p><Phrase>{description}</Phrase></p>}
       </div>
       {link && <Link href={link.href}>{link.label}</Link>}
     </div>

@@ -14,9 +14,9 @@ import { getNoteArticles } from "@/lib/note";
 import { getLatestProducts } from "@/lib/shopify-storefront";
 import { STORE } from "@/lib/store-info";
 import { WORKS } from "@/lib/works";
-import type { Banner } from "@/types/cms";
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 const TITLE = "85-Store（ハコストア）| 富山県南砺市井波の古着・セレクトショップ";
 const DESCRIPTION = "もう一度、洋服を好きになれる場所。富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」。オーセンティックな古着とトレンド感のある新品を、実店舗とオンラインストアでご紹介しています。";
@@ -40,15 +40,11 @@ export const metadata: Metadata = {
   },
 };
 
-type HeroPhoto = { url: string; alt: string; href?: string };
-
-// microCMS の縦長バナーが足りないときに使う写真（先頭のバナーと同じ店内写真にならないよう、店長の写真を先に使う）
-const FALLBACK_HERO_PHOTOS: HeroPhoto[] = [
-  { url: "/images/snoo.jpg", alt: "店長のスヌー" },
+// ヒーローの写真は店内と店長のスヌーで固定
+const HERO_PHOTOS = [
   { url: "/images/shop.jpg", alt: "85-Store の店内" },
+  { url: "/images/snoo.jpg", alt: "店長のスヌー" },
 ];
-
-const isPortrait = (banner: Banner) => (banner.image.height ?? 0) > (banner.image.width ?? 0);
 
 export default async function Home() {
   const [banners, posts, noteArticles, products] = await Promise.all([
@@ -58,12 +54,8 @@ export default async function Home() {
     getLatestProducts(8),
   ]);
 
-  // 縦長のバナーはヒーローの写真、それ以外は Pick Up に並べる
-  const heroPhotos: HeroPhoto[] = [
-    ...banners.filter(isPortrait).map((banner) => ({ url: banner.image.url, alt: banner.title ?? "", href: banner.detailButtonUrl })),
-    ...FALLBACK_HERO_PHOTOS,
-  ].slice(0, 2);
-  const pickUps = banners.filter((banner) => !isPortrait(banner));
+  // CMS のバナーはすべて Pick Up に並べる（同じバナーが重複して届いても1つにする）
+  const pickUps = banners.filter((banner, index) => banners.findIndex((b) => b.id === banner.id) === index);
 
   return (
     <div className="wrap">
@@ -71,8 +63,8 @@ export default async function Home() {
 
       {/* ヒーロー: 写真2枚 + ブランドメッセージ + 営業情報 */}
       <div className="grid-lines grid-cols-12">
-        {heroPhotos.map((photo, index) => {
-          const image = (
+        {HERO_PHOTOS.map((photo, index) => (
+          <figure key={photo.url} className="relative col-span-4 min-h-[clamp(420px,44vw,680px)] overflow-hidden bg-surface max-[1000px]:col-span-6 max-[1000px]:aspect-[3/4] max-[1000px]:min-h-0">
             <Image
               src={photo.url}
               alt={photo.alt}
@@ -81,17 +73,12 @@ export default async function Home() {
               sizes="(max-width: 1000px) 50vw, 33vw"
               className="object-cover"
             />
-          );
-          return (
-            <figure key={photo.url} className="relative col-span-4 min-h-[clamp(420px,44vw,680px)] overflow-hidden bg-surface max-[1000px]:col-span-6 max-[1000px]:aspect-[3/4] max-[1000px]:min-h-0">
-              {photo.href ? <a href={photo.href} aria-label={photo.alt || "詳しく見る"}>{image}</a> : image}
-            </figure>
-          );
-        })}
+          </figure>
+        ))}
 
         <div className="col-span-4 grid grid-rows-[auto_1fr] gap-px bg-rule max-[1000px]:order-first max-[1000px]:col-span-12 max-[1000px]:grid-cols-2 max-[1000px]:grid-rows-none max-[640px]:grid-cols-1">
           <div className="bg-accent p-[clamp(20px,2.5vw,36px)] text-on-accent">
-            <h1 className="text-2xl font-bold tracking-tight">もう一度、洋服を好きになれる場所</h1>
+            <h1 className="text-2xl font-bold tracking-tight"><Phrase>もう一度、洋服を好きになれる場所</Phrase></h1>
             <p className="mt-4 max-w-[26em]">
               富山県南砺市のセレクトショップ、85-Store（ハコストア）です。今好きな服と、ずっと着られる服を。
             </p>
@@ -134,8 +121,8 @@ export default async function Home() {
                   </div>
                   {(banner.title || banner.subtitle) && (
                     <div className="p-4">
-                      {banner.title && <p className="font-semibold">{banner.title}</p>}
-                      {banner.subtitle && <p className="text-sm text-muted">{banner.subtitle}</p>}
+                      {banner.title && <p className="font-semibold"><Phrase>{banner.title}</Phrase></p>}
+                      {banner.subtitle && <p className="text-sm text-muted"><Phrase>{banner.subtitle}</Phrase></p>}
                     </div>
                   )}
                 </>
@@ -162,10 +149,10 @@ export default async function Home() {
         </section>
       )}
 
-      <section className="section" aria-labelledby="journal-heading">
+      <section className="section" aria-labelledby="blog-heading">
         <SectionHeading
-          id="journal-heading"
-          title="Journal"
+          id="blog-heading"
+          title="Blog"
           description="入荷、イベント、営業日のお知らせ"
           link={{ href: "/blog", label: "すべての記事" }}
         />

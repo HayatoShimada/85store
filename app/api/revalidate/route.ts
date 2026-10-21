@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 
+
 // CMS（cms/、85pi の Payload）が記事・バナーを R2 に書き出したあと、または商品を Shopify に送ったあとに呼び、
 // キャッシュ（blogs / banners / shopify-products）を破棄する。営業日カレンダー（business-calendar）も、
 // 保存のたびに webhook で呼ぶ（business-calendar。構造化データと llms.txt の臨時休業）。

@@ -1,19 +1,20 @@
 import Image from 'next/image';
+import Phrase from '@/components/Phrase';
 
 export default function AboutUs() {
   return (
     <div className="grid lg:grid-cols-[1fr_minmax(0,300px)] gap-12 lg:gap-16 items-start">
       <div className="max-w-2xl">
         <p className="text-xl md:text-2xl font-bold text-ink leading-relaxed tracking-tight">
-          もう一度洋服を好きになれる場所
+          <Phrase>もう一度洋服を好きになれる場所</Phrase>
         </p>
         <div className="mt-8 space-y-6 text-ink-2 leading-loose">
           <p>
-            「昔は洋服が好きだったけれど」
+            <Phrase>「昔は洋服が好きだったけれど」</Phrase>
             <br />
-            「子供ができてから服を買わなくなった」
+            <Phrase>「子供ができてから服を買わなくなった」</Phrase>
             <br />
-            「自分の好きな服がわからなくなった」
+            <Phrase>「自分の好きな服がわからなくなった」</Phrase>
             <br />
           </p>
           <p>
