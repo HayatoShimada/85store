@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
 
+import Phrase from "@/components/Phrase";
 export const metadata: Metadata = {
   title: 'ハコネコはこちらを見ている｜プライバシーポリシー',
 };
@@ -20,46 +21,44 @@ export default function HakonekoPrivacyPage() {
 
           <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">1. 取得する情報</h2>
           <ul className="pl-5 list-disc leading-[1.8] mb-4">
-            <li>利用者が入力した<strong>ニックネーム</strong></li>
-            <li><strong>スコア</strong>および<strong>プレイ日時</strong></li>
-            <li>端末を区別するための<strong>匿名ID（アプリが生成するランダムな識別子）</strong></li>
+            <li><Phrase>{"利用者が入力した"}</Phrase><strong><Phrase>{"ニックネーム"}</Phrase></strong></li>
+            <li><strong><Phrase>{"スコア"}</Phrase></strong><Phrase>{"および"}</Phrase><strong><Phrase>{"プレイ日時"}</Phrase></strong></li>
+            <li><Phrase>{"端末を区別するための"}</Phrase><strong><Phrase>{"匿名ID（アプリが生成するランダムな識別子）"}</Phrase></strong></li>
           </ul>
           <p className="leading-[1.8] mb-4 text-[15px]">
-            ※ 氏名・メールアドレス・電話番号・位置情報などの個人情報は取得しません。<br className="hidden sm:block" />
-            匿名IDは特定の個人を識別するものではありません。
+            <Phrase>{"※ 氏名・メールアドレス・電話番号・位置情報などの個人情報は取得しません。"}</Phrase><br className="hidden sm:block" />
+            <Phrase>{"匿名IDは特定の個人を識別するものではありません。"}</Phrase>
           </p>
 
           <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">2. 利用目的</h2>
           <ul className="pl-5 list-disc leading-[1.8] mb-4">
-            <li>グローバルランキングの表示および利用者自身の記録管理</li>
-            <li>不正・迷惑行為の防止</li>
+            <li><Phrase>{"グローバルランキングの表示および利用者自身の記録管理"}</Phrase></li>
+            <li><Phrase>{"不正・迷惑行為の防止"}</Phrase></li>
           </ul>
 
           <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">3. 利用する外部サービスおよび第三者提供</h2>
           <p className="leading-[1.8] mb-3 text-[15px]">
-            ランキング機能の提供のため、以下の外部サービスを利用します。これらのサービスの利用にあたっては、各社のプライバシーポリシーが適用されます。
+            <Phrase>{"ランキング機能の提供のため、以下の外部サービスを利用します。これらのサービスの利用にあたっては、各社のプライバシーポリシーが適用されます。"}</Phrase>
           </p>
           <ul className="pl-5 list-disc leading-[1.8] mb-4">
             <li><strong>Unity Gaming Services</strong>（Leaderboards / Authentication）— Unity Technologies。ランキング記録および匿名のプレイヤーIDの処理・保管に利用します。</li>
             <li><strong>Apple Game Center</strong>（iOS）— Apple Inc.</li>
             <li><strong>Google Play Games</strong>（Android）— Google LLC</li>
-            <li><strong>Supabase</strong>（クラウド基盤）— 取得した情報の保管に利用します（国外のサーバーに保管される場合があります）。</li>
+            <li><strong>Supabase</strong><Phrase>{"（クラウド基盤）— 取得した情報の保管に利用します（国外のサーバーに保管される場合があります）。"}</Phrase></li>
           </ul>
           <ul className="pl-5 list-disc leading-[1.8] mb-4">
-            <li>上記サービスの提供に必要な範囲、および法令に基づく場合を除き、取得した情報を第三者へ提供することはありません。</li>
-            <li>広告目的の追跡（トラッキング）は行いません。</li>
+            <li><Phrase>{"上記サービスの提供に必要な範囲、および法令に基づく場合を除き、取得した情報を第三者へ提供することはありません。"}</Phrase></li>
+            <li><Phrase>{"広告目的の追跡（トラッキング）は行いません。"}</Phrase></li>
           </ul>
 
           <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">4. データの削除</h2>
           <p className="leading-[1.8] mb-4">
-            登録情報（ニックネーム・スコア等）の削除をご希望の場合は、下記窓口までご連絡ください。
-            速やかに対応します。
+            <Phrase>{"登録情報（ニックネーム・スコア等）の削除をご希望の場合は、下記窓口までご連絡ください。 速やかに対応します。"}</Phrase>
           </p>
 
           <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">5. 改定</h2>
           <p className="leading-[1.8] mb-4">
-            本ポリシーは、必要に応じて予告なく変更されることがあります。
-            変更後の内容は本ページに掲載した時点で効力を生じます。
+            <Phrase>{"本ポリシーは、必要に応じて予告なく変更されることがあります。 変更後の内容は本ページに掲載した時点で効力を生じます。"}</Phrase>
           </p>
 
           <h2 className="text-[#ff8d1f] text-[18px] font-bold mt-8 mb-2 border-b border-[#333] pb-1.5">6. お問い合わせ</h2>

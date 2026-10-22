@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
 const APP_STORE_URL =
   'https://apps.apple.com/jp/app/%E3%83%8F%E3%82%B3%E3%83%8D%E3%82%B3%E3%81%AF%E8%A6%8B%E3%81%A6%E3%81%84%E3%82%8B/id6782921863';
 const TIKTOK_URL = 'https://www.tiktok.com/@85store85';
@@ -55,21 +56,21 @@ export default function HakonekoPage() {
         {/* Intro */}
         <div className="w-full mb-16 leading-[2.2] text-[#cfcfcf] text-[15px] md:text-[17px]">
           <p className="mb-8">
-            『ハコネコはこちらを見ている』は、85-Storeがお届けする、<br className="hidden md:block" />
-            一見キュート、中身はハードな<span className="text-[#ff8d1f] font-bold">コズミックホラー・マージパズルゲーム</span>です。
+            <Phrase>{"『ハコネコはこちらを見ている』は、85-Storeがお届けする、"}</Phrase><br className="hidden md:block" />
+            <Phrase>{"一見キュート、中身はハードな"}</Phrase><span className="text-[#ff8d1f] font-bold"><Phrase>{"コズミックホラー・マージパズルゲーム"}</Phrase></span><Phrase>{"です。"}</Phrase>
           </p>
 
           <blockquote className="italic text-[#9aa0aa] border-y border-[#ff8d1f]/30 py-8 my-12 text-center max-w-[540px] mx-auto bg-linear-to-b from-transparent via-[#ff8d1f]/2 to-transparent">
             「深淵をのぞく時、深淵もまたこちらをのぞいている」<br />
-            <span className="text-[13px] text-[#7a808a] mt-4 block tracking-widest">――ニーチェ</span>
+            <span className="text-[13px] text-[#7a808a] mt-4 block tracking-widest"><Phrase>{"――ニーチェ"}</Phrase></span>
           </blockquote>
 
           <p className="mb-6">
-            この宇宙において、その「深淵」は、<br className="hidden md:block" />
-            モフモフの毛玉にまみれた、名状しがたき猫の姿をしていました。
+            <Phrase>{"この宇宙において、その「深淵」は、"}</Phrase><br className="hidden md:block" />
+            <Phrase>{"モフモフの毛玉にまみれた、名状しがたき猫の姿をしていました。"}</Phrase>
           </p>
           <p className="text-[20px] md:text-[22px] text-[#ff8d1f] font-bold drop-shadow-[0_0_8px_rgba(255,141,31,0.4)] mt-12 mb-8">
-            あなたは、その視線に耐えられますか？
+            <Phrase>{"あなたは、その視線に耐えられますか？"}</Phrase>
           </p>
         </div>
 
@@ -99,20 +100,20 @@ export default function HakonekoPage() {
             </p>
             <div className="space-y-8 text-[#eaeaea] text-[15px] leading-[1.8]">
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-8">
-                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]">ドラッグ＆ドロップ</strong>
-                <span className="text-[#9aa0aa]">ハコネコをドラッグして、好きな場所に落としましょう。</span>
+                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]"><Phrase>{"ドラッグ＆ドロップ"}</Phrase></strong>
+                <span className="text-[#9aa0aa]"><Phrase>{"ハコネコをドラッグして、好きな場所に落としましょう。"}</Phrase></span>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-8">
-                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]">進化（マージ）</strong>
-                <span className="text-[#9aa0aa]">同じ姿のハコネコどうしが触れると、ひとつ上の姿へと変化します。</span>
+                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]"><Phrase>{"進化（マージ）"}</Phrase></strong>
+                <span className="text-[#9aa0aa]"><Phrase>{"同じ姿のハコネコどうしが触れると、ひとつ上の姿へと変化します。"}</Phrase></span>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-8">
-                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]">対消滅</strong>
+                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]"><Phrase>{"対消滅"}</Phrase></strong>
                 <span className="text-[#9aa0aa]">進化の最果て。最果ての姿どうしが触れると「対消滅」が起こり、膨大なエネルギーが解き放たれます。画面が埋め尽くされる前に、すべてを対消滅させれば、宇宙に平穏が訪れます。</span>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-8">
-                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]">ブラックホール</strong>
-                <span className="text-[#9aa0aa]">たまったエネルギーを使って、ブラックホールをタップ！画面上のハコネコを一匹、消し去ることができます。危機を脱する鍵です。</span>
+                <strong className="text-[#ff8d1f] sm:w-[150px] shrink-0 text-[16px]"><Phrase>{"ブラックホール"}</Phrase></strong>
+                <span className="text-[#9aa0aa]"><Phrase>{"たまったエネルギーを使って、ブラックホールをタップ！画面上のハコネコを一匹、消し去ることができます。危機を脱する鍵です。"}</Phrase></span>
               </div>
             </div>
           </div>
@@ -126,15 +127,15 @@ export default function HakonekoPage() {
             </h2>
             <div className="space-y-10 text-[#eaeaea] text-[15px] leading-[1.9]">
               <div>
-                <strong className="block text-[#ff8d1f] text-[18px] mb-3 font-bold tracking-wide">レトロ＆ネオンな世界観</strong>
-                <p className="text-[#9aa0aa]">ハコネコのキュートなビジュアルと、不気味なネオンオレンジの発光が融合した、唯一無二のヴィジュアル。</p>
+                <strong className="block text-[#ff8d1f] text-[18px] mb-3 font-bold tracking-wide"><Phrase>{"レトロ＆ネオンな世界観"}</Phrase></strong>
+                <p className="text-[#9aa0aa]"><Phrase>{"ハコネコのキュートなビジュアルと、不気味なネオンオレンジの発光が融合した、唯一無二のヴィジュアル。"}</Phrase></p>
               </div>
               <div>
-                <strong className="block text-[#ff8d1f] text-[18px] mb-3 font-bold tracking-wide">深まる「名状しがたき」メッセージ</strong>
+                <strong className="block text-[#ff8d1f] text-[18px] mb-3 font-bold tracking-wide"><Phrase>{"深まる「名状しがたき」メッセージ"}</Phrase></strong>
                 <p className="text-[#9aa0aa]">ゲームオーバー時、スコアに応じてコズミック・ホラー調のメッセージが表示されます。0点から10000点以上まで、500点刻みで変化するメッセージは、あなたの正気が毛玉のようにほどけていく様を描きます。</p>
               </div>
               <div>
-                <strong className="block text-[#ff8d1f] text-[18px] mb-3 font-bold tracking-wide">猫好きへの警鐘</strong>
+                <strong className="block text-[#ff8d1f] text-[18px] mb-3 font-bold tracking-wide"><Phrase>{"猫好きへの警鐘"}</Phrase></strong>
                 <p className="text-[#9aa0aa]">これは普通の猫ゲームではありません。増え続けるモフモフの奥で囁いている何か。次元の裂け目から伸びる白い爪。宇宙とは巨大な毛皮にすぎない…。その真実に気づいた時、あなたはもうかつての何かではないかもしれません。</p>
               </div>
             </div>
@@ -165,8 +166,8 @@ export default function HakonekoPage() {
             正気が、ほどけていく。
           </h2>
           <p className="text-center text-[#9aa0aa] text-[14px] mb-10 leading-[1.9]">
-            スコアが伸びるほど、ゲームオーバー画面のメッセージは深淵へと近づく。<br className="hidden sm:block" />
-            全21種。あなたはどこまで「視線」に耐えられる？
+            <Phrase>{"スコアが伸びるほど、ゲームオーバー画面のメッセージは深淵へと近づく。"}</Phrase><br className="hidden sm:block" />
+            <Phrase>{"全21種。あなたはどこまで「視線」に耐えられる？"}</Phrase>
           </p>
           <ul className="space-y-5">
             {[
@@ -206,7 +207,7 @@ export default function HakonekoPage() {
             <div className="flex flex-col items-center gap-2 mb-6 z-10">
               <span className="text-[12px] uppercase tracking-[0.2em] text-[#ff8d1f] font-semibold">Download</span>
               <h3 className="text-white text-[18px] font-bold tracking-wider">App Store</h3>
-              <p className="text-[13px] text-[#9aa0aa] mt-1">iOS・¥300（買い切り）</p>
+              <p className="text-[13px] text-[#9aa0aa] mt-1"><Phrase>{"iOS・¥300（買い切り）"}</Phrase></p>
             </div>
             
             <div className="relative h-[40px] flex items-center justify-center transition-transform group-hover:scale-105 z-10">
@@ -230,7 +231,7 @@ export default function HakonekoPage() {
             <div className="flex flex-col items-center gap-2 mb-6 z-10">
               <span className="text-[12px] uppercase tracking-[0.2em] text-purple-400 font-semibold">Official Instagram</span>
               <h3 className="text-white text-[18px] font-bold tracking-wider">@85neco_game</h3>
-              <p className="text-[13px] text-[#9aa0aa] mt-1">公式アカウントで最新情報をチェック</p>
+              <p className="text-[13px] text-[#9aa0aa] mt-1"><Phrase>{"公式アカウントで最新情報をチェック"}</Phrase></p>
             </div>
             
             <div className="flex items-center gap-2 px-5 py-2.5 bg-linear-to-r from-[#fdf497]/20 via-[#fd5949]/20 to-[#d6249f]/20 rounded-full border border-purple-500/30 group-hover:border-purple-500/60 transition-colors z-10">
@@ -250,7 +251,7 @@ export default function HakonekoPage() {
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
               </svg>
-              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white"><Phrase>{"フォローする"}</Phrase></span>
             </div>
           </a>
 
@@ -264,10 +265,10 @@ export default function HakonekoPage() {
             <div className="flex flex-col items-center gap-2 mb-6 z-10">
               <span className="text-[12px] uppercase tracking-[0.2em] text-cyan-300 font-semibold">TikTok</span>
               <h3 className="text-white text-[18px] font-bold tracking-wider">@85store85</h3>
-              <p className="text-[13px] text-[#9aa0aa] mt-1">プレイ動画・小ネタを配信</p>
+              <p className="text-[13px] text-[#9aa0aa] mt-1"><Phrase>{"プレイ動画・小ネタを配信"}</Phrase></p>
             </div>
             <div className="flex items-center gap-2 px-5 py-2.5 bg-cyan-400/10 rounded-full border border-cyan-400/30 group-hover:border-cyan-400/60 transition-colors z-10">
-              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white"><Phrase>{"フォローする"}</Phrase></span>
             </div>
           </a>
 
@@ -281,10 +282,10 @@ export default function HakonekoPage() {
             <div className="flex flex-col items-center gap-2 mb-6 z-10">
               <span className="text-[12px] uppercase tracking-[0.2em] text-red-400 font-semibold">YouTube</span>
               <h3 className="text-white text-[18px] font-bold tracking-wider">プロモ映像</h3>
-              <p className="text-[13px] text-[#9aa0aa] mt-1">30秒で世界観をチェック</p>
+              <p className="text-[13px] text-[#9aa0aa] mt-1"><Phrase>{"30秒で世界観をチェック"}</Phrase></p>
             </div>
             <div className="flex items-center gap-2 px-5 py-2.5 bg-red-500/10 rounded-full border border-red-500/30 group-hover:border-red-500/60 transition-colors z-10">
-              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">観る</span>
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white"><Phrase>{"観る"}</Phrase></span>
             </div>
           </a>
 
@@ -298,13 +299,13 @@ export default function HakonekoPage() {
             <div className="flex flex-col items-center gap-2 mb-6 z-10">
               <span className="text-[12px] uppercase tracking-[0.2em] text-gray-300 font-semibold">X (Twitter)</span>
               <h3 className="text-white text-[18px] font-bold tracking-wider">@85neco</h3>
-              <p className="text-[13px] text-[#9aa0aa] mt-1">開発こぼれ話・最新情報をポスト</p>
+              <p className="text-[13px] text-[#9aa0aa] mt-1"><Phrase>{"開発こぼれ話・最新情報をポスト"}</Phrase></p>
             </div>
             <div className="flex items-center gap-2 px-5 py-2.5 bg-white/5 rounded-full border border-white/20 group-hover:border-white/50 transition-colors z-10">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-white">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
               </svg>
-              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white">フォローする</span>
+              <span className="text-[14px] font-medium tracking-wide text-gray-200 group-hover:text-white"><Phrase>{"フォローする"}</Phrase></span>
             </div>
           </a>
         </div>
@@ -315,25 +316,25 @@ export default function HakonekoPage() {
             href="/hakoneko/privacy"
             className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl border border-[#ff8d1f]/40 bg-black/60 text-[#ff8d1f] hover:bg-[#ff8d1f]/20 hover:border-[#ff8d1f]/80 hover:shadow-[0_0_20px_rgba(255,141,31,0.2)] transition-all duration-300 font-bold tracking-widest overflow-hidden"
           >
-            プライバシーポリシー
+            <Phrase>{"プライバシーポリシー"}</Phrase>
           </Link>
           <Link
             href="/"
             className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl border border-[#ff8d1f]/40 bg-black/60 text-[#ff8d1f] hover:bg-[#ff8d1f]/20 hover:border-[#ff8d1f]/80 hover:shadow-[0_0_20px_rgba(255,141,31,0.2)] transition-all duration-300 font-bold tracking-widest overflow-hidden"
           >
-            85-Store 公式サイト
+            <Phrase>{"85-Store 公式サイト"}</Phrase>
           </Link>
           <Link
             href="/works"
             className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl border border-[#ff8d1f]/40 bg-black/60 text-[#ff8d1f] hover:bg-[#ff8d1f]/20 hover:border-[#ff8d1f]/80 hover:shadow-[0_0_20px_rgba(255,141,31,0.2)] transition-all duration-300 font-bold tracking-widest overflow-hidden"
           >
-            ほかの作品
+            <Phrase>{"ほかの作品"}</Phrase>
           </Link>
         </div>
 
         <div className="border-t border-[#ff8d1f]/20 pt-12 w-full max-w-[400px] mx-auto">
           <p className="leading-loose text-[#7a808a] mb-6 text-[14px]">
-            お問い合わせ：<br />
+            <Phrase>{"お問い合わせ："}</Phrase><br />
             <a href="mailto:info@85-store.com" className="text-[#ff8d1f]/80 hover:text-[#ff8d1f] hover:underline hover:drop-shadow-[0_0_8px_rgba(255,141,31,0.5)] transition-all text-[16px] tracking-wider">info@85-store.com</a>
           </p>
 

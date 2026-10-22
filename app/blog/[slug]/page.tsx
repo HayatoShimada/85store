@@ -17,7 +17,7 @@ import { nonEmptyParams } from "@/utils/static-params";
 import { pageAlternates } from "@/lib/metadata";
 
 import Phrase from "@/components/Phrase";
-import { phraseHeadingsHtml } from "@/lib/phrase";
+import { phraseShortTextHtml } from "@/lib/phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 interface BlogPostPageProps {
@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const modifiedAt = post.updatedAt || publishedAt;
   const { html: tocHtml, headings } = buildTableOfContents(optimizeContentImages(post.content));
   // 目次が見出しの文字を読んだあとに、見出しと写真の説明を文節で改行できるようにする
-  const contentHtml = phraseHeadingsHtml(tocHtml);
+  const contentHtml = phraseShortTextHtml(tocHtml);
   const postUrl = `${siteUrl}${getBlogPostPath(post)}`;
 
   return (
@@ -174,7 +174,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <header className={`grid-lines mt-8 ${eyecatch ? "grid-cols-[minmax(0,7fr)_minmax(0,5fr)] max-[800px]:grid-cols-1" : ""}`}>
           <div className="grid content-between gap-12 p-[clamp(20px,3.5vw,48px)] max-[800px]:gap-6">
             <nav aria-label="パンくずリスト" className="text-sm text-muted">
-              <Link href="/blog" className="text-ink underline underline-offset-4">ブログ</Link>
+              <Link href="/blog" className="text-ink underline underline-offset-4"><Phrase>{"ブログ"}</Phrase></Link>
               {primaryCategory && (
                 <>
                   <span aria-hidden="true">　／　</span>

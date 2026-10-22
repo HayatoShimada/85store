@@ -2,6 +2,7 @@ import Link from "next/link";
 import IrregularHolidayNote from "@/components/IrregularHolidayNote";
 import { STORE, STORE_FULL_ADDRESS } from "@/lib/store-info";
 
+import Phrase from "@/components/Phrase";
 const COLUMNS = [
   {
     title: "Shop",
@@ -73,9 +74,9 @@ export default function Footer() {
         <div className="flex flex-wrap justify-between gap-4 border-t border-on-footer/20 pt-4 text-xs text-footer-muted">
           <span>© 2025 85-Store</span>
           <ul className="flex flex-wrap gap-x-4 gap-y-1">
-            <li><Link href="/terms" className="hover:underline">利用規約</Link></li>
-            <li><Link href="/privacy" className="hover:underline">プライバシーポリシー</Link></li>
-            <li><a href={`${STORE.onlineShopUrl}policies/legal-notice`} className="hover:underline">特定商取引法に基づく表記</a></li>
+            <li><Link href="/terms" className="hover:underline"><Phrase>{"利用規約"}</Phrase></Link></li>
+            <li><Link href="/privacy" className="hover:underline"><Phrase>{"プライバシーポリシー"}</Phrase></Link></li>
+            <li><a href={`${STORE.onlineShopUrl}policies/legal-notice`} className="hover:underline"><Phrase>{"特定商取引法に基づく表記"}</Phrase></a></li>
           </ul>
         </div>
       </div>

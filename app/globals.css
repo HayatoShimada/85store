@@ -110,7 +110,7 @@
   }
 
   /* 段落の最後の行が1〜2文字だけにならないように */
-  p, li {
+  p, li, dd, dt, figcaption {
     text-wrap: pretty;
   }
 
@@ -119,6 +119,11 @@
     word-break: keep-all;
     /* anywhere だと Chrome の text-wrap: balance / pretty が文節の途中を選ぶことがある。はみ出すときだけ折る */
     overflow-wrap: break-word;
+  }
+
+  /* 開きかっこと次の1文字（Safari が keep-all のとき「（」の後ろで改行するため） */
+  .ja-nobr {
+    white-space: nowrap;
   }
 
   :focus-visible {

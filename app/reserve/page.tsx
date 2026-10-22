@@ -9,6 +9,8 @@ import { STORE } from "@/lib/store-info";
 import { getBlogPostsByCategory } from "@/lib/cms";
 import { pageAlternates } from "@/lib/metadata";
 
+import Phrase from "@/components/Phrase";
+import { SHORT_TEXT_LENGTH } from "@/lib/phrase";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
 
 export const metadata: Metadata = {
@@ -88,7 +90,7 @@ export default async function ReservePage() {
     <div className="wrap pt-12">
       <SectionHeading as="h1" title="Reserve" description="来店予約・空き状況の確認" />
       <p className="max-w-[40em] text-ink-2">
-        各フロアの空き状況をご確認のうえ、ご予約ください。営業時間は{STORE.hours.label}（{STORE.hours.closedLabel}）です。{STORE.hours.note}
+        <Phrase>{"各フロアの空き状況をご確認のうえ、ご予約ください。営業時間は"}</Phrase>{STORE.hours.label}（{STORE.hours.closedLabel}<Phrase>{"）です。"}</Phrase>{STORE.hours.note}
         <IrregularHolidayNote className="mt-1" />
       </p>
       <UpcomingSpecialDays className="mt-4 max-w-[40em] text-ink-2" />
@@ -119,13 +121,13 @@ export default async function ReservePage() {
               </figure>
               <div className="col-span-7 grid content-between gap-6 p-[clamp(20px,3vw,40px)] max-[900px]:col-span-12">
                 <div>
-                  <p className="mb-4 text-ink-2">{store.description}</p>
+                  <p className="mb-4 text-ink-2"><Phrase max={SHORT_TEXT_LENGTH}>{store.description}</Phrase></p>
                   <dl className="facts">
-                    <div><dt>営業時間</dt><dd>{store.hours}{store.extendedHours && <span className="block text-sm text-muted">{store.extendedHours}</span>}</dd></div>
+                    <div><dt><Phrase>{"営業時間"}</Phrase></dt><dd><Phrase>{store.hours}</Phrase>{store.extendedHours && <span className="block text-sm text-muted"><Phrase>{store.extendedHours}</Phrase></span>}</dd></div>
                   </dl>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <a href={store.calendarUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">予約ページを開く</a>
+                  <a href={store.calendarUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary"><Phrase>{"予約ページを開く"}</Phrase></a>
                 </div>
               </div>
             </div>
@@ -144,7 +146,7 @@ export default async function ReservePage() {
 
             {events.length > 0 && (
               <div className="mt-12">
-                <h3 className="mb-6 font-display text-xl font-bold">Events<span className="ml-2 font-sans text-sm font-normal text-muted">{store.name} のイベント</span></h3>
+                <h3 className="mb-6 font-display text-xl font-bold">Events<span className="ml-2 font-sans text-sm font-normal text-muted">{store.name}{" "}<Phrase>{"のイベント"}</Phrase></span></h3>
                 <BlogCardGrid>
                   {events.map((post) => <BlogCard key={post.id} post={post} />)}
                 </BlogCardGrid>

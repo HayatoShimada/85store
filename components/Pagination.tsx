@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import Phrase from "@/components/Phrase";
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -20,9 +21,9 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
   return (
     <nav aria-label="ブログのページ送り" className="mt-12 flex items-center justify-between gap-4 border-t border-rule pt-6">
       {hasPrev ? (
-        <Link href={getBlogPagePath(currentPage - 1)} rel="prev" className="btn btn-secondary">前のページ</Link>
+        <Link href={getBlogPagePath(currentPage - 1)} rel="prev" className="btn btn-secondary"><Phrase>{"前のページ"}</Phrase></Link>
       ) : (
-        <span className="btn btn-secondary" aria-disabled="true">前のページ</span>
+        <span className="btn btn-secondary" aria-disabled="true"><Phrase>{"前のページ"}</Phrase></span>
       )}
 
       <ol className="flex gap-1">
@@ -43,9 +44,9 @@ export default function Pagination({ currentPage, totalPages }: PaginationProps)
       </ol>
 
       {hasNext ? (
-        <Link href={getBlogPagePath(currentPage + 1)} rel="next" className="btn btn-secondary">次のページ</Link>
+        <Link href={getBlogPagePath(currentPage + 1)} rel="next" className="btn btn-secondary"><Phrase>{"次のページ"}</Phrase></Link>
       ) : (
-        <span className="btn btn-secondary" aria-disabled="true">次のページ</span>
+        <span className="btn btn-secondary" aria-disabled="true"><Phrase>{"次のページ"}</Phrase></span>
       )}
     </nav>
   );
