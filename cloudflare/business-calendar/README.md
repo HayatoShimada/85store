@@ -10,7 +10,7 @@ Worker 本体は公開リポジトリ **[HayatoShimada/business-calendar](https:
 - D1: `85store-business-calendar`（APAC）
 - ログイン: 方式 C（Tailscale 内の端末だけ）。tsidp は 85pi で動いている（[docs/auth.md](https://github.com/HayatoShimada/business-calendar/blob/main/docs/auth.md)）
 - SNS でのお知らせ: 管理画面の「お知らせを作る」→ 共有シートで X・Instagram に投稿（[docs/share.md](https://github.com/HayatoShimada/business-calendar/blob/main/docs/share.md)）
-- Googleマップ連携: Business Profile API の承認待ち（2026-10-01 申請、ケースID 7-6137000041496）
+- Googleマップ連携: 有効（2026-10-29 設定。Google Cloud プロジェクト 31729388953 の OAuth クライアント「business_profile」）。管理画面で保存するたびに通常・特別営業時間を反映する
 
 ## デプロイ
 
@@ -22,7 +22,7 @@ cd cloudflare/business-calendar
 
 business-calendar を更新したら、`deploy.sh` の `VERSION` を新しいタグに変えて `./deploy.sh migrate && ./deploy.sh`。
 
-## Googleマップ連携（API 承認後）
+## Googleマップ連携の設定し直し（トークンの失効・シークレットの差し替え）
 
 [docs/google.md](https://github.com/HayatoShimada/business-calendar/blob/main/docs/google.md) の 1〜2 を済ませてから:
 
