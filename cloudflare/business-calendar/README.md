@@ -2,7 +2,7 @@
 
 Worker 本体は公開リポジトリ **[HayatoShimada/business-calendar](https://github.com/HayatoShimada/business-calendar)** にあります。ここには 85-Store 用の設定とデプロイ手順だけを置いています。
 
-下のドキュメントへのリンクは `deploy.sh` の `VERSION`（v1.2.0）に合わせています。`VERSION` を上げたらリンクも変えてください。
+下のドキュメントへのリンクは `deploy.sh` の `VERSION`（v1.3.0）に合わせています。`VERSION` を上げたらリンクも変えてください。
 
 | ホスト | 役割 |
 |---|---|
@@ -10,8 +10,8 @@ Worker 本体は公開リポジトリ **[HayatoShimada/business-calendar](https:
 | `calendar.85-store.com` | 公開API `GET /v1/calendar`（サイトがブラウザから読む） |
 
 - D1: `85store-business-calendar`（APAC）
-- ログイン: 方式 C（Tailscale 内の端末だけ）。tsidp は 85pi で動いている（[docs/auth.md](https://github.com/HayatoShimada/business-calendar/blob/v1.2.0/docs/auth.md)）
-- SNS でのお知らせ: 管理画面の「お知らせを作る」→ 共有シートで X・Instagram に投稿（[docs/share.md](https://github.com/HayatoShimada/business-calendar/blob/v1.2.0/docs/share.md)）
+- ログイン: 方式 C（Tailscale 内の端末だけ）。tsidp は 85pi で動いている（[docs/auth.md](https://github.com/HayatoShimada/business-calendar/blob/v1.3.0/docs/auth.md)）
+- SNS でのお知らせ: 管理画面の「お知らせを作る」→ 共有シートで X・Instagram に投稿（[docs/share.md](https://github.com/HayatoShimada/business-calendar/blob/v1.3.0/docs/share.md)）
 - Googleマップ連携: 有効（2026-10-29 設定。Google Cloud プロジェクト 31729388953 の OAuth クライアント「business_profile」）。管理画面で保存するたびに通常・特別営業時間を反映する
   - **営業時間の編集は管理画面だけで行う。** Googleマップ（ビジネスプロフィール）で直接直しても、次に管理画面で保存したときに上書きされる
   - 反映の結果は管理画面の「Googleマップ」の欄に出る（失敗したときは理由と「もう一度反映する」）
@@ -28,7 +28,7 @@ business-calendar を更新したら、`deploy.sh` の `VERSION` を新しいタ
 
 ## Googleマップ連携の設定し直し（トークンの失効・シークレットの差し替え）
 
-API の申請と OAuth クライアントは済んでいるので、[docs/google.md](https://github.com/HayatoShimada/business-calendar/blob/v1.2.0/docs/google.md) の 1〜2 はやり直さない。今の OAuth クライアント「business_profile」（デスクトップ アプリ）の ID とシークレットを使う。シークレットを差し替えるときは、Cloud Console のそのクライアントでシークレットを作り直す。
+API の申請と OAuth クライアントは済んでいるので、[docs/google.md](https://github.com/HayatoShimada/business-calendar/blob/v1.3.0/docs/google.md) の 1〜2 はやり直さない。今の OAuth クライアント「business_profile」（デスクトップ アプリ）の ID とシークレットを使う。シークレットを差し替えるときは、Cloud Console のそのクライアントでシークレットを作り直す。
 
 ```bash
 cd cloudflare/business-calendar
