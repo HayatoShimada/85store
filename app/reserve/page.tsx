@@ -56,7 +56,7 @@ const stores: StoreInfo[] = [
     nameEn: "85-Store",
     description: "オーセンティックな古着とニューアイテムを提案するセレクトショップ。",
     hours: `${STORE.hours.label}（${STORE.hours.closedLabel}）`,
-    extendedHours: "事前予約で木曜と18:00～20:00延長営業可",
+    extendedHours: "事前予約で水曜・木曜と18:00～20:00延長営業可",
     aboutUrl: "/about",
     calendarUrl: "https://calendar.app.google/NC4YeDjkiWNVjLnw7",
     calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3Z8bstlUPSWyt6ZrL_cB-aQSimveRJwfnuczdh5Zv1w23bNFljFC-HvtiVIV113oRHPZPsA_aN?gv=true",
