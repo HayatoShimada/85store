@@ -77,7 +77,23 @@ export function buildRequest(input: SearchInput, products: Product[], askMeaning
   return { model: MODEL, state: { task: text.task, query: input.query }, questions };
 }
 
-// 全商品の確率を出し、高い順に並べる。検索語（写真）が商品を探すものかの確率（meaningful）も返す
+// 検索語のことばが、全部そのまま商品名かブランドに入っている商品（「sowbow」「voiry」などのブランド名・型番）。
+// Clef はなじみのないブランド名を「意味のないことば」と判断したり、ほかの商品を上に並べたりするので、ことばの一致で補う。
+// 英数字は 3 文字以上、それ以外（日本語など）は 2 文字以上のことばだけを使う（短すぎることばで何にでも一致しないように）
+export function keywordMatches(query: string, products: Product[]): Set<string> {
+  const words = normalizeQuery(query)
+    .split(" ")
+    .filter((w) => (/^[\x00-\x7f]+$/.test(w) ? w.length >= 3 : w.length >= 2));
+  if (!words.length) return new Set();
+  const hits = products.filter((p) => {
+    const text = normalizeQuery(`${p.title} ${p.brand ?? ""}`);
+    return words.every((w) => text.includes(w));
+  });
+  return new Set(hits.map((p) => p.handle));
+}
+
+// 全商品の確率を出し、高い順に並べる。検索語（写真）が商品を探すものかの確率（meaningful）も返す。
+// 検索語が商品名・ブランドにそのまま入っている商品は、確率にかかわらず先に並べる（そのときは意味のある検索語として扱う）
 export async function rank(input: SearchInput, products: Product[], ask: Ask): Promise<RankResult> {
   const groups = chunks(products, CHUNK);
   const answers = await Promise.all(groups.map((g, i) => ask(buildRequest(input, g, i === 0))));
@@ -88,8 +104,14 @@ export async function rank(input: SearchInput, products: Product[], ask: Ask): P
       if (typeof score === "number") ranked.push({ handle: p.handle, score });
     });
   });
-  const meaningful = answers[0]?.[MEANINGFUL_ID]?.noul ?? 1;
-  return { meaningful, ranked: ranked.sort((a, b) => b.score - a.score) };
+  const matched = "query" in input ? keywordMatches(input.query, products) : new Set<string>();
+  const meaningful = matched.size ? 1 : (answers[0]?.[MEANINGFUL_ID]?.noul ?? 1);
+  // 一致した商品は、確率が低くても結果に残す（1 を足して先に並べ、確率は 0.99 までにそろえる）
+  const key = (r: Ranked) => (matched.has(r.handle) ? 1 : 0) + r.score;
+  const sorted = ranked
+    .sort((a, b) => key(b) - key(a))
+    .map((r) => (matched.has(r.handle) ? { handle: r.handle, score: Math.max(r.score, 0.99) } : r));
+  return { meaningful, ranked: sorted };
 }
 
 // 検索語をそろえる（キャッシュのキーにする）

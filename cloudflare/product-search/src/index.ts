@@ -36,7 +36,7 @@ const CATALOG_TTL = 300;
 const RESULT_TTL = 3600;
 const CACHE_ORIGIN = "https://product-search.internal";
 // 並べ方（質問・しきい値）を変えたら上げる（前の検索結果のキャッシュを使わない）
-const RANKING_VERSION = 3;
+const RANKING_VERSION = 4;
 
 type Result = { handle: string; score: number };
 

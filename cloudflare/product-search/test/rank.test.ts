@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { joinAttributes } from "../src/catalog.ts";
 import { corsHeaders } from "../src/cors.ts";
-import { type ClefRequest, CHUNK, buildRequest, describe, normalizeQuery, rank } from "../src/rank.ts";
+import { type ClefRequest, CHUNK, buildRequest, describe, keywordMatches, normalizeQuery, rank } from "../src/rank.ts";
 
 const product = (handle: string) => ({
   handle,
@@ -84,4 +84,26 @@ test("corsHeaders はショップとプレビューだけに許す", () => {
   assert.ok(corsHeaders("https://abc.shopifypreview.com", allowed)["Access-Control-Allow-Origin"]);
   assert.equal(corsHeaders("https://evil.example", allowed)["Access-Control-Allow-Origin"], undefined);
   assert.equal(corsHeaders("https://shopifypreview.com.evil.example", allowed)["Access-Control-Allow-Origin"], undefined);
+});
+
+test("keywordMatches は、検索語のことばが全部、商品名かブランドに入っている商品を返す", () => {
+  const products = [
+    { ...product("a"), title: "[SOWBOW] EZ PANTS WIDE -BROWN-" },
+    { ...product("b"), title: "Cotton Flannel Shirts", brand: "SOWBOW" },
+    { ...product("c"), title: "Wool Check Pants" },
+  ];
+  assert.deepEqual([...keywordMatches("sowbow", products)], ["a", "b"]);
+  assert.deepEqual([...keywordMatches("Sowbow  pants", products)], ["a"]);
+  assert.deepEqual([...keywordMatches("ez", products)], [], "英数字 2 文字では一致させない");
+  assert.deepEqual([...keywordMatches("冬", products)], [], "1 文字の日本語では一致させない");
+});
+
+test("rank は、検索語が商品名に入っている商品を先に並べ、意味のある検索語として扱う", async () => {
+  const products = [product("x"), { ...product("y"), title: "[SOWBOW] SHIRT" }];
+  const { meaningful, ranked } = await rank({ query: "sowbow" }, products, async (req) =>
+    Object.fromEntries(Object.keys(req.questions).map((id) => [id, { noul: id === "meaningful" ? 0.1 : id === "p0" ? 0.8 : 0.05 }])),
+  );
+  assert.equal(meaningful, 1);
+  assert.deepEqual(ranked.map((r) => r.handle), ["y", "x"]);
+  assert.equal(ranked[0].score, 0.99);
 });
