@@ -1,3 +1,5 @@
+import { BRAND_READINGS, readingKey } from "./brands.ts";
+
 // 検索語（または写真）と商品を Clef（判定用のモデル）に渡し、商品ごとに「検索の意図に合うか」の確率を出す。
 // 1回のリクエストで、商品ごとに1つの noul（はい・いいえ）を聞く。商品が多いときは分けて並列に聞く。
 
@@ -81,7 +83,7 @@ export function buildRequest(input: SearchInput, products: Product[], askMeaning
 // Clef はなじみのないブランド名を「意味のないことば」と判断したり、ほかの商品を上に並べたりするので、ことばの一致で補う。
 // 英数字は 3 文字以上、それ以外（日本語など）は 2 文字以上のことばだけを使う（短すぎることばで何にでも一致しないように）
 export function keywordMatches(query: string, products: Product[]): Set<string> {
-  const words = normalizeQuery(query)
+  const words = toBrandWords(normalizeQuery(query))
     .split(" ")
     .filter((w) => (/^[\x00-\x7f]+$/.test(w) ? w.length >= 3 : w.length >= 2));
   if (!words.length) return new Set();
@@ -90,6 +92,27 @@ export function keywordMatches(query: string, products: Product[]): Set<string> 
     return words.every((w) => text.includes(w));
   });
   return new Set(hits.map((p) => p.handle));
+}
+
+// 検索語の中のカタカナのブランド名（「カーハート」）を、商品名に書いてある英字（「carhartt」）に置きかえる。
+// 検索語全体（中黒・空白を除く）がブランドの読みなら、それを置きかえる。そうでなければ、ことばごとに置きかえる
+export function toBrandWords(normalized: string): string {
+  const whole = BRAND_READINGS[readingKey(normalized)];
+  if (whole) return whole;
+  return normalized
+    .split(" ")
+    .map((w) => BRAND_READINGS[readingKey(w)] ?? w)
+    .join(" ");
+}
+
+// 出す商品を選ぶ。
+// - 検索語が商品を探すことばか（meaningful）が低いときは、何も出さない（在庫のないブランドなどで、関係のない商品を並べないように）
+// - いちばん合う商品の確率から gap より下がった商品は出さない（「j.crew」で J.CREW の後に関係の薄い商品が続かないように）
+export type SelectOptions = { minScore: number; minMeaningful: number; gap: number; max: number };
+export function selectResults({ meaningful, ranked }: RankResult, o: SelectOptions): Ranked[] {
+  if (meaningful < o.minMeaningful || !ranked.length) return [];
+  const cut = Math.max(o.minScore, ranked[0].score - o.gap);
+  return ranked.filter((r) => r.score >= cut).slice(0, o.max);
 }
 
 // 全商品の確率を出し、高い順に並べる。検索語（写真）が商品を探すものかの確率（meaningful）も返す。
