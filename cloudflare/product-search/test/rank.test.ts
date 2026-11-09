@@ -3,7 +3,7 @@ import { test } from "node:test";
 
 import { joinAttributes } from "../src/catalog.ts";
 import { corsHeaders } from "../src/cors.ts";
-import { type ClefRequest, CHUNK, buildRequest, describe, keywordMatches, normalizeQuery, rank } from "../src/rank.ts";
+import { type ClefRequest, CHUNK, buildRequest, describe, keywordMatches, normalizeQuery, rank, selectResults, toBrandWords } from "../src/rank.ts";
 
 const product = (handle: string) => ({
   handle,
@@ -106,4 +106,30 @@ test("rank は、検索語が商品名に入っている商品を先に並べ、
   assert.equal(meaningful, 1);
   assert.deepEqual(ranked.map((r) => r.handle), ["y", "x"]);
   assert.equal(ranked[0].score, 0.99);
+});
+
+test("toBrandWords はカタカナのブランド名を英字にする（中黒・空白のゆれも）", () => {
+  assert.equal(toBrandWords("カーハート"), "carhartt");
+  assert.equal(toBrandWords("エディー・バウアー"), "eddie bauer");
+  assert.equal(toBrandWords("カーハート シャツ"), "carhartt シャツ");
+  assert.equal(toBrandWords("冬のシャツ"), "冬のシャツ");
+});
+
+test("keywordMatches はカタカナのブランド名でも英字の商品名に一致する", () => {
+  const products = [
+    { ...product("a"), title: "[Eddie Bauer] Down Jacket" },
+    { ...product("b"), title: "Wool Shirt", brand: "Carhartt" },
+    { ...product("c"), title: "Wool Check Pants" },
+  ];
+  assert.deepEqual([...keywordMatches("エディーバウアー", products)], ["a"]);
+  assert.deepEqual([...keywordMatches("カーハート", products)], ["b"]);
+});
+
+test("selectResults は、意味のない検索語なら何も出さず、いちばん合う商品から離れた商品も出さない", () => {
+  const ranked = [0.99, 0.95, 0.8, 0.7, 0.5].map((score, i) => ({ handle: `h${i}`, score }));
+  const o = { minScore: 0.3, minMeaningful: 0.45, gap: 0.25, max: 48 };
+  assert.deepEqual(selectResults({ meaningful: 0.37, ranked }, o), []);
+  assert.deepEqual(selectResults({ meaningful: 1, ranked }, o).map((r) => r.handle), ["h0", "h1", "h2"]);
+  assert.deepEqual(selectResults({ meaningful: 1, ranked: [] }, o), []);
+  assert.equal(selectResults({ meaningful: 1, ranked }, { ...o, max: 2 }).length, 2);
 });

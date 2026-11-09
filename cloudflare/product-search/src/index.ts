@@ -8,7 +8,7 @@
 import { type Attributes, fetchProducts, joinAttributes } from "./catalog.ts";
 import { corsHeaders } from "./cors.ts";
 import { type Kind, listTerms, logSearch, summarize } from "./log.ts";
-import { type Ask, type ClefRequest, type SearchInput, normalizeQuery, rank } from "./rank.ts";
+import { type Ask, type ClefRequest, type SearchInput, normalizeQuery, rank, selectResults } from "./rank.ts";
 
 export interface Env {
   AI: Ai;
@@ -29,14 +29,18 @@ const IMAGE_LIMIT = 4 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 // これより低い確率の商品は出さない
 const MIN_SCORE = 0.3;
-// 検索語が意味のあることば（写真に身につけるものが写っている）かの確率がこれ未満なら、何も返さない
-const MIN_MEANINGFUL = 0.2;
+// 検索語が意味のあることば（写真に身につけるものが写っている）かの確率がこれ未満なら、何も返さない。
+// ことばは 0.45（在庫のないブランド「ステューシー」が 0.37、合う商品のない「冠婚葬祭」が 0.38 で、関係のない商品が並んでいた）。
+// 商品名・ブランドに一致することばがあれば 1 になる（rank.ts の keywordMatches）
+const MIN_MEANINGFUL = { text: 0.45, image: 0.2 };
+// いちばん合う商品の確率から、これより下がった商品は出さない
+const SCORE_GAP = 0.25;
 const MAX_RESULTS = 48;
 const CATALOG_TTL = 300;
 const RESULT_TTL = 3600;
 const CACHE_ORIGIN = "https://product-search.internal";
 // 並べ方（質問・しきい値）を変えたら上げる（前の検索結果のキャッシュを使わない）
-const RANKING_VERSION = 4;
+const RANKING_VERSION = 5;
 
 type Result = { handle: string; score: number };
 
@@ -111,10 +115,10 @@ async function search(
 
     const started = Date.now();
     const { meaningful, ranked } = await rank(input, products, askWorkersAI(env.AI));
-    const results = (meaningful >= MIN_MEANINGFUL ? ranked : [])
-      .filter((r) => r.score >= MIN_SCORE)
-      .slice(0, MAX_RESULTS)
-      .map((r) => ({ handle: r.handle, score: Math.round(r.score * 1000) / 1000 }));
+    const results = selectResults(
+      { meaningful, ranked },
+      { minScore: MIN_SCORE, minMeaningful: MIN_MEANINGFUL[kind], gap: SCORE_GAP, max: MAX_RESULTS },
+    ).map((r) => ({ handle: r.handle, score: Math.round(r.score * 1000) / 1000 }));
     const body = {
       query,
       results,
