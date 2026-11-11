@@ -11,6 +11,7 @@ export const BLOG_SECTIONS = [
   { slug: "products", title: "商品ブログ", description: "入荷した商品やブランドの紹介", categories: ["Products"] },
   { slug: "styling", title: "スタイリング", description: "古着とセレクトアイテムのスタイリング", categories: ["Styling"] },
   { slug: "event", title: "イベント", description: "店内イベントと出店のお知らせ", categories: ["Event1st", "Event2nd", "出店イベント"] },
+  { slug: "research", title: "Research & Development", description: "サイズ診断など、85-Store の開発と研究の進捗", categories: ["Research & Development"] },
 ] as const;
 
 export type BlogSection = (typeof BLOG_SECTIONS)[number];
