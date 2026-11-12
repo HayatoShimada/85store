@@ -29,7 +29,7 @@
 
 ## 商品の属性を更新する
 
-属性（種類・色・柄・テイスト・季節・厚さ・シルエット・系統）は、[rocm_opencv_server](https://github.com/HayatoShimada/rocm_opencv_server) が Clef で商品の写真と説明から判定する。新しい商品を入れたら:
+属性（種類・色・柄・テイスト・季節・厚さ・シルエット・系統）は、[rocm_opencv_server](https://github.com/85-Store-Research-Development/rocm_opencv_server) が Clef で商品の写真と説明から判定する。新しい商品を入れたら:
 
 ```bash
 # rocm_opencv_server で（判定済みの商品は取り直さない）
