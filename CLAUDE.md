@@ -5,7 +5,7 @@
 ## プロジェクト概要
 
 富山県南砺市井波の古着・セレクトショップ「85-Store（ハコストア）」の公式サイト（https://85-store.com）。
-ブログ・バナーは自前の CMS（**Payload**、別リポジトリ [HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms)、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
+ブログ・バナーは自前の CMS（**Payload**、別リポジトリ [85-Store-Research-Development/85store-cms](https://github.com/85-Store-Research-Development/85store-cms)、85pi で運用）で管理し、購入は Shopify のオンラインストア（https://shop.85-store.com）へ誘導する。
 Shopify の商品・コレクション・ストアのページ・ブログ・メニューも、同じ Payload を入力画面にしている（正は Shopify）。
 
 - Next.js 16（App Router / Turbopack / **Cache Components**）
@@ -66,7 +66,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 
 記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
 
-### 営業日カレンダー（[business-calendar](https://github.com/HayatoShimada/business-calendar)・`lib/business-calendar.ts`）
+### 営業日カレンダー（[business-calendar](https://github.com/85-Store-Research-Development/business-calendar)・`lib/business-calendar.ts`）
 
 - 休業日・その日だけの営業時間・通常の営業時間は、Cloudflare Worker の管理画面（`calendar-admin.85-store.com`）で入力し、D1 に保存する。
 - 管理画面は Cloudflare Access で保護し、ログイン方法は 85pi で動かす **tsidp**（Tailscale の ID で入る OIDC）だけ。tsidp は tailnet 外からのログインを拒否するので、tailnet 内の info@85-store.com だけが使える。Worker 側でも Access の JWT とメールを検証する。
@@ -76,7 +76,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 - 「営業中」表示は `components/StoreStatus.tsx`、カレンダーは `components/BusinessCalendar.tsx`（トップの店舗情報・About・Reserve）。時刻に依存する表示はブラウザでだけ描く（`useNow`）。
 - カレンダーの「共有」ボタンは `components/ShareCalendarButton.tsx`。画像は Worker が配信する `calendar-image.js`（canvas で描く ES モジュール）をブラウザで読み込んで作り、Web Share API（iOS の共有シート・Android の Sharesheet）で渡す。使えないブラウザでは画像を保存してリンクをコピーする。共有シートはタップ直後にしか開けないので、画像は先に作っておく。
 - SNS へのお知らせは管理画面の「お知らせを作る」で行う（変更内容から文面と画像を作り、共有シートで X・Instagram に投稿。API は使わない）。
-- Worker 本体は公開リポジトリ HayatoShimada/business-calendar（汎用版・MIT）。このリポジトリの `cloudflare/business-calendar/` には 85-Store 用の `wrangler.jsonc` と `deploy.sh`（決まったバージョンを `upstream/` に取得してデプロイ）だけを置く。Worker のコードを直すときは business-calendar 側で直してタグを打ち、`deploy.sh` の `VERSION` を上げる。
+- Worker 本体は公開リポジトリ 85-Store-Research-Development/business-calendar（汎用版・MIT）。このリポジトリの `cloudflare/business-calendar/` には 85-Store 用の `wrangler.jsonc` と `deploy.sh`（決まったバージョンを `upstream/` に取得してデプロイ）だけを置く。Worker のコードを直すときは business-calendar 側で直してタグを打ち、`deploy.sh` の `VERSION` を上げる。
 
 ### 記事本文のレンダリング（`app/blog/[slug]/page.tsx`）
 
@@ -141,7 +141,7 @@ CMS が書き出した本文の HTML（Lexical から変換済み）をサーバ
 
 ## CMS（Payload、別リポジトリ）
 
-- CMS のコードは **[HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms)** にある（このリポジトリには無い）。構成・Shopify との同期・配置・マイグレーションは 85store-cms の README・CLAUDE.md を見る。
+- CMS のコードは **[85-Store-Research-Development/85store-cms](https://github.com/85-Store-Research-Development/85store-cms)** にある（このリポジトリには無い）。構成・Shopify との同期・配置・マイグレーションは 85store-cms の README・CLAUDE.md を見る。
 - 85pi の docker compose で動かし、管理画面は `https://cms.85-store.com`（tailnet 内からのみ）。
 - 公開・更新・削除のたびに、CMS が公開中のデータを JSON にして R2（`85store-media` の `content/`）に書き出し、サイトの `/api/revalidate` を呼ぶ。商品を Shopify に送ったあとは `shopify-products` を送って New Arrivals を作り直す。**サイトは 85pi に直接アクセスしない**（書き出された JSON だけを読む）。
 - サイトと CMS の約束は書き出す JSON の形だけ。`types/cms.ts` と 85store-cms の `src/publish/export.ts` を合わせ、変えるときは両方のリポジトリに PR を出す。

@@ -1,5 +1,5 @@
 {
-  // 85-Store の営業日カレンダー（Worker 本体は https://github.com/HayatoShimada/business-calendar）
+  // 85-Store の営業日カレンダー（Worker 本体は https://github.com/85-Store-Research-Development/business-calendar）
   // ./deploy.sh が本体を upstream/ に取得し、この設定でデプロイする
   "$schema": "upstream/node_modules/wrangler/config-schema.json",
   "name": "85store-business-calendar",

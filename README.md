@@ -8,13 +8,13 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 
 ## ✨ 主な機能
 
-- 📝 **ブログ**: CMS（Payload、[85store-cms](https://github.com/HayatoShimada/85store-cms)）で記事を管理（カテゴリ・タグ・注目記事・下書き・写真の横並び・埋め込み）。スタッフも Tailscale のアカウントで書ける
+- 📝 **ブログ**: CMS（Payload、[85store-cms](https://github.com/85-Store-Research-Development/85store-cms)）で記事を管理（カテゴリ・タグ・注目記事・下書き・写真の横並び・埋め込み）。スタッフも Tailscale のアカウントで書ける
 - ⚡ **キャッシュと即時反映**: `use cache` でキャッシュし、CMS の公開通知で更新されたデータだけを再検証
 - 🖼️ **バナー管理**: トップページのヒーロー・Pick Up のバナーを CMS で並び替え
 - ✍️ **note連携**: note.com の記事をトップページに表示
 - 🎙️ **Podcast**: Spotify の埋め込みプレイヤー
 - 📅 **予約ページ**: Limited Store / 1st Floor(85-Store) / 2nd Floor(85-UpStore) の案内
-- 🗓️ **営業日カレンダー**: Cloudflare Worker の管理画面（Tailscale 内の管理者だけがログイン可能）で休業日・営業時間を設定し、サイトに即反映（Worker は [business-calendar](https://github.com/HayatoShimada/business-calendar) として公開。設定は `cloudflare/business-calendar/`）
+- 🗓️ **営業日カレンダー**: Cloudflare Worker の管理画面（Tailscale 内の管理者だけがログイン可能）で休業日・営業時間を設定し、サイトに即反映（Worker は [business-calendar](https://github.com/85-Store-Research-Development/business-calendar) として公開。設定は `cloudflare/business-calendar/`）
 - 🌈 **AI 検索**: ショップの検索窓から、ことばの意味で商品を探す。Cloudflare Worker（`search.85-store.com`）が Workers AI の Clef で販売中の商品を並べ替える（`cloudflare/product-search/`）
 - 📧 **お問い合わせフォーム**: nodemailer による自動返信・管理者通知
 - 📈 **アクセス解析**: Vercel Analytics / Speed Insights
@@ -28,7 +28,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 | フレームワーク | Next.js 16（App Router / Turbopack / Cache Components） |
 | 言語 | TypeScript 5 / React 19.3 |
 | スタイル | Tailwind CSS v4 |
-| CMS | Payload 3（別リポジトリ [85store-cms](https://github.com/HayatoShimada/85store-cms)、85pi の docker compose・SQLite）。画像と書き出しは Cloudflare R2 |
+| CMS | Payload 3（別リポジトリ [85store-cms](https://github.com/85-Store-Research-Development/85store-cms)、85pi の docker compose・SQLite）。画像と書き出しは Cloudflare R2 |
 | EC連携 | Shopify Storefront API（@shopify/storefront-api-client） |
 | メール送信 | nodemailer |
 | デプロイ | Vercel |
@@ -44,7 +44,7 @@ Next.js 16（App Router / Cache Components）+ TypeScript + Tailwind CSS v4 で�
 
 ```bash
 # 1. クローン
-git clone https://github.com/HayatoShimada/85store.git
+git clone https://github.com/85-Store-Research-Development/85store.git
 cd 85store
 
 # 2. 依存関係のインストール
@@ -86,7 +86,7 @@ npm run dev
 
 ## 📊 CMS（85store-cms）
 
-記事・バナーは 85pi で動かす Payload CMS で管理します。管理画面は `https://cms.85-store.com`（tailnet 内からのみ）。コードは別リポジトリ [HayatoShimada/85store-cms](https://github.com/HayatoShimada/85store-cms) にあり、セットアップ・メンバーの追加・バックアップはそちらの README を参照してください。
+記事・バナーは 85pi で動かす Payload CMS で管理します。管理画面は `https://cms.85-store.com`（tailnet 内からのみ）。コードは別リポジトリ [85-Store-Research-Development/85store-cms](https://github.com/85-Store-Research-Development/85store-cms) にあり、セットアップ・メンバーの追加・バックアップはそちらの README を参照してください。
 
 | コレクション | 主な項目 |
 |---|---|
