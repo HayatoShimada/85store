@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   // next dev が CLAUDE.md / AGENTS.md に英語の案内を書き足さないようにする（同じ内容は CLAUDE.md に日本語で書いた）
   agentRules: false,
+  // Works は R&D に名前を変えた
+  async redirects() {
+    return [{ source: "/works", destination: "/rnd", permanent: true }];
+  },
   images: {
     qualities: [75, 90, 100],
     // 最適化した画像を31日キャッシュする（既定は4時間）。CMS と Shopify の画像は URL が変わらない限り中身も変わらない。

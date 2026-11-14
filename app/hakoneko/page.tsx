@@ -325,7 +325,7 @@ export default function HakonekoPage() {
             <Phrase>{"85-Store 公式サイト"}</Phrase>
           </Link>
           <Link
-            href="/works"
+            href="/rnd"
             className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl border border-[#ff8d1f]/40 bg-black/60 text-[#ff8d1f] hover:bg-[#ff8d1f]/20 hover:border-[#ff8d1f]/80 hover:shadow-[0_0_20px_rgba(255,141,31,0.2)] transition-all duration-300 font-bold tracking-widest overflow-hidden"
           >
             <Phrase>{"ほかの作品"}</Phrase>

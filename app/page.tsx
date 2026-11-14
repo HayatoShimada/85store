@@ -201,9 +201,9 @@ export default async function Home() {
       <section className="section" aria-labelledby="works-heading">
         <SectionHeading
           id="works-heading"
-          title="Works"
-          description="85-Store がつくったゲームや道具"
-          link={{ href: "/works", label: "すべて見る" }}
+          title="R&D"
+          description="85-Store の研究開発（ゲームや道具）"
+          link={{ href: "/rnd", label: "すべて見る" }}
         />
         <ul className="grid-lines grid-cols-4 max-[900px]:grid-cols-2">
           {WORKS.map((work) => (

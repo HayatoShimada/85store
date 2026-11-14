@@ -53,7 +53,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 
 | パス | 内容 |
 |---|---|
-| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事（Blog）・note・Podcast・Works・店舗情報） |
+| `/` | トップ（ヒーロー・Pick Up・新着商品・最新記事（Blog）・note・Podcast・R&D・店舗情報） |
 | `/blog`, `/blog/page/[page]` | ブログ一覧（12件ずつ。`/blog/page/1` は `/blog` へリダイレクト） |
 | `/blog/[slug]` | 記事（スラッグ）。microCMS から移した記事は、そのコンテンツIDがスラッグ。`id`（旧コンテンツID）でアクセスされ、スラッグと違う場合は 308 リダイレクト |
 | `/blog/category/[category]`, `/blog/tag/[tag]` | カテゴリ・タグ別一覧（0件は404） |
@@ -61,7 +61,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 | `/faq` | よくある質問（`lib/faq.ts`。表示・FAQPage の構造化データ・llms.txt で共有） |
 | `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml`, `/llms.txt` | `app/sitemap.ts` 等で動的生成。llms.txt は AI 向けの要約（`lib/llms.ts`）、robots.txt は AI のクローラーを明示的に許可 |
 | `/about`, `/reserve`, `/upstore`, `/contact`, `/hakoneko` | 固定ページ（hakoneko は独自デザインのゲーム紹介ページ） |
-| `/works` | 85-Store がつくったもの（ハコネコ・VividAtmos・BlackBullet・foxtrotdesign）。定義は `lib/works.ts`、画像は `public/images/works/`（4:3 のスクリーンショット）。トップ・About・フッターからも導線あり |
+| `/rnd` | 研究開発（R&D。旧 Works、`/works` は `/rnd` へ 308）。85-Store がつくったもの（ハコネコ・VividAtmos・BlackBullet・foxtrotdesign）。定義は `lib/works.ts`、画像は `public/images/works/`（4:3 のスクリーンショット）。トップ・About・フッターからも導線あり |
 | `/shipping`, `/returns`, `/terms`, `/privacy` | Shopify のポリシーを表示 |
 
 記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
