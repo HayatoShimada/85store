@@ -1,4 +1,4 @@
-import type { Blog } from "@/types/cms";
+import type { Blog, CmsImage } from "@/types/cms";
 
 // 記事のURLパス（スラッグ。microCMS から移した記事は、そのコンテンツIDがスラッグになっている）
 export function getBlogPostPath(post: Pick<Blog, "slug">): string {
@@ -33,3 +33,12 @@ export const BLOG_NAV: { href: string; label: string }[] = [
   ...BLOG_SECTIONS.map((s) => ({ href: getBlogSectionPath(s), label: s.title })),
   { href: getBlogCategoryPath("News"), label: "News" },
 ];
+
+// アイキャッチが無い記事の既定の画像。Research & Development の記事は R&D のロゴ（og は SNS 用の横長）
+const RESEARCH_EYECATCH: CmsImage = { url: "/images/rnd-eyecatch.png", width: 1200, height: 1500, og: "/images/rnd-og.png" };
+const RESEARCH_CATEGORIES: readonly string[] = getBlogSection("research").categories;
+
+export function getEyecatch(post: Pick<Blog, "eyecatch" | "category">): CmsImage | undefined {
+  if (post.eyecatch) return post.eyecatch;
+  return post.category?.some((name) => RESEARCH_CATEGORIES.includes(name)) ? RESEARCH_EYECATCH : undefined;
+}

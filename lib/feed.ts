@@ -1,9 +1,10 @@
 import { Feed } from "feed";
 import { cacheLife, cacheTag } from "next/cache";
 import { getBlogPosts } from "@/lib/cms";
-import { getBlogPostPath } from "@/utils/blog";
+import { getBlogPostPath, getEyecatch } from "@/utils/blog";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://85-store.com';
+const absoluteUrl = (url?: string) => (url?.startsWith("/") ? `${siteUrl}${url}` : url);
 
 // ブログのRSS / Atomフィードを生成する（記事と同じ "blogs" タグで再検証される）
 export async function getBlogFeedXml(format: "rss" | "atom"): Promise<string> {
@@ -39,7 +40,7 @@ export async function getBlogFeedXml(format: "rss" | "atom"): Promise<string> {
       link: url,
       description: post.description || post.excerpt || undefined,
       date: dateOf(post),
-      image: post.eyecatch?.url,
+      image: absoluteUrl(getEyecatch(post)?.url),
       category: post.category?.map((name) => ({ name })),
       author: post.author ? [{ name: post.author }] : undefined,
     });
