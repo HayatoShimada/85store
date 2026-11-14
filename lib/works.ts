@@ -1,4 +1,4 @@
-// 85-Store がつくったもの（Works）の唯一の定義元。/works・トップ・About で使う
+// 85-Store の研究開発（R&D。旧 Works）でつくったものの唯一の定義元。/rnd・トップ・About で使う
 export type Work = {
   slug: string;
   name: string;

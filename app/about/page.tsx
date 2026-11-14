@@ -112,7 +112,7 @@ export default function About() {
         <AboutTeam />
       </AboutSection>
 
-      <AboutSection en="Works" ja="つくったもの">
+      <AboutSection en="R&D" ja="研究開発">
         <p className="leading-loose text-ink-2"><Phrase>{"洋服のほかに、ゲームや道具もつくっています。"}</Phrase></p>
         <dl className="facts mt-6">
           {WORKS.map((work) => (
@@ -131,7 +131,7 @@ export default function About() {
             </div>
           ))}
         </dl>
-        <Link href="/works" className="btn btn-secondary mt-6"><Phrase>{"Works を見る"}</Phrase></Link>
+        <Link href="/rnd" className="btn btn-secondary mt-6"><Phrase>{"R&D を見る"}</Phrase></Link>
       </AboutSection>
 
       <AboutSection en="Information" ja="店舗情報">

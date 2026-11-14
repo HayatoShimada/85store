@@ -70,7 +70,7 @@ ${FAQS.map((faq) => `### ${faq.question}\n\n${faq.answer}`).join("\n\n")}
 
 ${posts.map((post) => `- [${post.title}](${siteUrl}${getBlogPostPath(post)})${post.description ? `: ${post.description}` : ""}`).join("\n")}
 
-## つくったもの
+## 研究開発（R&D）
 
 ${WORKS.map((work) => `- [${work.name}](${absolute(work.href)}): ${work.description}`).join("\n")}
 `;
