@@ -6,7 +6,7 @@ export const RND_ORG_URL = "https://github.com/85-Store-Research-Development";
 
 export const RND_SUMMARY = {
   lead: "AIの時代に、洋服屋の買い物をもっと楽しく。",
-  body: "お店の手間を減らしながら、新しい価値をつくっていくための研究開発です。",
+  body: "お店の手間を減らしながら、新しい価値をつくっていく、小さなお店が行う、大きな研究開発です。",
 };
 
 export type Principle = { name: string; ja: string; lead: string; items: { name: string; body: string }[] };
