@@ -12,7 +12,7 @@ import { buildTableOfContents } from "@/lib/toc";
 import { optimizeContentImages } from "@/lib/content-images";
 import { largestFromSrcset } from "@/lib/cms-image";
 import { formatDate } from "@/utils/date";
-import { getBlogPostPath, getCategoryListPath } from "@/utils/blog";
+import { getBlogPostPath, getCategoryListPath, getEyecatch } from "@/utils/blog";
 import { nonEmptyParams } from "@/utils/static-params";
 import { pageAlternates } from "@/lib/metadata";
 
@@ -49,7 +49,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
 
   const description = post.description || post.excerpt || extractExcerpt(post.content);
-  const coverImageUrl = post.eyecatch?.url;
+  const cover = getEyecatch(post);
+  // SNS 用。既定の画像（R&D のロゴ）は横長の og を使う
+  const coverImageUrl = post.eyecatch ? post.eyecatch.url : cover?.og ?? cover?.url;
   const primaryCategory = post.category?.[0] || null;
   const publishedTime = post.publishedAt || post.createdAt;
   const modifiedTime = post.updatedAt || post.publishedAt || post.createdAt;
@@ -109,7 +111,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const primaryCategory = post.category?.[0] || null;
   const relatedPosts = await getRelatedPosts(post.id, primaryCategory, 3);
 
-  const eyecatch = post.eyecatch;
+  const eyecatch = getEyecatch(post);
+  const imageUrl = eyecatch && (eyecatch.url.startsWith("/") ? `${siteUrl}${eyecatch.url}` : eyecatch.url);
   const publishedAt = post.publishedAt || post.createdAt;
   const modifiedAt = post.updatedAt || publishedAt;
   const { html: tocHtml, headings } = buildTableOfContents(optimizeContentImages(post.content));
@@ -128,7 +131,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           mainEntityOfPage: postUrl,
           datePublished: new Date(publishedAt).toISOString(),
           dateModified: new Date(modifiedAt).toISOString(),
-          ...(eyecatch && { image: eyecatch.url }),
+          ...(imageUrl && { image: imageUrl }),
           ...(primaryCategory && { articleSection: primaryCategory }),
           ...(post.tags?.length && { keywords: post.tags.join(", ") }),
           about: { "@id": `${siteUrl}/#store` },
@@ -156,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             url: postUrl,
             startDate: post.event.startDate,
             ...(post.event.endDate && { endDate: post.event.endDate }),
-            ...(eyecatch && { image: eyecatch.url }),
+            ...(imageUrl && { image: imageUrl }),
             // 会場が無ければお店（ClothingStore）
             location: post.event.venueName
               ? {

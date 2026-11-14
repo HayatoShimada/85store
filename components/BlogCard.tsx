@@ -1,7 +1,7 @@
 import Link from "next/link";
 import FallbackImage from "@/components/FallbackImage";
 import { formatDate } from "@/utils/date";
-import { getBlogPostPath } from "@/utils/blog";
+import { getBlogPostPath, getEyecatch } from "@/utils/blog";
 import type { Blog } from "@/types/cms";
 
 import Phrase from "@/components/Phrase";
@@ -23,7 +23,7 @@ export default function BlogCard({ post }: BlogCardProps) {
       >
         <div className="media-frame aspect-[4/5]">
           <FallbackImage
-            src={post.eyecatch?.url}
+            src={getEyecatch(post)?.url}
             alt=""
             fill
             sizes="(max-width: 560px) 112px, (max-width: 900px) 50vw, 33vw"
