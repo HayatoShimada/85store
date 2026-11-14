@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:linebreaks": "node scripts/check-ja-linebreaks.mjs"
+    "check:linebreaks": "node scripts/check-ja-linebreaks.mjs",
+    "sync:rnd": "node scripts/sync-rnd.mjs"
   },
   "dependencies": {
     "@shopify/storefront-api-client": "^1.0.9",

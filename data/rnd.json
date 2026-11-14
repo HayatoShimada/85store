@@ -1,0 +1,568 @@
+{
+  "generatedAt": "2026-11-14T12:12:08.370Z",
+  "projectUrl": "https://github.com/orgs/85-Store-Research-Development/projects/1",
+  "roadmap": [
+    {
+      "title": "スマホのカメラで体を測るサイズ診断",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-theme",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "商品ごとの「あなたが着たら」と「サイズの標準とくらべて」",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-theme",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "採寸からの85-Storeサイズの自動付与",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-cms",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "特集「古着のサイズを、測りなおす」",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-theme",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "着用イメージを実寸どおりの大きさでAI合成する仕組み（PoC）",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "rocm_opencv_server",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "撮影スタジオ",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "imx519_edge",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "商品検索の改善",
+      "url": null,
+      "pillar": "EC",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "スタッフの実測で、サイズ診断と「ちょうど」の基準を合わせ直す",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Now",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2026-11-16",
+      "end": "2026-12-11"
+    },
+    {
+      "title": "着用イメージを20点で試す",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Now",
+      "status": "todo",
+      "repo": "rocm_opencv_server",
+      "start": "2026-12-01",
+      "end": "2026-12-25"
+    },
+    {
+      "title": "「サイズは合いましたか」の答えで判定を育てる",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2027-01-06",
+      "end": "2027-04-30"
+    },
+    {
+      "title": "着用イメージを説明付きで商品ページに出す",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "rocm_opencv_server",
+      "start": "2027-01-12",
+      "end": "2027-02-26"
+    },
+    {
+      "title": "素材・着心地を伝える（生地のアップの写真から繊維・厚みを読み、スタッフの手触りの評価を残す）",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "rocm_opencv_server",
+      "start": "2027-02-01",
+      "end": "2027-03-31"
+    },
+    {
+      "title": "照明ごとの見え方と透け感を撮る（太陽光・LED・電球の色、後ろからの光）",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "imx519_edge",
+      "start": "2027-03-01",
+      "end": "2027-04-16"
+    },
+    {
+      "title": "ウィッシュリスト（無い物は無いと示し、入荷を知らせる）",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85store-theme",
+      "start": "2027-04-01",
+      "end": "2027-05-14"
+    },
+    {
+      "title": "レディース・海外のサイズ",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85store-theme",
+      "start": "2027-05-17",
+      "end": "2027-06-30"
+    },
+    {
+      "title": "合うサイズを学ぶモデル",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2027-07-01",
+      "end": "2027-09-30"
+    },
+    {
+      "title": "素材感のセンシング（やわらかさ・固さを測って数字で伝える）",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2027-09-01",
+      "end": "2027-11-30"
+    },
+    {
+      "title": "AIからも商品を探せるMCPサーバー",
+      "url": null,
+      "pillar": "EC",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "85store-cms",
+      "start": "2027-07-01",
+      "end": "2027-08-13"
+    },
+    {
+      "title": "CRMで店とネットの在庫・売上を一元管理し、AIの経営会議で相談できる",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85crm",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "営業日カレンダー（サイト・Googleマップに反映）",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "business-calendar",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "イベントのお知らせ",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "店頭やメッセージで聞いた「欲しい」を、CRMに記録し始める",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "Now",
+      "status": "todo",
+      "repo": "85crm",
+      "start": "2026-12-01",
+      "end": "2026-12-18"
+    },
+    {
+      "title": "欲しいの声・体の分布と在庫をくらべ、仕入れの目安を出す",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85crm",
+      "start": "2027-03-01",
+      "end": "2027-04-30"
+    },
+    {
+      "title": "周辺の情報・イベントと、お客さまの好みを結びつけて提案する",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85store",
+      "start": "2027-05-01",
+      "end": "2027-06-15"
+    },
+    {
+      "title": "店頭でもサイズ診断と着用イメージを使う",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "rocm_opencv_server",
+      "start": "2027-06-01",
+      "end": "2027-07-15"
+    },
+    {
+      "title": "好きな事を入り口にした会話の手がかり（同意したお客さまの好みを、来店時にスタッフへ渡す）",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "85crm",
+      "start": "2027-08-02",
+      "end": "2027-09-30"
+    },
+    {
+      "title": "需要の予測",
+      "url": null,
+      "pillar": "店頭",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "85crm",
+      "start": "2027-10-01",
+      "end": "2027-12-15"
+    },
+    {
+      "title": "ブログの区分Research & Developmentと記事の下書き",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "このロードマップ",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-theme",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "AIの提案を人が確かめて反映する仕組み（CMS）",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-cms",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "店長スヌーのロボット",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "snoo_trucar",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "研究と開発の記事を、月に1本公開する",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "Now",
+      "status": "todo",
+      "repo": "85store-cms",
+      "start": "2026-11-27",
+      "end": "2027-12-31"
+    },
+    {
+      "title": "チャット・問い合わせ・意見・クレームをAIで集めて分け、同じような要望にまとめて対応し、店への提案にする",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85crm",
+      "start": "2027-02-15",
+      "end": "2027-03-31"
+    },
+    {
+      "title": "お客さまが議論に参加できる場（アンケート・記事への意見・店頭の会）",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85store",
+      "start": "2027-04-17",
+      "end": "2027-04-17"
+    },
+    {
+      "title": "個人を特定しない形で、集計と方法を公開する",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2027-10-01",
+      "end": "2027-10-29"
+    },
+    {
+      "title": "お客さま・仕入れ先と一緒に、新しい仕組みを試す",
+      "url": null,
+      "pillar": "立場を超える",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2027-11-01",
+      "end": "2027-12-15"
+    },
+    {
+      "title": "CMS（Shopifyとの同期・4言語の自動翻訳）",
+      "url": null,
+      "pillar": "土台",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "85store-cms",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "GPUでの写真の処理と、状態メモ・原産国の候補",
+      "url": null,
+      "pillar": "土台",
+      "phase": "これまで",
+      "status": "done",
+      "repo": "rocm_opencv_server",
+      "start": "2026-10-01",
+      "end": "2026-11-11"
+    },
+    {
+      "title": "作った仕組みの使われ方と、購入・返品への効き方を数え始める",
+      "url": null,
+      "pillar": "土台",
+      "phase": "Now",
+      "status": "todo",
+      "repo": "85store-theme",
+      "start": "2026-11-16",
+      "end": "2026-11-30"
+    },
+    {
+      "title": "同意を前提に、お客さまの端末・Shopify・CMS・CRMのデータをつなぐ",
+      "url": null,
+      "pillar": "土台",
+      "phase": "Next",
+      "status": "todo",
+      "repo": "85crm",
+      "start": "2027-02-01",
+      "end": "2027-03-12"
+    },
+    {
+      "title": "自宅のサーバーとGPU 1台に頼る運用を見直す",
+      "url": null,
+      "pillar": "土台",
+      "phase": "Later",
+      "status": "todo",
+      "repo": "複数",
+      "start": "2027-07-01",
+      "end": "2027-08-31"
+    },
+    {
+      "title": "こんな機能がほしいです",
+      "url": "https://github.com/85-Store-Research-Development/85store/issues/58",
+      "pillar": "立場を超える",
+      "phase": "Now",
+      "status": "done",
+      "repo": "85store",
+      "start": "2026-11-16",
+      "end": "2026-12-18"
+    },
+    {
+      "title": "feat(scripts): 着用イメージを、服の実寸どおりの大きさでAI合成するPoC",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/pull/89",
+      "pillar": "EC",
+      "phase": "Now",
+      "status": "doing",
+      "repo": "rocm_opencv_server",
+      "start": "2026-12-01",
+      "end": "2026-12-25"
+    }
+  ],
+  "pulls": [
+    {
+      "title": "feat: WorksをR&D（85-Store Research & Development）にする",
+      "url": "https://github.com/85-Store-Research-Development/85store/pull/68",
+      "number": 68,
+      "repo": "85store",
+      "state": "open",
+      "updatedAt": "2026-11-14T11:57:50Z"
+    },
+    {
+      "title": "85store-cmsの撮影のまとまりを、Clefで商品ごとに分ける",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/pull/91",
+      "number": 91,
+      "repo": "rocm_opencv_server",
+      "state": "merged",
+      "updatedAt": "2026-11-14T11:42:40Z"
+    },
+    {
+      "title": "商品の細分類を、写真からClefに判定させる",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/pull/90",
+      "number": 90,
+      "repo": "rocm_opencv_server",
+      "state": "merged",
+      "updatedAt": "2026-11-14T10:56:45Z"
+    },
+    {
+      "title": "chore: リポジトリの場所を85-Store-Research-Developmentに合わせる",
+      "url": "https://github.com/85-Store-Research-Development/85store/pull/67",
+      "number": 67,
+      "repo": "85store",
+      "state": "merged",
+      "updatedAt": "2026-11-12T12:27:58Z"
+    },
+    {
+      "title": "feat(scripts): 着用イメージを、服の実寸どおりの大きさでAI合成するPoC",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/pull/89",
+      "number": 89,
+      "repo": "rocm_opencv_server",
+      "state": "open",
+      "updatedAt": "2026-11-11T08:03:16Z"
+    },
+    {
+      "title": "feat: ブログにResearch & Developmentの区分（/blog/research）",
+      "url": "https://github.com/85-Store-Research-Development/85store/pull/66",
+      "number": 66,
+      "repo": "85store",
+      "state": "merged",
+      "updatedAt": "2026-11-11T04:07:45Z"
+    },
+    {
+      "title": "chore(calendar): business-calendarをv1.4.0に上げる（/v1/insights）",
+      "url": "https://github.com/85-Store-Research-Development/85store/pull/65",
+      "number": 65,
+      "repo": "85store",
+      "state": "merged",
+      "updatedAt": "2026-11-10T04:18:48Z"
+    },
+    {
+      "title": "feat: Googleマップの数値をサーバー間で読む /v1/insights",
+      "url": "https://github.com/85-Store-Research-Development/business-calendar/pull/5",
+      "number": 5,
+      "repo": "business-calendar",
+      "state": "merged",
+      "updatedAt": "2026-11-10T03:22:36Z"
+    }
+  ],
+  "issues": [
+    {
+      "title": "#21こんな機能がほしいです",
+      "url": "https://github.com/85-Store-Research-Development/85store/issues/58",
+      "number": 58,
+      "repo": "85store",
+      "state": "closed",
+      "updatedAt": "2026-11-12T10:04:23Z"
+    },
+    {
+      "title": "TF-Luna・T-mini Plusでclear_cmと間取りの距離を確かめる",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/issues/80",
+      "number": 80,
+      "repo": "rocm_opencv_server",
+      "state": "open",
+      "updatedAt": "2026-11-09T15:13:00Z"
+    },
+    {
+      "title": "後ろへ下がるときの安全：後ろにセンサーが無いので、計画器で守る",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/issues/76",
+      "number": 76,
+      "repo": "rocm_opencv_server",
+      "state": "closed",
+      "updatedAt": "2026-10-31T04:45:03Z"
+    },
+    {
+      "title": "狭い隙間の高さ：ソファの下が15 cmより低い所へ入らない",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/issues/78",
+      "number": 78,
+      "repo": "rocm_opencv_server",
+      "state": "closed",
+      "updatedAt": "2026-10-31T04:43:17Z"
+    },
+    {
+      "title": "#74の後、ベンチで見失った数が増えた理由を調べる",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/issues/75",
+      "number": 75,
+      "repo": "rocm_opencv_server",
+      "state": "closed",
+      "updatedAt": "2026-10-31T04:43:07Z"
+    },
+    {
+      "title": "README・Makefile・プロトコルの説明と、動画のスライドを今に合わせる",
+      "url": "https://github.com/85-Store-Research-Development/rocm_opencv_server/issues/81",
+      "number": 81,
+      "repo": "rocm_opencv_server",
+      "state": "closed",
+      "updatedAt": "2026-10-31T04:42:42Z"
+    },
+    {
+      "title": "teleopモード：ブラウザ・ゲームパッドから手で操縦する（docs/teleop.md）",
+      "url": "https://github.com/85-Store-Research-Development/snoo_trucar/issues/27",
+      "number": 27,
+      "repo": "snoo_trucar",
+      "state": "closed",
+      "updatedAt": "2026-10-31T03:41:38Z"
+    },
+    {
+      "title": "レビュー（#21）の残り：短い1歩の詰まり・SDへの書き込み・history・リファクタ",
+      "url": "https://github.com/85-Store-Research-Development/snoo_trucar/issues/35",
+      "number": 35,
+      "repo": "snoo_trucar",
+      "state": "closed",
+      "updatedAt": "2026-10-31T03:41:38Z"
+    }
+  ]
+}

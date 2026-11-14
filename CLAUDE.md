@@ -61,7 +61,7 @@ CMS が公開・更新のたびに R2 へ書き出したあと `POST /api/revali
 | `/faq` | よくある質問（`lib/faq.ts`。表示・FAQPage の構造化データ・llms.txt で共有） |
 | `/sitemap.xml`, `/robots.txt`, `/feed.xml`, `/atom.xml`, `/llms.txt` | `app/sitemap.ts` 等で動的生成。llms.txt は AI 向けの要約（`lib/llms.ts`）、robots.txt は AI のクローラーを明示的に許可 |
 | `/about`, `/reserve`, `/upstore`, `/contact`, `/hakoneko` | 固定ページ（hakoneko は独自デザインのゲーム紹介ページ） |
-| `/rnd` | 研究開発（R&D。旧 Works、`/works` は `/rnd` へ 308）。85-Store がつくったもの（ハコネコ・VividAtmos・BlackBullet・foxtrotdesign）。定義は `lib/works.ts`、画像は `public/images/works/`（4:3 のスクリーンショット）。トップ・About・フッターからも導線あり |
+| `/rnd` | 研究開発（R&D。旧 Works、`/works` は `/rnd` へ 308）。活動指針・課題・ロードマップのガントチャート・PR と Issue・リポジトリ・つくったもの。文言とリポジトリは `lib/rnd.ts`、ロードマップと PR・Issue は GitHub の Project（非公開）から `npm run sync:rnd` で `data/rnd.json` に書き出す（非公開リポジトリの Issue・PR は載せない）。つくったものは `lib/works.ts`、画像は `public/images/works/`（4:3 のスクリーンショット） |
 | `/shipping`, `/returns`, `/terms`, `/privacy` | Shopify のポリシーを表示 |
 
 記事へのリンクは必ず `utils/blog.ts` の `getBlogPostPath(post)` で作る（スラッグ対応のため）。
